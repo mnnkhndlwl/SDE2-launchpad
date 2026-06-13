@@ -1,0 +1,48 @@
+---
+title: "Mock interviews & interview-day strategy"
+track: behavioral
+summary: "How to run effective mocks, think out loud, and structure the 45 minutes of a real coding round."
+order: 3
+est: 16
+difficulty: easy
+priority: must
+tags: [mocks, communication, strategy]
+whyAsked: "Knowing the material isn't enough — you're judged on how you communicate under time pressure. Mocks are the only way to build that muscle."
+followUps:
+  - "How do you approach a problem you don't immediately know?"
+  - "What do you do when you're stuck?"
+resources:
+  - { label: "Pramp (free mocks)", url: "https://www.pramp.com/" }
+---
+
+Most rejections aren't "couldn't solve it" — they're "couldn't communicate while solving it." Mocks fix that. Use the in-app **Mock Mode** to drill questions out loud, and do peer mocks (Pramp/friends) weekly.
+
+## The structure of a coding round (UMPIRE)
+
+Narrate every step — silence reads as being stuck.
+
+1. **Understand** — restate the problem, ask about input size, edge cases, constraints. Confirm with an example.
+2. **Match** — "this looks like a sliding-window / graph / DP problem because…". Naming the pattern shows recognition.
+3. **Plan** — describe the approach in words *before* coding. Get a nod from the interviewer. State the brute force, then the optimization.
+4. **Implement** — write clean code while talking through it. Use good names.
+5. **Review** — trace your code on the example by hand. Check edge cases (empty, single element, overflow).
+6. **Evaluate** — state time and space complexity, and any further optimization.
+
+## When you're stuck
+
+- Say what you're thinking — "I'm considering X but worried about Y." Interviewers often nudge.
+- Start with the **brute force**, get it working, then optimize. A working O(n²) beats a broken O(n).
+- Work a small example by hand to find the pattern.
+- Ask a clarifying question — sometimes you're overcomplicating.
+
+## How to run a good mock
+
+- **Time it** (35–45 min) and do it **out loud**, standing if that's how you interview.
+- **Record yourself** occasionally — you'll catch filler, silence, and rushing.
+- Afterward, write down: what you missed, what you'd say differently, and add any new question to your mistakes log.
+- Mix it up: DSA, one frontend design, one system design, one behavioral set per week.
+
+<div class="callout key">
+  <div class="ct">The habit that wins offers</div>
+  Talk continuously, structure with UMPIRE, start simple then optimize, and always test your code by hand before declaring done. Three real mocks before your first real loop changes everything.
+</div>

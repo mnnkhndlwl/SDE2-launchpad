@@ -1,0 +1,73 @@
+---
+title: "Dynamic Programming"
+track: dsa
+summary: "Spot overlapping subproblems, define the state, write the recurrence — then memoize or tabulate."
+order: 7
+est: 28
+difficulty: hard
+priority: deep
+tags: [dp, memoization, tabulation]
+whyAsked: "DP is the differentiator between mid and senior in many loops. It tests whether you can define a state and a recurrence, not just memorize solutions."
+followUps:
+  - "What's the difference between memoization and tabulation?"
+  - "How do you reduce a 2-D DP's space to 1-D?"
+  - "How do you find the recurrence for a new problem?"
+resources:
+  - { label: "NeetCode: 1-D & 2-D DP", url: "https://neetcode.io/practice" }
+---
+
+DP applies when a problem has **overlapping subproblems** (the same smaller problem recurs) and **optimal substructure** (the answer is built from answers to subproblems). The whole skill is a 3-step recipe; the rest is bookkeeping.
+
+## The recipe
+
+1. **Define the state.** What do the minimum parameters need to be to describe a subproblem? e.g. `dp[i]` = "best answer using the first `i` items," or `dp[i][j]` = "answer for prefix `i` of A and prefix `j` of B."
+2. **Write the recurrence.** Express `dp[i]` in terms of smaller states. This is the creative step — ask "what's the last decision, and what subproblem remains after it?"
+3. **Choose memoization or tabulation, and set base cases.**
+
+## Two implementations, same recurrence
+
+```js
+// House Robber: dp[i] = max money from houses [0..i]
+// recurrence: rob i (take + dp[i-2]) or skip i (dp[i-1])
+
+// Top-down (memoized recursion)
+function robMemo(nums) {
+  const memo = new Map();
+  function go(i) {
+    if (i < 0) return 0;
+    if (memo.has(i)) return memo.get(i);
+    const best = Math.max(go(i - 1), nums[i] + go(i - 2));
+    memo.set(i, best); return best;
+  }
+  return go(nums.length - 1);
+}
+
+// Bottom-up (tabulation) — same recurrence, O(1) space
+function robTab(nums) {
+  let prev2 = 0, prev1 = 0;
+  for (const n of nums) { const cur = Math.max(prev1, n + prev2); prev2 = prev1; prev1 = cur; }
+  return prev1;
+}
+```
+
+**Memoization** = recursion + a cache; natural to write once you have the recurrence. **Tabulation** = fill an array iteratively from base cases up; usually lets you drop to O(1) space by keeping only the last few values (as above — only `prev1`/`prev2` matter).
+
+## 1-D vs 2-D
+
+Start 1-D (`dp[i]` over one index): climbing stairs, house robber, coin change, LIS. Then 2-D (`dp[i][j]` over two sequences or a grid): edit distance, LCS, unique paths, knapsack. Many 2-D problems compress to two rows since `dp[i][*]` only needs `dp[i-1][*]`.
+
+## The problem set
+
+| Problem | Difficulty | State |
+|---|---|---|
+| [Climbing Stairs](https://leetcode.com/problems/climbing-stairs/) | Easy | dp[i] = ways to reach step i |
+| [House Robber](https://leetcode.com/problems/house-robber/) | Medium | dp[i] = best up to house i |
+| [Coin Change](https://leetcode.com/problems/coin-change/) | Medium | dp[a] = min coins for amount a |
+| [Longest Increasing Subsequence](https://leetcode.com/problems/longest-increasing-subsequence/) | Medium | dp[i] = LIS ending at i |
+| [Unique Paths](https://leetcode.com/problems/unique-paths/) | Medium | dp[r][c] = paths to cell |
+| [Longest Common Subsequence](https://leetcode.com/problems/longest-common-subsequence/) | Medium | dp[i][j] over two prefixes |
+
+<div class="callout key">
+  <div class="ct">Say it out loud</div>
+  "I look for overlapping subproblems and optimal substructure. I define the state as the minimal parameters describing a subproblem, write the recurrence by asking 'what's the last decision and what subproblem remains', then implement it as memoized recursion or bottom-up tabulation — often compressing the table to O(1) space when each state only depends on the last couple."
+</div>

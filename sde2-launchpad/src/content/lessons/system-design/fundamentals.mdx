@@ -1,0 +1,55 @@
+---
+title: "System Design: the framework"
+track: system-design
+summary: "A repeatable 6-step structure so you never freeze on an open-ended design question."
+order: 1
+est: 24
+difficulty: hard
+priority: must
+tags: [system-design, framework, scaling]
+whyAsked: "Open-ended design rounds reward structure over trivia. A clear framework signals seniority and keeps you from rambling."
+followUps:
+  - "How do you estimate scale / capacity?"
+  - "What are functional vs non-functional requirements?"
+  - "How do you decide where to add a cache or a queue?"
+resources:
+  - { label: "System Design Primer", url: "https://github.com/donnemartin/system-design-primer" }
+  - { label: "ByteByteGo", url: "https://bytebytego.com/" }
+---
+
+The mistake in design rounds isn't usually missing knowledge — it's jumping to a diagram before scoping the problem. Use a fixed structure and narrate it out loud.
+
+## The 6 steps
+
+**1. Clarify requirements.** Split into:
+- *Functional* — what the system does ("post a tweet, view a feed, follow a user").
+- *Non-functional* — the qualities ("100M DAU, feed loads < 200ms, reads ≫ writes, eventual consistency is fine").
+
+Pin these down first; they drive every later decision.
+
+**2. Estimate scale.** Back-of-envelope: users, requests/sec, read:write ratio, data size/day. You don't need precision — you need to know if it's 100 QPS or 1M QPS, because that changes the architecture.
+
+**3. Define the API.** A few endpoints (`POST /tweet`, `GET /feed?cursor=`). This forces clarity on inputs/outputs and reveals the data you must store.
+
+**4. Data model.** Entities, relationships, and the **access patterns**. The access patterns — not the entities — decide SQL vs NoSQL, what to index, and how to partition.
+
+**5. High-level design.** Draw the boxes: client → load balancer → stateless services → cache → database, plus a queue + workers for async work and object storage for blobs. (See *building blocks*.)
+
+**6. Deep-dive & tradeoffs.** Pick the 1–2 hard parts the interviewer cares about and go deep: how to scale the feed, how to keep the cache consistent, how to shard. **Every choice is a tradeoff — say the alternative and why you rejected it.**
+
+## The levers you reach for
+
+- **Scale reads** → cache (Redis), read replicas, CDN for static.
+- **Scale writes** → shard/partition the data, batch, use a write-optimized store.
+- **Decouple / smooth spikes** → message queue + background workers.
+- **Reduce latency** → cache, CDN edge, denormalize, precompute.
+- **Stay available** → replicate, health-check, design for graceful degradation.
+
+<div class="callout key">
+  <div class="ct">The senior signal</div>
+  Drive the conversation with the framework, state your assumptions, and frame every decision as a tradeoff against an alternative. Interviewers are grading your <i>reasoning</i>, not whether you reproduce a "correct" diagram.
+</div>
+
+## Consistency, availability, and the CAP reflex
+
+When a network partition happens, you choose: stay **consistent** (reject/stall to avoid stale data) or stay **available** (serve possibly-stale data). Most large consumer systems favor availability + **eventual consistency** (a like count can lag a second). Banking favors consistency. Say which you're picking and why — it shows you understand the tradeoff, not just the acronym.

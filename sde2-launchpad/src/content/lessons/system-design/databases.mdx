@@ -1,0 +1,55 @@
+---
+title: "Databases: SQL vs NoSQL, indexing, transactions"
+track: system-design
+summary: "When to pick each store, how indexes work, the N+1 trap, and replication vs sharding."
+order: 3
+est: 24
+difficulty: medium
+priority: must
+tags: [databases, sql, nosql, indexing, transactions, sharding]
+whyAsked: "Backend rounds always probe data decisions. Confident, tradeoff-aware DB answers signal you can build real systems, not just pass algorithms."
+followUps:
+  - "How does an index speed up reads, and what does it cost?"
+  - "What are ACID transactions, and when do you need them?"
+  - "What is the N+1 query problem and how do you fix it?"
+resources:
+  - { label: "Use The Index, Luke", url: "https://use-the-index-luke.com/" }
+---
+
+The decisions: which store, how to index, how to keep data correct under concurrency, and how to scale it.
+
+## SQL vs NoSQL
+
+Pick by **access pattern and consistency needs**, not hype.
+
+- **Relational (SQL)** — structured schema, **joins**, and **ACID transactions**. Choose it when data is relational and correctness matters (payments, orders, anything with invariants across rows). Postgres/MySQL scale further than people think.
+- **NoSQL** — flexible schema and horizontal scale, optimized for specific patterns:
+  - *Document* (MongoDB) — self-contained documents, flexible shape.
+  - *Key-value* (DynamoDB, Redis) — massive scale, simple get/put by key.
+  - *Wide-column* (Cassandra) — write-heavy, time-series, huge volume.
+
+The honest framing in an interview: "SQL by default for relational data and transactions; NoSQL when I need a specific access pattern at scale, or flexible schema, and can give up joins / strong consistency."
+
+## Indexing
+
+An index is a sorted data structure (usually a **B-tree**) on a column, so the DB can find rows in **O(log n)** instead of scanning every row (O(n)). The cost: indexes **use space and slow down writes** (every insert/update must maintain them). So index the columns you filter/sort/join on — not everything.
+
+A **composite index** on `(a, b)` helps queries filtering on `a`, or `a` then `b`, but not `b` alone (left-prefix rule).
+
+## ACID transactions
+
+A transaction groups operations so they're **A**tomic (all or nothing), **C**onsistent (invariants hold), **I**solated (concurrent transactions don't corrupt each other), **D**urable (committed = survives a crash). You need them when multiple writes must succeed together — transferring money debits one account and credits another; partial completion is a bug.
+
+## The N+1 trap
+
+Fetching a list, then firing one query per item, is **N+1 queries** — a silent performance killer (1 query for 100 posts, then 100 queries for each post's author = 101 round trips). Fix it by **eager loading**: a join, or a single `WHERE author_id IN (...)` batch.
+
+## Scaling: replication vs sharding
+
+- **Replication** — copy data to replicas; serve reads from them. Scales reads and adds redundancy. Tradeoff: replication lag → reads can be slightly stale.
+- **Sharding** — split data across machines by a shard key. Scales writes and storage. Tradeoff: cross-shard joins/transactions are hard; a poor key creates hot shards.
+
+<div class="callout key">
+  <div class="ct">Say it out loud</div>
+  "I default to a relational DB for transactional, relational data and reach for NoSQL when an access pattern needs horizontal scale or flexible schema. I index the columns I filter and join on, knowing indexes cost write speed and space. For concurrency-critical writes I use ACID transactions, I avoid N+1 by batching/joining, and I scale reads with replicas and writes by sharding on a well-chosen key."
+</div>

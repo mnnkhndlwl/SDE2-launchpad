@@ -1,0 +1,60 @@
+---
+title: "Two Pointers"
+track: dsa
+summary: "Opposite-end and read/write pointers — clean, optimal, and a startup favorite. Your move-zeros gap lives here."
+order: 2
+est: 22
+difficulty: medium
+priority: must
+tags: [two-pointers, arrays]
+whyAsked: "Two-pointer solutions are O(n), O(1) space, and easy to discuss — interviewers love them. This is the exact family your move-zeros question came from."
+followUps:
+  - "When can you use opposite-end pointers, and what must be true of the input?"
+  - "How is the read/write variant different from the converging variant?"
+resources:
+  - { label: "NeetCode: Two Pointers", url: "https://neetcode.io/practice" }
+---
+import ArrayViz from '../../../components/ArrayViz.astro';
+
+Two pointers replace a nested loop with two indices that move intelligently, giving O(n) time and O(1) space. There are two flavors.
+
+## Flavor 1 — converging (opposite ends)
+
+Two pointers start at the ends and move toward each other. Requires the array to be **sorted** (or symmetric, like a palindrome). At each step a comparison tells you which pointer to move.
+
+```js
+// Two Sum II (sorted): move ends inward based on the sum
+function twoSum(nums, target) {
+  let l = 0, r = nums.length - 1;
+  while (l < r) {
+    const sum = nums[l] + nums[r];
+    if (sum === target) return [l, r];
+    sum < target ? l++ : r--;   // too small → raise left; too big → lower right
+  }
+}
+```
+
+This works because sorting gives the comparison meaning: a smaller sum means you *must* increase the left value.
+
+## Flavor 2 — read/write (fast/slow)
+
+One pointer reads through the array; another marks where to write the next "kept" element. This is **in-place compaction** — exactly Move Zeroes.
+
+<ArrayViz algo="move-zeros" />
+
+The invariant: everything left of the write pointer is finalized. When the read pointer finishes, you're done — no second pass.
+
+## The problem set
+
+| Problem | Difficulty | Variant |
+|---|---|---|
+| [Valid Palindrome](https://leetcode.com/problems/valid-palindrome/) | Easy | converging |
+| [Move Zeroes](https://leetcode.com/problems/move-zeroes/) | Easy | read/write |
+| [Two Sum II](https://leetcode.com/problems/two-sum-ii-input-array-is-sorted/) | Medium | converging |
+| [3Sum](https://leetcode.com/problems/3sum/) | Medium | sort + converging inner loop |
+| [Container With Most Water](https://leetcode.com/problems/container-with-most-water/) | Medium | converging, greedy move |
+
+<div class="callout key">
+  <div class="ct">Pattern trigger</div>
+  Sorted array + "find a pair/triple" → converging pointers. "Compact / remove / partition in place" → read/write pointers. Both are O(n), O(1) space.
+</div>

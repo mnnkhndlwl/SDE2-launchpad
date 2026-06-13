@@ -1,0 +1,72 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getCollection } from 'astro:content';
+import { TRACKS } from '../../data/curriculum';
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+const lessons = (await getCollection('lessons')).filter((l) => !l.data.draft);
+// Build a question bank: the lesson itself + each follow-up question.
+const bank: any[] = [];
+lessons.forEach((l) => {
+  bank.push({ q: `Explain: ${l.data.title}`, track: l.data.track, hint: l.data.summary, url: `/lessons/${l.id}` });
+  (l.data.followUps || []).forEach((f) => bank.push({ q: f, track: l.data.track, hint: 'Tie it back to ' + l.data.title + '.', url: `/lessons/${l.id}` }));
+});
+---
+<BaseLayout title="Mock Mode · SDE-2 Launchpad" active="mock">
+  <div class="wrap" style="padding-top:28px;max-width:760px">
+    <h1>Mock interview mode</h1>
+    <p class="sub">Pick a focus, start the timer, and answer <b>out loud</b> as if someone's listening. Reveal the approach only after you've attempted it. Talking through answers is the single highest-leverage prep activity.</p>
+
+    <div class="panel" style="margin-top:18px">
+      <div class="row" style="gap:8px">
+        <span class="muted" style="font-size:13px">Focus:</span>
+        <button class="btn chip-f btn-primary" data-f="all">All</button>
+        {TRACKS.map((t) => <button class="btn chip-f" data-f={t.id}>{t.icon} {t.name.split(' ')[0]}</button>)}
+      </div>
+    </div>
+
+    <div class="panel" style="margin-top:14px">
+      <div class="row" style="justify-content:space-between;align-items:center">
+        <span class="tag" id="qTrack"></span>
+        <span style="font-family:var(--mono);font-size:20px;font-weight:700" id="timer">0:00</span>
+      </div>
+      <div style="font-size:21px;font-weight:700;margin:18px 0;min-height:60px" id="qText">Press “New question” to begin.</div>
+      <div class="callout tip hide" id="hintBox"><div class="ct">Approach hint</div><span id="hintText"></span> <a id="qLink" href="#" style="margin-left:6px">Open lesson →</a></div>
+      <div class="row" style="margin-top:14px">
+        <button class="btn btn-primary" id="newQ">New question ▶</button>
+        <button class="btn" id="revealBtn">Reveal approach</button>
+        <button class="btn" id="timerBtn">⏱ Start timer</button>
+        <button class="btn" id="logMiss" style="margin-left:auto">＋ Log as a miss</button>
+      </div>
+    </div>
+    <p class="muted center" style="font-size:12.5px;margin-top:12px" id="bankSize"></p>
+  </div>
+
+  <script define:vars={{ bank, base }}>
+    const store = window.SDE2;
+    let filter = 'all', cur = null, t = 0, timerId = null;
+    const el = (id) => document.getElementById(id);
+    const pool = () => filter === 'all' ? bank : bank.filter((x) => x.track === filter);
+    el('bankSize').textContent = bank.length + ' questions in the bank';
+
+    function fmt(s) { return Math.floor(s / 60) + ':' + String(s % 60).padStart(2, '0'); }
+    function newQ() {
+      const p = pool(); if (!p.length) return;
+      cur = p[Math.floor(Math.random() * p.length)];
+      el('qText').textContent = cur.q;
+      el('qTrack').textContent = cur.track;
+      el('hintBox').classList.add('hide');
+      el('qLink').href = base + cur.url;
+      el('hintText').textContent = cur.hint;
+      stopTimer(); t = 0; el('timer').textContent = '0:00';
+    }
+    function startTimer() { if (timerId) return; timerId = setInterval(() => { t++; el('timer').textContent = fmt(t); }, 1000); el('timerBtn').textContent = '⏸ Pause'; }
+    function stopTimer() { if (timerId) { clearInterval(timerId); timerId = null; el('timerBtn').textContent = '⏱ Start timer'; } }
+    el('newQ').addEventListener('click', () => { newQ(); startTimer(); });
+    el('revealBtn').addEventListener('click', () => { if (cur) el('hintBox').classList.remove('hide'); });
+    el('timerBtn').addEventListener('click', () => timerId ? stopTimer() : startTimer());
+    el('logMiss').addEventListener('click', () => { if (!cur) return; store.addMistake({ problem: cur.q, what: '', insight: '', tags: [cur.track] }); el('logMiss').textContent = '✓ Logged'; setTimeout(() => el('logMiss').textContent = '＋ Log as a miss', 1500); });
+    document.querySelectorAll('.chip-f').forEach((b) => b.addEventListener('click', () => {
+      document.querySelectorAll('.chip-f').forEach((x) => x.classList.remove('btn-primary')); b.classList.add('btn-primary'); filter = b.dataset.f;
+    }));
+  </script>
+</BaseLayout>

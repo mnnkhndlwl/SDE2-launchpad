@@ -1,0 +1,71 @@
+---
+title: "Binary Search"
+track: dsa
+summary: "The template that kills off-by-one bugs, plus 'search on the answer' — the variant that trips people up."
+order: 4
+est: 22
+difficulty: medium
+priority: must
+tags: [binary-search, sorted]
+whyAsked: "Binary search is simple to state and easy to get wrong. A clean, bug-free template signals care; the 'search on the answer space' variant signals depth."
+followUps:
+  - "Why `lo + (hi - lo) / 2` instead of `(lo + hi) / 2`?"
+  - "How do you binary search on the answer (e.g. Koko Eating Bananas)?"
+resources:
+  - { label: "NeetCode: Binary Search", url: "https://neetcode.io/practice" }
+---
+import ArrayViz from '../../../components/ArrayViz.astro';
+
+Binary search halves the search space each step → O(log n). It applies whenever the space is **monotonic**: sorted data, or any predicate that flips from false to true exactly once.
+
+## The template
+
+<ArrayViz algo="binary-search" />
+
+```js
+function binarySearch(nums, target) {
+  let lo = 0, hi = nums.length - 1;   // inclusive bounds
+  while (lo <= hi) {                   // <= because bounds are inclusive
+    const mid = lo + ((hi - lo) >> 1); // avoids integer overflow
+    if (nums[mid] === target) return mid;
+    if (nums[mid] < target) lo = mid + 1;
+    else hi = mid - 1;
+  }
+  return -1;
+}
+```
+
+Two details that prevent the classic bugs: use `lo <= hi` (not `<`) with inclusive bounds, and compute mid as `lo + (hi - lo)/2` so a huge `lo + hi` can't overflow. Pick **one** convention and always use it.
+
+## The hard variant: search on the answer
+
+The trick interviewers reward: when the answer is a number in a range and "is X feasible?" is monotonic (if X works, anything bigger works), binary search the *answer*, not the array.
+
+```js
+// Koko Eating Bananas: smallest speed k so she finishes in h hours
+function minSpeed(piles, h) {
+  const hours = k => piles.reduce((sum, p) => sum + Math.ceil(p / k), 0);
+  let lo = 1, hi = Math.max(...piles);
+  while (lo < hi) {
+    const mid = lo + ((hi - lo) >> 1);
+    if (hours(mid) <= h) hi = mid;   // feasible → try slower
+    else lo = mid + 1;               // too slow → go faster
+  }
+  return lo;
+}
+```
+
+## The problem set
+
+| Problem | Difficulty | Variant |
+|---|---|---|
+| [Binary Search](https://leetcode.com/problems/binary-search/) | Easy | classic |
+| [Search a 2D Matrix](https://leetcode.com/problems/search-a-2d-matrix/) | Medium | flatten indices |
+| [Find Min in Rotated Sorted Array](https://leetcode.com/problems/find-minimum-in-rotated-sorted-array/) | Medium | rotated |
+| [Search in Rotated Sorted Array](https://leetcode.com/problems/search-in-rotated-sorted-array/) | Medium | rotated |
+| [Koko Eating Bananas](https://leetcode.com/problems/koko-eating-bananas/) | Medium | search on answer |
+
+<div class="callout key">
+  <div class="ct">Pattern trigger</div>
+  Sorted input, or "minimize/maximize a value subject to a monotonic feasibility check" → binary search. Lock in one boundary convention to stay bug-free.
+</div>

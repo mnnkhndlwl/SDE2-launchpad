@@ -1,0 +1,63 @@
+---
+title: "Arrays & Hashing"
+track: dsa
+summary: "Frequency counting, seen-sets, and prefix products — the warm-up category that unlocks O(1) lookups."
+order: 1
+est: 25
+difficulty: easy
+priority: must
+tags: [arrays, hashmap, prefix-sum]
+whyAsked: "Almost every interview opens here. Hash maps turn O(n²) scans into O(n) by trading space for time — the single most reused trick in coding rounds."
+followUps:
+  - "Why is a hash map lookup O(1) average, and when is it not?"
+  - "How do you do Product Except Self without division?"
+resources:
+  - { label: "NeetCode 150", url: "https://neetcode.io/practice" }
+---
+
+The core idea: a **hash map / set gives O(1) average lookup**, so instead of re-scanning the array to answer "have I seen this?" or "how many of these?", you answer in constant time. You trade O(n) space for a huge time win.
+
+## The three sub-patterns
+
+**1. Seen-set / complement lookup.** As you scan, store what you've seen; check if the thing you need is already there.
+
+```js
+// Two Sum: for each x, is (target - x) already seen?
+function twoSum(nums, target) {
+  const seen = new Map();
+  for (let i = 0; i < nums.length; i++) {
+    const need = target - nums[i];
+    if (seen.has(need)) return [seen.get(need), i];
+    seen.set(nums[i], i);
+  }
+}
+```
+
+**2. Frequency counting.** Tally occurrences in a map, then reason over counts (anagrams, top-K, majority).
+
+```js
+const freq = new Map();
+for (const c of s) freq.set(c, (freq.get(c) || 0) + 1);
+```
+
+**3. Prefix products / sums.** Precompute running aggregates so each answer is O(1). Product Except Self multiplies a left-prefix pass by a right-suffix pass — no division, O(n).
+
+## The problem set
+
+| Problem | Difficulty | Pattern |
+|---|---|---|
+| [Two Sum](https://leetcode.com/problems/two-sum/) | Easy | complement lookup |
+| [Contains Duplicate](https://leetcode.com/problems/contains-duplicate/) | Easy | seen-set |
+| [Valid Anagram](https://leetcode.com/problems/valid-anagram/) | Easy | frequency count |
+| [Group Anagrams](https://leetcode.com/problems/group-anagrams/) | Medium | hash by sorted key |
+| [Top K Frequent Elements](https://leetcode.com/problems/top-k-frequent-elements/) | Medium | count + bucket sort |
+| [Product of Array Except Self](https://leetcode.com/problems/product-of-array-except-self/) | Medium | prefix/suffix products |
+
+<div class="callout warn">
+  <div class="ct">The O(1) caveat</div>
+  Hash lookups are O(1) <i>average</i>, not worst-case. With adversarial keys and collisions they degrade to O(n). For interviews, state "O(1) average" — it shows you know the difference.
+</div>
+
+## Say it out loud (20s)
+
+> "When I see 'find a pair / count occurrences / check existence', I reach for a hash map to get O(1) average lookups and turn a quadratic scan into linear. For range aggregates I precompute prefix sums or products so each query is constant time."

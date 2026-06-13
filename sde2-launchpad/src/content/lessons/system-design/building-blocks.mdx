@@ -1,0 +1,45 @@
+---
+title: "The building blocks of a scalable service"
+track: system-design
+summary: "CDN, load balancer, stateless app tier, cache, DB replicas/shards, queue + workers, object storage — and when to add each."
+order: 2
+est: 26
+difficulty: hard
+priority: must
+tags: [scaling, cache, queue, sharding, load-balancing]
+whyAsked: "Most backend design answers are an assembly of the same dozen components. Knowing each one's job and tradeoff lets you design almost anything."
+followUps:
+  - "Why must app servers be stateless to scale horizontally?"
+  - "What caching strategy would you use and how do you handle invalidation?"
+  - "When do you shard, and what breaks when you do?"
+resources:
+  - { label: "System Design Primer", url: "https://github.com/donnemartin/system-design-primer" }
+---
+import ArchDiagram from '../../../components/ArchDiagram.astro';
+
+Learn these components once and you can assemble most systems. Click through the blueprint, then read the "when to add it" notes.
+
+<ArchDiagram />
+
+## When to reach for each
+
+**CDN** — the moment you serve static assets (JS, images, video) to users in different regions. Caches at the edge, near users. Watch invalidation: version asset URLs (`app.a1b2.js`) so a deploy doesn't serve stale files.
+
+**Load balancer** — as soon as you have more than one app server. Distributes traffic, health-checks dead nodes, enables zero-downtime deploys.
+
+**Stateless app tier** — keep no per-user state in a server's memory. Put sessions/state in a shared cache so any node can serve any request, and you can add/remove nodes freely. This is the precondition for horizontal scaling.
+
+**Cache (Redis)** — when reads dominate and the same data is read repeatedly. The default strategy is **cache-aside**: on read, check cache; on miss, read the DB and populate the cache with a TTL. The hard part is **invalidation** — stale data after writes. Options: short TTLs, write-through, or explicit invalidation on write. Redis also powers rate limiting, sessions, and pub/sub.
+
+**Database: replicas then shards.**
+- *Read replicas* scale reads — send writes to a primary, reads to replicas. Tradeoff: replication lag (a read right after a write may be stale).
+- *Sharding/partitioning* scales writes and storage when one machine can't hold the load. You split data by a **shard key**. The cost: cross-shard queries and transactions get hard, and a bad key creates hot shards. Shard late, and choose the key from your access patterns.
+
+**Message queue + workers** — to decouple slow or spiky work (email, image processing, notifications, analytics) from the request path. The request enqueues a job and returns immediately; workers consume and scale on queue depth. Design consumers to be **idempotent** so at-least-once delivery and retries are safe.
+
+**Object storage (S3)** — for large blobs: uploads, images, backups. Store the object in S3 and only the key/URL in the DB. Cheap, durable, effectively infinite.
+
+<div class="callout key">
+  <div class="ct">How to use this in a round</div>
+  Start with client → LB → stateless app → DB. Then, driven by the non-functional requirements, add: a cache (read-heavy), replicas/shards (scale), a queue (async/spiky work), a CDN (global static), object storage (blobs). Justify each addition by the requirement that forced it.
+</div>

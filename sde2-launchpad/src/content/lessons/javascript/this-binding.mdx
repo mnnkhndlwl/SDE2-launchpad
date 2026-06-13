@@ -1,0 +1,82 @@
+---
+title: "this, call/apply/bind & arrow functions"
+track: javascript
+summary: "The four rules that decide what `this` is at call time — and why arrow functions ignore them."
+order: 2
+est: 18
+difficulty: medium
+priority: must
+tags: [this, bind, arrow-functions, context]
+whyAsked: "`this` confusion causes real bugs (lost context in callbacks, event handlers). Interviewers test whether you know binding is decided at the call site, not the definition site."
+followUps:
+  - "What's the difference between call, apply, and bind?"
+  - "Why do arrow functions not have their own `this`?"
+  - "What is `this` in a plain function call in strict vs non-strict mode?"
+  - "How do you fix a method that loses `this` when passed as a callback?"
+resources:
+  - { label: "javascript.info: this", url: "https://javascript.info/object-methods" }
+---
+import JsPlayground from '../../../components/JsPlayground.astro';
+
+For a regular function, `this` is **not** fixed when the function is written — it's decided every time the function is *called*, based on *how* it's called. Four rules, checked in priority order:
+
+1. **`new`** — `this` is the brand-new object being constructed.
+2. **Explicit** — `call`/`apply`/`bind` set `this` to the object you pass.
+3. **Implicit** — called as `obj.method()`, `this` is `obj` (the thing left of the dot).
+4. **Default** — a plain `fn()` call: `this` is `undefined` in strict mode (or the global object in sloppy mode).
+
+## The "lost this" trap
+
+<JsPlayground code={`const user = {
+  name: 'Ada',
+  greet() { return 'Hi ' + this.name; }
+};
+console.log(user.greet());            // 'Hi Ada' — implicit binding
+
+const fn = user.greet;                // detached from the object
+try { console.log(fn()); }            // this is undefined → throws
+catch (e) { console.log('lost this'); }
+
+const bound = user.greet.bind(user);  // lock this permanently
+console.log(bound());                 // 'Hi Ada'`} height={200} />
+
+The function didn't change — only the call site did. `user.greet()` has an object to the left of the dot; `fn()` does not.
+
+## call vs apply vs bind
+
+All three set `this` explicitly. The difference is how arguments are passed and whether it runs now:
+
+- **`call(thisArg, a, b)`** — invoke now, args listed individually.
+- **`apply(thisArg, [a, b])`** — invoke now, args as an array.
+- **`bind(thisArg, a)`** — return a *new function* with `this` (and any args) permanently fixed; call it later.
+
+```js
+function intro(greeting) { return `${greeting}, I'm ${this.name}`; }
+intro.call({ name: 'Bo' }, 'Hey');      // "Hey, I'm Bo"
+intro.apply({ name: 'Bo' }, ['Hey']);   // "Hey, I'm Bo"
+const f = intro.bind({ name: 'Bo' });   // f('Hey') → "Hey, I'm Bo"
+```
+
+## Arrow functions have no `this`
+
+An arrow function does **not** get its own `this`. It closes over the `this` of the enclosing lexical scope — and that binding can never be changed by `call`/`apply`/`bind` or by how it's called. That's exactly why arrows are perfect for callbacks inside methods:
+
+<JsPlayground code={`const timer = {
+  seconds: 0,
+  startBroken() {
+    setInterval(function () { this.seconds++; }, 1000); // this = undefined!
+  },
+  startFixed() {
+    setInterval(() => { this.seconds++; }, 1000);       // arrow keeps timer's this
+  }
+};
+console.log('Arrow callbacks inherit this from where they are defined.');`} height={190} />
+
+<div class="callout warn">
+  <div class="ct">Don't use an arrow for an object method</div>
+  <code>{'{ greet: () => this.name }'}</code> breaks, because the arrow captures the <i>outer</i> <code>this</code> (often the module/undefined), not the object. Use a normal method for object methods; use arrows for callbacks <i>inside</i> them.
+</div>
+
+## Say it out loud (30s)
+
+> "`this` is bound at the call site by four rules: `new`, explicit `call`/`apply`/`bind`, implicit `obj.method()`, then default (`undefined` in strict mode). Arrow functions are the exception — they have no own `this`, they capture it lexically from where they're defined, which is why they're ideal for callbacks that need the surrounding context."

@@ -1,0 +1,75 @@
+---
+title: "Sliding Window"
+track: dsa
+summary: "Fixed and variable windows over a sequence — turn O(n·k) substring/subarray scans into O(n)."
+order: 3
+est: 22
+difficulty: medium
+priority: must
+tags: [sliding-window, strings, arrays]
+whyAsked: "Any 'longest/shortest/contains substring or subarray with property X' question is a window problem. Recognizing it instantly is the signal interviewers want."
+followUps:
+  - "How do you decide when to shrink the window?"
+  - "Fixed vs variable window — how does the code differ?"
+resources:
+  - { label: "NeetCode: Sliding Window", url: "https://neetcode.io/practice" }
+---
+import ArrayViz from '../../../components/ArrayViz.astro';
+
+A sliding window maintains a contiguous range `[left, right]` and slides it across the sequence, expanding and contracting so each element is visited at most a constant number of times → O(n).
+
+## Variable window — expand then shrink
+
+The right pointer grows the window; when the window violates the constraint (e.g. a duplicate), the left pointer shrinks it until it's valid again.
+
+<ArrayViz algo="sliding-window" />
+
+```js
+// Longest substring without repeating characters
+function lengthOfLongest(s) {
+  const lastSeen = new Map();
+  let left = 0, best = 0;
+  for (let right = 0; right < s.length; right++) {
+    const c = s[right];
+    if (lastSeen.has(c) && lastSeen.get(c) >= left) {
+      left = lastSeen.get(c) + 1;       // shrink past the duplicate
+    }
+    lastSeen.set(c, right);
+    best = Math.max(best, right - left + 1);
+  }
+  return best;
+}
+```
+
+The key insight: each pointer only moves **forward**, never back. Even though it looks like a nested process, total work is 2n moves → O(n).
+
+## Fixed window — slide a constant size k
+
+When the window size is fixed, add the entering element and remove the leaving one each step:
+
+```js
+// Max sum of any window of size k
+function maxSum(nums, k) {
+  let sum = 0; for (let i = 0; i < k; i++) sum += nums[i];
+  let best = sum;
+  for (let i = k; i < nums.length; i++) {
+    sum += nums[i] - nums[i - k];   // add new, drop old
+    best = Math.max(best, sum);
+  }
+  return best;
+}
+```
+
+## The problem set
+
+| Problem | Difficulty | Window |
+|---|---|---|
+| [Best Time to Buy/Sell Stock](https://leetcode.com/problems/best-time-to-buy-and-sell-stock/) | Easy | variable |
+| [Longest Substring Without Repeating](https://leetcode.com/problems/longest-substring-without-repeating-characters/) | Medium | variable |
+| [Longest Repeating Char Replacement](https://leetcode.com/problems/longest-repeating-character-replacement/) | Medium | variable + count |
+| [Minimum Window Substring](https://leetcode.com/problems/minimum-window-substring/) | Hard | variable + need-map |
+
+<div class="callout key">
+  <div class="ct">Pattern trigger</div>
+  "Longest/shortest contiguous run with property X" → sliding window. Grow with `right`; shrink with `left` when invalid; track the best as you go.
+</div>

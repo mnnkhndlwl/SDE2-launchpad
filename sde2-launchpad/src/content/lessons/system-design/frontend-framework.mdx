@@ -1,0 +1,53 @@
+---
+title: "Frontend system design framework"
+track: system-design
+summary: "A repeatable structure for frontend design rounds: requirements → architecture → data → state → performance → edge states."
+order: 6
+est: 22
+difficulty: medium
+priority: must
+tags: [frontend, system-design, state, performance]
+whyAsked: "A weak spot you flagged. Frontend design rounds are open-ended; a framework keeps you from freezing and shows senior-level thinking about UI architecture."
+followUps:
+  - "How would you structure component architecture for a complex widget?"
+  - "Client state vs server state — how do you manage each?"
+  - "How do you optimize a large list / heavy page?"
+resources:
+  - { label: "GreatFrontend system design", url: "https://www.greatfrontend.com/system-design" }
+  - { label: "patterns.dev", url: "https://www.patterns.dev/" }
+---
+
+Frontend design rounds ("design a news feed / autocomplete / photo gallery") aren't about boxes-and-arrows backend diagrams. They're about **component architecture, data flow, state, and performance**. Use this structure.
+
+## The 6 steps
+
+**1. Clarify requirements.** Functional (what features) and non-functional (devices, offline, accessibility, expected scale of items). Ask: "mobile and desktop? real-time updates? how many items?"
+
+**2. Component architecture.** Break the UI into a tree of components with clear responsibilities. Separate **presentational** (dumb, props-in) from **container** (data-fetching, stateful) components. Define the props/contract between them.
+
+**3. Data model & API contract.** What does the client fetch and in what shape? Design the API for the UI's needs: pagination (cursor vs offset — prefer **cursor** for infinite feeds), the fields each view needs, and the request cadence.
+
+**4. State management.** Distinguish two kinds of state:
+- **Server state** (data from the API) — cache it, dedupe requests, handle staleness/refetch. A library like React Query is built for this.
+- **Client/UI state** (modals open, form inputs, selected tab) — local component state or a light store (Zustand/Context). Don't dump server data into Redux by reflex.
+
+**5. Performance.** The frontend levers:
+- **Virtualization / windowing** for long lists (render only what's visible).
+- **Code splitting & lazy loading** so the initial bundle is small.
+- **Memoization** to avoid needless re-renders (measure first).
+- **Image optimization**, debounced inputs, optimistic updates, prefetching on hover/viewport.
+
+**6. Edge states & accessibility.** Loading, empty, and error states for every async view. Optimistic UI with rollback on failure. Keyboard navigation, focus management, ARIA roles, and semantic HTML.
+
+## Worked mini-example: an autocomplete
+
+- *Architecture*: `<SearchInput>` (controlled) + `<Suggestions>` (presentational list) + a `useAutocomplete` hook (container logic).
+- *Data*: `GET /suggest?q=` returning a ranked list; **debounce** input ~250ms; **cancel** in-flight requests when a newer query fires (race conditions!).
+- *State*: query string + suggestions (server state, cached by query) + highlighted index (UI state).
+- *Performance*: cache results per query, limit list length, virtualize if long.
+- *Edge*: loading spinner, "no results", error fallback; full keyboard support (↑/↓/Enter/Esc); ARIA combobox roles.
+
+<div class="callout key">
+  <div class="ct">The senior signal</div>
+  Separate server state from UI state, design the API for the view, plan virtualization/code-splitting before you're asked, and never forget loading/empty/error states + accessibility. Narrating these unprompted is what distinguishes a senior frontend answer.
+</div>

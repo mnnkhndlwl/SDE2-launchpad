@@ -1,0 +1,52 @@
+---
+title: "Design an infinite-scroll feed"
+track: system-design
+summary: "The canonical frontend design: cursor pagination, virtualization, caching, and optimistic interactions."
+order: 7
+est: 20
+difficulty: medium
+priority: deep
+tags: [frontend, feed, pagination, virtualization]
+whyAsked: "The news feed is the most-asked frontend design. It exercises pagination, list performance, caching, and real-time updates all at once."
+followUps:
+  - "Why cursor pagination instead of offset?"
+  - "How do you keep scrolling smooth with thousands of items?"
+  - "How do you handle a new post arriving while the user scrolls?"
+resources:
+  - { label: "GreatFrontend", url: "https://www.greatfrontend.com/system-design" }
+---
+
+A feed pulls together every frontend concern: fetching pages as you scroll, rendering a potentially huge list smoothly, caching, and reacting to interactions and updates. Walk it with the [frontend framework](/lessons/system-design/frontend-framework).
+
+## Pagination: cursor, not offset
+
+For an infinite feed, use **cursor-based** pagination: each response returns items plus a cursor pointing after the last item; the next request sends that cursor. `GET /feed?cursor=abc&limit=20`.
+
+Why not `offset`/`page`? Because the feed changes under you — new posts arrive at the top, so `offset=20` shifts and you get **duplicates or skipped items**. A cursor anchors to a stable position, so paging stays consistent even as the head changes.
+
+## Loading on scroll
+
+Use an **IntersectionObserver** on a sentinel element near the bottom of the list. When it enters the viewport, fetch the next page. This is more efficient and jank-free than listening to scroll events. Show a loading skeleton while fetching, and stop when the API signals no more items.
+
+## Virtualization — the performance core
+
+A feed can have thousands of items, but the user sees ~10. Rendering them all destroys memory and scroll performance. **Windowing** renders only the visible items (plus a small buffer) and recycles DOM nodes as you scroll. In React, libraries like `react-window`/`react-virtualized` (or RN's `FlatList`/`FlashList`) do this.
+
+## Caching & state
+
+- **Server state**: cache fetched pages keyed by cursor so navigating back doesn't refetch; dedupe in-flight requests. React Query / SWR handle this.
+- **UI state**: which post's menu is open, optimistic like counts.
+
+## Interactions & real-time
+
+- **Optimistic updates**: on Like, immediately bump the count and flip the icon, fire the request, and **roll back** if it fails. The UI feels instant.
+- **New posts while scrolling**: don't shove the viewport down. Show a "▲ New posts" pill that prepends them when tapped — preserving scroll position (which cursor pagination makes safe).
+
+## Edge states
+
+Loading skeletons, an empty state ("No posts yet"), an error state with retry, and graceful handling of slow networks. Each async region needs all three.
+
+<div class="callout key">
+  <div class="ct">The 60-second answer</div>
+  "Cursor pagination so the feed stays consistent as new posts arrive; an IntersectionObserver sentinel to load the next page; virtualization so only visible items render; cached pages for server state and optimistic updates for likes with rollback; a 'new posts' pill instead of jumping the viewport; and loading/empty/error states throughout."
+</div>

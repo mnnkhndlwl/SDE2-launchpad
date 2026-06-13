@@ -1,0 +1,56 @@
+---
+title: "Node.js internals: event loop, streams, scaling"
+track: system-design
+summary: "How Node stays fast on one thread, the libuv loop phases, streams/backpressure, and scaling with clustering."
+order: 4
+est: 22
+difficulty: medium
+priority: deep
+tags: [nodejs, event-loop, streams, cluster, libuv]
+whyAsked: "For a Node-stack role, interviewers want to know you understand why Node handles concurrency without threads, and how not to block it."
+followUps:
+  - "How does Node handle thousands of connections on one thread?"
+  - "What blocks the event loop, and how do you avoid it?"
+  - "What is backpressure in streams?"
+  - "How do you use all CPU cores?"
+resources:
+  - { label: "Node.js: the event loop", url: "https://nodejs.org/en/learn/asynchronous-work/event-loop-timers-and-nexttick" }
+---
+
+Node runs your JavaScript on a **single thread**, but stays highly concurrent by never blocking on I/O. It hands I/O to the OS / a background thread pool (**libuv**) and processes the results via the event loop. This is the same event loop as the browser, plus extra phases for server work.
+
+## Why one thread handles thousands of connections
+
+Most server work is **I/O-bound** — waiting on the network, disk, or DB. Node issues the I/O, registers a callback, and immediately moves on to other requests. When the OS signals the I/O is done, the callback runs. So one thread juggles thousands of in-flight requests because it's almost never *computing* — it's orchestrating waits. (CPU-bound work is the exception — see below.)
+
+## The libuv loop phases
+
+Each tick of the loop runs phases in order; the important ones:
+
+- **timers** — `setTimeout` / `setInterval` callbacks whose time has come.
+- **poll** — retrieve completed I/O events and run their callbacks (the heart of server work).
+- **check** — `setImmediate` callbacks.
+- **close** — cleanup callbacks.
+
+Between phases, Node drains **microtasks**: `process.nextTick` (highest priority) and Promise callbacks. As in the browser, microtasks run to completion before the loop continues.
+
+## What blocks the loop — and the fix
+
+Because it's one thread, a **CPU-bound** task (a big synchronous loop, sync crypto, huge JSON parse, image resize) **blocks every other request** until it finishes. Fixes:
+
+- Offload to **`worker_threads`** for CPU-heavy work.
+- Break work into chunks yielded with `setImmediate`.
+- Push the job to a **queue** and a separate worker process.
+
+## Streams & backpressure
+
+**Streams** process data in chunks instead of loading it all into memory — essential for large files or proxying. **Backpressure** is the mechanism that stops a fast producer from overwhelming a slow consumer: `writable.write()` returns `false` when the buffer is full, signaling the reader to pause until `'drain'`. `pipe()` (or `pipeline()`) handles this automatically — that's why you stream a file to a response instead of buffering it.
+
+## Scaling across cores
+
+One Node process uses one core. To use all cores, run the **cluster module** or (in production) a process manager / container replicas behind a load balancer — multiple Node processes, each single-threaded, sharing the listening port. Keep them **stateless** (sessions in Redis) so any process can serve any request.
+
+<div class="callout key">
+  <div class="ct">Say it out loud</div>
+  "Node runs JS on one thread but offloads I/O to libuv, so it handles thousands of concurrent connections because it's waiting, not computing. CPU-bound work blocks the loop, so I offload it to worker threads or a queue. Streams + backpressure keep memory bounded for large data. To use all cores I run multiple stateless processes behind a load balancer with shared session state in Redis."
+</div>

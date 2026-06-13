@@ -1,0 +1,85 @@
+---
+title: "Heaps, Backtracking & Intervals"
+track: dsa
+summary: "Top-K with a heap, generate-all with backtracking, and the sort-then-sweep interval pattern."
+order: 8
+est: 24
+difficulty: medium
+priority: deep
+tags: [heap, priority-queue, backtracking, intervals, greedy]
+whyAsked: "These three round out the pattern toolkit. Heaps appear in top-K/streaming, backtracking in 'generate all', and intervals in scheduling — all common in product-style rounds."
+followUps:
+  - "Why is a heap better than sorting for top-K?"
+  - "What's the backtracking template?"
+  - "How do you merge overlapping intervals?"
+resources:
+  - { label: "NeetCode: Heap / Backtracking / Intervals", url: "https://neetcode.io/practice" }
+---
+
+Three high-frequency patterns bundled together — each has a memorable template.
+
+## Heaps / priority queue — top-K and streaming
+
+A heap gives you the min or max in O(log n) per push/pop. For **top-K**, keep a heap of size K: that's O(n log K), beating an O(n log n) full sort when K ≪ n. For a **running median**, balance two heaps (a max-heap of the low half, a min-heap of the high half).
+
+```js
+// Kth largest: keep a min-heap of size k; its root is the answer
+// (JS has no built-in heap — implement one or use an array-based PQ)
+```
+
+## Backtracking — generate all / search with pruning
+
+The template is **choose → explore → un-choose**. Build a partial solution, recurse, then undo the choice to try the next option. Prune branches that can't lead to a valid answer.
+
+```js
+// Subsets: include or exclude each element
+function subsets(nums) {
+  const res = [], path = [];
+  function backtrack(i) {
+    if (i === nums.length) { res.push([...path]); return; }
+    path.push(nums[i]);        // choose
+    backtrack(i + 1);          // explore
+    path.pop();                // un-choose
+    backtrack(i + 1);          // explore without it
+  }
+  backtrack(0);
+  return res;
+}
+```
+
+The shape is identical for permutations, combination sum, word search, and N-queens — only the choices and the pruning condition change.
+
+## Intervals — sort then sweep
+
+Almost every interval problem starts by **sorting by start time**, then sweeping left to right and merging/comparing adjacent intervals.
+
+```js
+// Merge Intervals
+function merge(intervals) {
+  intervals.sort((a, b) => a[0] - b[0]);
+  const out = [intervals[0]];
+  for (const [s, e] of intervals.slice(1)) {
+    const last = out[out.length - 1];
+    if (s <= last[1]) last[1] = Math.max(last[1], e); // overlap → extend
+    else out.push([s, e]);                            // gap → new interval
+  }
+  return out;
+}
+```
+
+## The problem set
+
+| Problem | Difficulty | Pattern |
+|---|---|---|
+| [Last Stone Weight](https://leetcode.com/problems/last-stone-weight/) | Easy | max-heap |
+| [K Closest Points to Origin](https://leetcode.com/problems/k-closest-points-to-origin/) | Medium | heap top-K |
+| [Find Median from Data Stream](https://leetcode.com/problems/find-median-from-data-stream/) | Hard | two heaps |
+| [Subsets](https://leetcode.com/problems/subsets/) | Medium | backtracking |
+| [Combination Sum](https://leetcode.com/problems/combination-sum/) | Medium | backtracking |
+| [Merge Intervals](https://leetcode.com/problems/merge-intervals/) | Medium | sort + sweep |
+| [Insert Interval](https://leetcode.com/problems/insert-interval/) | Medium | sweep |
+
+<div class="callout key">
+  <div class="ct">Pattern triggers</div>
+  "Top-K / k-th / running median / merge k sorted" → heap. "Generate all / find every combination / explore a grid path" → backtracking (choose-explore-unchoose). "Intervals / scheduling / overlaps" → sort by start, then sweep.
+</div>

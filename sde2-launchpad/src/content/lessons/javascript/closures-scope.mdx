@@ -1,0 +1,74 @@
+---
+title: "Closures, Scope & Hoisting"
+track: javascript
+summary: "Why a function remembers variables from where it was defined — and how scope, hoisting, and the TDZ actually work."
+order: 1
+est: 20
+difficulty: medium
+priority: must
+tags: [closures, scope, hoisting, tdz]
+whyAsked: "Closures are the most-asked JS concept because they underpin callbacks, modules, hooks, and the classic loop bug. Interviewers probe whether you understand lexical scope, not just recite a definition."
+followUps:
+  - "Why does a `var` loop print the same value, and how do `let` or an IIFE fix it?"
+  - "What's the difference between hoisting of `var`, `let`/`const`, and function declarations?"
+  - "What is the Temporal Dead Zone?"
+  - "How would you implement a private counter with a closure?"
+resources:
+  - { label: "javascript.info: Closures", url: "https://javascript.info/closure" }
+---
+import JsPlayground from '../../../components/JsPlayground.astro';
+
+A **closure** is a function bundled together with references to the variables from the scope where it was *defined*. Because JavaScript uses **lexical scoping**, a function's access to outer variables is fixed by where it sits in the source code — not by where or when it's called.
+
+## A function that remembers
+
+<JsPlayground code={`function makeCounter() {
+  let count = 0;              // private to this closure
+  return function () {
+    count += 1;
+    return count;
+  };
+}
+const next = makeCounter();
+console.log(next()); // 1
+console.log(next()); // 2
+const other = makeCounter();
+console.log(other()); // 1  — independent closure`} height={180} />
+
+`count` should be gone once `makeCounter` returns — but the inner function keeps a live reference to it, so it survives. Each call to `makeCounter` creates a fresh, independent `count`. That's a closure: encapsulated, private state.
+
+## The classic loop bug
+
+This is the single most common closure interview question:
+
+<JsPlayground code={`// var: one shared binding
+for (var i = 0; i < 3; i++) {
+  setTimeout(() => console.log('var', i), 0);
+}
+// let: a new binding each iteration
+for (let j = 0; j < 3; j++) {
+  setTimeout(() => console.log('let', j), 0);
+}`} height={170} />
+
+`var` is function-scoped, so all three callbacks close over the **same** `i`, which is `3` by the time they run → prints `3, 3, 3`. `let` is block-scoped and creates a **fresh binding per iteration**, so each callback captures its own `j` → `0, 1, 2`. Before `let`, people fixed this with an IIFE that captured the value as a parameter.
+
+## Hoisting & the TDZ
+
+Declarations are processed before any code runs ("hoisting"), but they behave differently:
+
+| Declaration | Hoisted? | Usable before its line? |
+|---|---|---|
+| `function foo(){}` | Yes, fully | Yes — you can call it above its definition |
+| `var x` | Yes, name only | Yes, but value is `undefined` until assigned |
+| `let` / `const` | Yes, name only | **No** — throws (Temporal Dead Zone) |
+
+The **Temporal Dead Zone** is the span from the start of the block until the `let`/`const` declaration is evaluated. Touching the variable in that window throws a `ReferenceError` — a deliberate safety feature so you can't read a binding before it's initialized.
+
+<div class="callout key">
+  <div class="ct">Say it out loud</div>
+  "A closure is a function plus the lexical environment it was defined in, so it keeps live access to outer variables even after the outer function returns. `var` is function-scoped and hoisted as `undefined`; `let`/`const` are block-scoped and sit in a Temporal Dead Zone until declared. The loop bug happens because `var` shares one binding while `let` creates a fresh one per iteration."
+</div>
+
+## Where you already use closures
+
+Event handlers, `setTimeout` callbacks, React hooks (`useState` closes over `setState`), the module pattern, memoization, currying, and debounce/throttle all *are* closures. Naming three real uses signals you actually understand it.

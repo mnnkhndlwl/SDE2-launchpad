@@ -1,0 +1,86 @@
+---
+title: "Trees & BSTs"
+track: dsa
+summary: "DFS (pre/in/post) as recursion, BFS as a queue, and the BST invariant — recursion fluency, tested constantly."
+order: 5
+est: 26
+difficulty: medium
+priority: must
+tags: [trees, dfs, bfs, recursion, bst]
+whyAsked: "Trees test recursion fluency directly. Most candidates can describe a traversal but stumble coding it cleanly under pressure."
+followUps:
+  - "Inorder traversal of a BST produces what?"
+  - "How do you do level-order, and what data structure powers it?"
+  - "How do you validate a BST correctly (the bounds trap)?"
+resources:
+  - { label: "NeetCode: Trees", url: "https://neetcode.io/practice" }
+---
+import TreeTraversal from '../../../components/TreeTraversal.astro';
+
+A binary tree is recursion made visible: almost every tree problem is "do something at this node, then recurse on the children." Four traversal orders cover nearly everything.
+
+## See the four orders
+
+<TreeTraversal />
+
+- **Preorder** (root → left → right): copy/serialize a tree, process parent before children.
+- **Inorder** (left → root → right): on a **BST this yields sorted order** — a hugely useful fact.
+- **Postorder** (left → right → root): process children before parent — deleting a tree, computing heights/sizes bottom-up.
+- **BFS / level-order**: a **queue**, level by level — shortest paths in unweighted graphs, level grouping.
+
+## DFS is recursion; BFS is a queue
+
+```js
+// DFS (preorder)
+function dfs(node, out = []) {
+  if (!node) return out;
+  out.push(node.val);
+  dfs(node.left, out);
+  dfs(node.right, out);
+  return out;
+}
+
+// BFS (level order)
+function bfs(root) {
+  const out = [], q = root ? [root] : [];
+  while (q.length) {
+    const level = [];
+    for (let n = q.length; n > 0; n--) {  // snapshot this level's size
+      const node = q.shift();
+      level.push(node.val);
+      if (node.left) q.push(node.left);
+      if (node.right) q.push(node.right);
+    }
+    out.push(level);
+  }
+  return out;
+}
+```
+
+## The BST validation trap
+
+A common bug: checking only `left.val < node.val < right.val` locally. That's wrong — every node in the left **subtree** must be smaller, not just the direct child. Carry down valid bounds:
+
+```js
+function isValidBST(node, lo = -Infinity, hi = Infinity) {
+  if (!node) return true;
+  if (node.val <= lo || node.val >= hi) return false;
+  return isValidBST(node.left, lo, node.val) &&
+         isValidBST(node.right, node.val, hi);
+}
+```
+
+## The problem set
+
+| Problem | Difficulty | Idea |
+|---|---|---|
+| [Invert Binary Tree](https://leetcode.com/problems/invert-binary-tree/) | Easy | swap children recursively |
+| [Maximum Depth](https://leetcode.com/problems/maximum-depth-of-binary-tree/) | Easy | postorder height |
+| [Level Order Traversal](https://leetcode.com/problems/binary-tree-level-order-traversal/) | Medium | BFS |
+| [Validate BST](https://leetcode.com/problems/validate-binary-search-tree/) | Medium | bounds recursion |
+| [Lowest Common Ancestor (BST)](https://leetcode.com/problems/lowest-common-ancestor-of-a-binary-search-tree/) | Medium | use BST ordering |
+
+<div class="callout key">
+  <div class="ct">Say it out loud</div>
+  "DFS is recursion: do work at the node and recurse on children; preorder/inorder/postorder differ only in when you process the node. Inorder on a BST gives sorted order. BFS uses a queue for level-by-level. For BST validation I pass down (lo, hi) bounds rather than comparing only adjacent nodes."
+</div>

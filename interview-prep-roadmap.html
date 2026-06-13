@@ -1,0 +1,1085 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Full-Stack Interview Prep Roadmap</title>
+<style>
+  :root{
+    --bg:#0f1117; --panel:#181b24; --panel-2:#1f2330; --line:#2a2f3d;
+    --text:#e7eaf0; --muted:#9aa3b2; --accent:#6ea8fe; --accent-2:#7ee787;
+    --warn:#f2cc60; --hot:#ff7b72;
+    --radius:14px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    background:radial-gradient(1200px 600px at 70% -10%,#1b2030,transparent),var(--bg);
+    color:var(--text);line-height:1.55;padding:0 0 90px;
+  }
+  .wrap{max-width:1100px;margin:0 auto;padding:0 22px}
+  header{padding:42px 22px 22px;max-width:1100px;margin:0 auto}
+  h1{font-size:30px;letter-spacing:-0.5px}
+  .sub{color:var(--muted);margin-top:8px;font-size:15px;max-width:760px}
+  .profile{margin-top:14px;font-size:13px;color:var(--muted);background:var(--panel);
+    border:1px solid var(--line);border-radius:10px;padding:12px 14px;max-width:760px}
+  .profile b{color:var(--text)}
+
+  .dash{display:flex;flex-wrap:wrap;gap:18px;align-items:center;background:var(--panel);
+    border:1px solid var(--line);border-radius:var(--radius);padding:20px;margin:18px 0 22px}
+  .ring{position:relative;width:96px;height:96px;flex:0 0 auto}
+  .ring svg{transform:rotate(-90deg)}
+  .ring .pct{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:20px}
+  .dash-meta{flex:1;min-width:220px}
+  .dash-meta b{font-size:18px}
+  .dash-meta span{color:var(--muted);font-size:14px}
+  .controls{display:flex;gap:8px;flex-wrap:wrap}
+  button.ctrl{background:var(--panel-2);color:var(--text);border:1px solid var(--line);
+    padding:8px 14px;border-radius:9px;cursor:pointer;font-size:13px;transition:.15s}
+  button.ctrl:hover{border-color:var(--accent);color:var(--accent)}
+
+  .filters{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:18px}
+  .chip{background:var(--panel-2);border:1px solid var(--line);color:var(--muted);
+    padding:6px 13px;border-radius:20px;cursor:pointer;font-size:13px;transition:.15s}
+  .chip.active{background:var(--accent);color:#0b1020;border-color:var(--accent);font-weight:600}
+
+  .mod{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);
+    margin-bottom:16px;overflow:hidden}
+  .mod.prio{border-color:#5a4a2a;box-shadow:0 0 0 1px rgba(242,204,96,.15) inset}
+  .mod-head{display:flex;align-items:center;gap:14px;padding:18px 20px;cursor:pointer;user-select:none}
+  .mod-head:hover{background:var(--panel-2)}
+  .badge{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;
+    padding:3px 9px;border-radius:20px;white-space:nowrap}
+  .b-week{background:rgba(110,168,254,.15);color:var(--accent)}
+  .b-track{background:rgba(126,231,135,.13);color:var(--accent-2)}
+  .b-prio{background:rgba(242,204,96,.16);color:var(--warn)}
+  .b-soft{background:rgba(255,123,114,.14);color:var(--hot)}
+  .m-title{flex:1}
+  .m-title h2{font-size:17.5px}
+  .m-title p{color:var(--muted);font-size:13px;margin-top:3px}
+  .m-prog{font-size:12px;color:var(--muted);white-space:nowrap;text-align:right}
+  .bar{height:6px;background:var(--panel-2);border-radius:6px;overflow:hidden;width:120px;margin-top:6px}
+  .bar > i{display:block;height:100%;background:linear-gradient(90deg,var(--accent),var(--accent-2));width:0;transition:width .3s}
+  .chev{transition:transform .2s;color:var(--muted)}
+  .mod.open .chev{transform:rotate(90deg)}
+  .mod-body{display:none;padding:4px 20px 16px}
+  .mod.open .mod-body{display:block}
+
+  .goal{font-size:13px;color:var(--muted);background:var(--panel-2);border-radius:10px;
+    padding:10px 14px;margin:8px 0 12px}
+  .goal b{color:var(--accent-2)}
+
+  .item{display:flex;align-items:flex-start;gap:12px;padding:11px 4px;border-top:1px solid var(--line)}
+  .item:first-of-type{border-top:none}
+  .item input{width:18px;height:18px;accent-color:var(--accent-2);cursor:pointer;flex:0 0 auto;margin-top:2px}
+  .item .body{flex:1}
+  .item .t{font-size:14.5px}
+  .item.done .t{color:var(--muted);text-decoration:line-through}
+  .item .note{font-size:12.5px;color:var(--muted);margin-top:2px}
+  .item a{color:var(--accent);text-decoration:none}
+  .item a:hover{text-decoration:underline}
+  .res{display:inline-block;font-size:11px;color:var(--accent);border:1px solid var(--line);
+    border-radius:6px;padding:1px 7px;margin:4px 6px 0 0;text-decoration:none;background:var(--panel-2)}
+  .res:hover{border-color:var(--accent)}
+
+  .empty{color:var(--muted);padding:30px;text-align:center;font-size:14px}
+
+  .b-mine{background:rgba(200,166,255,.15);color:#c8a6ff}
+  .star{background:none;border:none;cursor:pointer;font-size:18px;line-height:1;color:#4a5163;flex:0 0 auto;padding:0 2px;transition:.15s;margin-top:1px}
+  .star:hover{transform:scale(1.2)}
+  .star.on{color:var(--warn)}
+  .del{background:none;border:none;cursor:pointer;font-size:14px;color:#4a5163;flex:0 0 auto;padding:0 4px;transition:.15s}
+  .del:hover{color:var(--hot);transform:scale(1.2)}
+  .del-track{margin-left:6px}
+  .mine{font-size:10px;color:#c8a6ff;background:rgba(200,166,255,.12);padding:1px 7px;border-radius:20px;white-space:nowrap;margin-left:6px}
+  .topic-tag{font-size:10px;color:var(--accent);background:rgba(110,168,254,.12);padding:1px 8px;border-radius:20px;white-space:nowrap;margin-left:6px}
+  .pill{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;padding:1px 8px;border-radius:20px;white-space:nowrap;margin-left:6px}
+  .p-must{background:rgba(126,231,135,.15);color:var(--accent-2)}
+  .p-deep{background:rgba(242,204,96,.16);color:var(--warn)}
+  .p-know{background:rgba(110,168,254,.14);color:var(--accent)}
+  .p-Easy{background:rgba(126,231,135,.15);color:var(--accent-2)}
+  .p-Medium{background:rgba(242,204,96,.16);color:var(--warn)}
+  .p-Hard{background:rgba(255,123,114,.15);color:var(--hot)}
+  .b-rn{background:rgba(110,168,254,.16);color:var(--accent)}
+  .b-dsa{background:rgba(126,231,135,.15);color:var(--accent-2)}
+
+  .addbox{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:18px 20px;margin:0 0 20px;display:none}
+  .addbox.open{display:block}
+  .addbox h3{font-size:13px;margin-bottom:12px;color:var(--accent)}
+  .addgrid{display:flex;flex-wrap:wrap;gap:10px;align-items:flex-end}
+  .field{display:flex;flex-direction:column;gap:5px}
+  .field label{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px}
+  .field input,.field select{background:var(--panel-2);border:1px solid var(--line);color:var(--text);padding:9px 11px;border-radius:9px;font-size:14px;font-family:inherit}
+  .field input:focus,.field select:focus{outline:none;border-color:var(--accent)}
+  .field.grow{flex:1;min-width:170px}
+  .field.grow input{width:100%}
+  button.add{background:linear-gradient(90deg,var(--accent),var(--accent-2));color:#0b1020;border:none;padding:10px 18px;border-radius:9px;cursor:pointer;font-weight:700;font-size:14px}
+  button.add:hover{filter:brightness(1.08)}
+  .addnote{color:var(--hot);font-size:12px;margin-top:8px;min-height:14px}
+
+  footer{max-width:1100px;margin:28px auto 0;padding:0 22px;color:var(--muted);font-size:13px}
+  footer a{color:var(--accent);text-decoration:none}
+  .legend{display:flex;gap:14px;flex-wrap:wrap;font-size:12px;color:var(--muted);margin:0 0 18px}
+  .bk-row{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+  .filelbl{display:inline-flex;align-items:center}
+</style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.10.3/sql-wasm.js"></script>
+</head>
+<body>
+<header>
+  <h1>Full-Stack Interview Prep Roadmap</h1>
+  <p class="sub">An 8-week, ~2–3 hrs/day plan to go from your current role to a higher-paying startup/product company. Built around your stack (React Native, Node.js, AWS) and the exact gaps from your recent interviews. Check things off — progress saves automatically in this browser.</p>
+  <div class="profile">
+    <b>Your starting point:</b> 2 yrs full-stack (React Native · Node.js · AWS SQS/S3/EC2) · ~10 LPA · building a LeetCode-clone backend in Go.
+    <b>Target:</b> SDE-2 level startup/product roles with a strong pay bump.
+    <b>Known gaps to close:</b> two-pointer DSA (move-zeros), JS internals (prototype chain), RN internals (<code>useImperativeHandle</code>, architecture), frontend system design.
+  </div>
+</header>
+
+<div class="wrap">
+  <div class="dash">
+    <div class="ring">
+      <svg width="96" height="96">
+        <circle cx="48" cy="48" r="42" stroke="#2a2f3d" stroke-width="8" fill="none"/>
+        <circle id="ringFill" cx="48" cy="48" r="42" stroke="#6ea8fe" stroke-width="8" fill="none"
+                stroke-linecap="round" stroke-dasharray="263.9" stroke-dashoffset="263.9"/>
+      </svg>
+      <div class="pct" id="pctText">0%</div>
+    </div>
+    <div class="dash-meta">
+      <b id="solvedCount">0 / 0 done</b><br>
+      <span id="encourage">Start with the Quick Wins section — it closes your known gaps in days.</span>
+    </div>
+    <div class="controls">
+      <button class="ctrl" onclick="toggleAdd()">+ Add topic / track</button>
+      <button class="ctrl" onclick="toggleBackup()">⤓ Backup / Restore</button>
+      <button class="ctrl" onclick="expandAll(true)">Expand all</button>
+      <button class="ctrl" onclick="expandAll(false)">Collapse all</button>
+      <button class="ctrl" onclick="resetProgress()">Reset</button>
+    </div>
+  </div>
+
+  <div class="addbox" id="backupbox">
+    <h3>Backup &amp; restore — keep your progress forever / move it to another machine</h3>
+    <div class="bk-row">
+      <button class="add" onclick="exportJSON()">⬇ Export JSON</button>
+      <label class="ctrl filelbl">⬆ Import JSON<input type="file" accept="application/json,.json" onchange="importJSON(this.files[0]); this.value=''" hidden></label>
+      <button class="ctrl" onclick="exportSQLDump()">⬇ Export SQL dump (.sql)</button>
+      <button class="ctrl" onclick="exportSQLite()">⬇ Export SQLite (.db)</button>
+      <label class="ctrl filelbl">⬆ Import SQLite (.db)<input type="file" accept=".db,.sqlite,.sqlite3" onchange="importSQLite(this.files[0]); this.value=''" hidden></label>
+    </div>
+    <div class="addnote" id="bkNote" style="color:var(--muted)">JSON is the simplest, fully-offline way to move everything between machines. The .sql dump and .db are real SQLite (the .db/import needs internet once to load the engine).</div>
+  </div>
+
+  <div class="addbox" id="addbox">
+    <h3>Add a topic / item to a track</h3>
+    <div class="addgrid">
+      <div class="field grow"><label for="iTitle">Topic / item</label><input id="iTitle" type="text" placeholder="e.g. Practice LRU cache implementation"></div>
+      <div class="field grow"><label for="iNote">Note (optional)</label><input id="iNote" type="text" placeholder="short reminder"></div>
+      <div class="field grow"><label for="iUrl">Link (optional)</label><input id="iUrl" type="text" placeholder="https://..."></div>
+      <div class="field"><label for="iTrack">Add to track</label><select id="iTrack"></select></div>
+      <button class="add" onclick="addItem()">Add item</button>
+    </div>
+    <div class="addnote" id="iErr"></div>
+    <hr style="border:none;border-top:1px solid var(--line);margin:16px 0">
+    <h3>Create your own track</h3>
+    <div class="addgrid">
+      <div class="field grow"><label for="tName">Track name</label><input id="tName" type="text" placeholder="e.g. Company-specific prep"></div>
+      <div class="field grow"><label for="tDesc">Description (optional)</label><input id="tDesc" type="text" placeholder="what this track is for"></div>
+      <button class="add" onclick="addTrack()">Create track</button>
+    </div>
+    <div class="addnote" id="tErr"></div>
+  </div>
+
+  <div class="filters" id="filters">
+    <div class="chip active" data-f="all">Everything</div>
+    <div class="chip" data-f="weeks">8-Week Plan</div>
+    <div class="chip" data-f="tracks">Topic Tracks</div>
+    <div class="chip" data-f="rn">React Native</div>
+    <div class="chip" data-f="dsa">DSA Problems</div>
+    <div class="chip" data-f="prio">Quick Wins</div>
+    <div class="chip" data-f="revisit">★ Revisit <span id="revCount"></span></div>
+    <div class="chip" data-f="links">🔗 Links <span id="linkCount"></span></div>
+    <div class="chip" data-f="incomplete">Unfinished only</div>
+  </div>
+
+  <div class="legend">
+    <span>Priority tags:</span>
+    <span class="pill p-must">must</span> nail this
+    <span class="pill p-deep">deep</span> go deep
+    <span class="pill p-know">know</span> good to know
+    <span style="margin-left:10px">·</span>
+    <span class="pill p-Easy">Easy</span><span class="pill p-Medium">Med</span><span class="pill p-Hard">Hard</span> problem difficulty
+  </div>
+
+  <div id="mods"></div>
+
+  <footer>
+    Daily rhythm: ~60–75 min DSA (2 problems) · ~45 min the week's focus track · ~20 min review/notes.
+    Weekly: one mock (DSA or system design) out loud. Keep a "mistakes log" of every problem you missed.
+    Core resources: <a href="https://neetcode.io/practice" target="_blank" rel="noopener">NeetCode 150</a> ·
+    <a href="https://javascript.info/" target="_blank" rel="noopener">javascript.info</a> ·
+    <a href="https://www.techinterviewhandbook.org/" target="_blank" rel="noopener">Tech Interview Handbook</a> ·
+    <a href="https://github.com/donnemartin/system-design-primer" target="_blank" rel="noopener">System Design Primer</a>.
+  </footer>
+</div>
+
+<script>
+/* ---------- DATA ---------- */
+const MODULES = [
+
+/* ========== QUICK WINS (your specific gaps) ========== */
+{ id:"qw", cat:"prio", badge:"b-prio", label:"Quick win",
+  name:"Quick Wins — close your known interview gaps first",
+  desc:"The exact things that tripped you up. These are blind spots, not deep gaps — knock them out in the first 3–4 days.",
+  goal:"By end: you can solve move-zeros cold, explain the prototype chain on a whiteboard, and explain useImperativeHandle with a real use case.",
+  items:[
+    {t:"Master the two-pointer 'move zeros' pattern", note:"One pointer scans, one tracks the next non-zero slot. Then generalize: remove element, dedupe sorted array, partition. Re-solve from scratch 2 days later.",
+      res:[["Move Zeroes","https://leetcode.com/problems/move-zeroes/"],["Two-pointer pattern","https://neetcode.io/courses/advanced-algorithms/0"]]},
+    {t:"Understand JS prototype & prototypal inheritance", note:"Draw the chain on paper: obj → Constructor.prototype → Object.prototype → null. Know __proto__ vs prototype, Object.create, and how class is sugar over it.",
+      res:[["javascript.info: Prototypes","https://javascript.info/prototype-inheritance"],["MDN inheritance","https://developer.mozilla.org/en-US/docs/Web/JavaScript/Inheritance_and_the_prototype_chain"]]},
+    {t:"Learn useImperativeHandle + forwardRef", note:"Lets a parent call methods on a child via ref (e.g. modalRef.open(), inputRef.focus()). Build a tiny demo: a custom input exposing focus()/clear().",
+      res:[["React docs","https://react.dev/reference/react/useImperativeHandle"]]},
+    {t:"Do a frontend system design warm-up", note:"Read one end-to-end example (e.g. design a news feed / autocomplete) so the format isn't new. Focus on component tree, data flow, state, API shape, perf.",
+      res:[["GreatFrontend system design","https://www.greatfrontend.com/system-design"],["frontend interview handbook","https://www.frontendinterviewhandbook.com/"]]},
+    {t:"Write a 'mistakes log' doc", note:"One running note. Every problem/question you miss goes here with the key insight. Re-read it before every interview.", res:[]},
+  ]
+},
+
+/* ========== 8-WEEK PLAN ========== */
+{ id:"w1", cat:"weeks", badge:"b-week", label:"Week 1",
+  name:"Week 1 — Foundations & quick wins",
+  desc:"Close gaps, set rhythm, start DSA patterns.",
+  goal:"Daily 2 DSA problems begin. All Quick Wins done by end of week.",
+  items:[
+    {t:"Finish the entire Quick Wins section above", res:[]},
+    {t:"DSA: Arrays & Hashing patterns (NeetCode)", note:"Two Sum, Contains Duplicate, Group Anagrams, Top K, Product Except Self.", res:[["NeetCode Arrays","https://neetcode.io/practice"]]},
+    {t:"JS: scope, closures, this, hoisting, event loop", res:[["javascript.info","https://javascript.info/"]]},
+    {t:"Set up your tracking: this page + a mistakes log + a calendar block", res:[]},
+  ]
+},
+{ id:"w2", cat:"weeks", badge:"b-week", label:"Week 2",
+  name:"Week 2 — Two pointers, sliding window, JS deep dive",
+  desc:"The patterns startups love most + JS internals interviewers probe.",
+  goal:"Comfortable with two-pointer & sliding-window template; can explain async JS end to end.",
+  items:[
+    {t:"DSA: Two Pointers + Sliding Window patterns", res:[["NeetCode","https://neetcode.io/practice"]]},
+    {t:"DSA: Stack pattern (valid parens, monotonic stack)", res:[]},
+    {t:"JS: promises, async/await, microtask vs macrotask, error handling", res:[["javascript.info async","https://javascript.info/async"]]},
+    {t:"JS: prototypal inheritance, classes, this-binding (call/apply/bind)", res:[]},
+    {t:"Mock: 1 timed DSA problem out loud (record yourself)", res:[]},
+  ]
+},
+{ id:"w3", cat:"weeks", badge:"b-week", label:"Week 3",
+  name:"Week 3 — Trees, recursion & React Native internals",
+  desc:"Recursion fluency + the RN architecture questions you got asked.",
+  goal:"Can recurse on trees confidently; can explain the RN bridge/JSI and re-render model.",
+  items:[
+    {t:"DSA: Binary Search + Linked Lists", res:[["NeetCode","https://neetcode.io/practice"]]},
+    {t:"DSA: Trees (DFS/BFS, BST validation, LCA, level order)", res:[]},
+    {t:"RN: architecture — bridge vs JSI/Fabric, native modules, threading", res:[["RN architecture","https://reactnative.dev/architecture/landing-page"]]},
+    {t:"React: render & reconciliation, keys, memo, useMemo/useCallback, when re-renders happen", res:[["react.dev rendering","https://react.dev/learn/render-and-commit"]]},
+    {t:"React hooks deep: useRef, useImperativeHandle, useLayoutEffect, custom hooks", res:[]},
+  ]
+},
+{ id:"w4", cat:"weeks", badge:"b-week", label:"Week 4",
+  name:"Week 4 — Graphs, DP intro & frontend system design",
+  desc:"The harder DSA categories + structured frontend design answers.",
+  goal:"Can do BFS/DFS on grids; can structure a frontend system design answer.",
+  items:[
+    {t:"DSA: Graphs (number of islands, course schedule, clone graph)", res:[["NeetCode Graphs","https://neetcode.io/practice"]]},
+    {t:"DSA: 1-D Dynamic Programming (climbing stairs, house robber, coin change)", res:[]},
+    {t:"Frontend system design: component design, state mgmt, data fetching, caching, perf, accessibility", res:[["GreatFrontend","https://www.greatfrontend.com/system-design"],["patterns.dev","https://www.patterns.dev/"]]},
+    {t:"Practice: design an infinite-scroll feed + an autocomplete (out loud)", res:[]},
+  ]
+},
+{ id:"w5", cat:"weeks", badge:"b-week", label:"Week 5",
+  name:"Week 5 — Backend system design + your LeetCode clone",
+  desc:"Turn your real project into your strongest interview story.",
+  goal:"You can give a 3-min verbal walkthrough of your LeetCode clone architecture and defend every decision.",
+  items:[
+    {t:"System design fundamentals: scaling, caching, load balancing, DB choice, queues, consistency", res:[["System Design Primer","https://github.com/donnemartin/system-design-primer"],["ByteByteGo","https://bytebytego.com/"]]},
+    {t:"Write up your LeetCode clone: SQS FIFO (exactly-once), S3 for code blobs, sandbox isolation, Redis pub/sub fanout", note:"Draw the diagram in Excalidraw. Prep the 'why' behind each choice and the tradeoffs.", res:[["Excalidraw","https://excalidraw.com/"]]},
+    {t:"Rehearse the 3-minute architecture pitch out loud, twice", res:[]},
+    {t:"Classic designs: URL shortener, rate limiter, chat/notifications, news feed", res:[]},
+  ]
+},
+{ id:"w6", cat:"weeks", badge:"b-week", label:"Week 6",
+  name:"Week 6 — DSA consolidation + backend depth",
+  desc:"Tighten DSA gaps; deepen Node/DB/AWS talking points.",
+  goal:"Re-solve every missed problem from your mistakes log. Solid on Node internals & DB tradeoffs.",
+  items:[
+    {t:"DSA: Heaps/priority queue, backtracking, intervals/greedy", res:[["NeetCode","https://neetcode.io/practice"]]},
+    {t:"DSA: re-solve everything in your mistakes log from scratch", res:[]},
+    {t:"Node.js: event loop, streams, clustering, error handling, memory leaks", res:[["Node docs","https://nodejs.org/en/learn"]]},
+    {t:"Databases: SQL vs NoSQL, indexing, transactions, N+1, sharding/replication", res:[]},
+    {t:"AWS talking points: SQS vs SNS, S3 patterns, EC2 vs Lambda, when/why", res:[]},
+  ]
+},
+{ id:"w7", cat:"weeks", badge:"b-week", label:"Week 7",
+  name:"Week 7 — Mocks, behavioral & applications",
+  desc:"Pressure-test everything and start interviewing.",
+  goal:"3+ full mock interviews done. Resume + stories ready. Applications going out.",
+  items:[
+    {t:"Do 3 mock interviews (DSA, frontend, system design)", res:[["Pramp/free mocks","https://www.pramp.com/"]]},
+    {t:"Prepare 6–8 STAR behavioral stories (conflict, failure, ownership, impact)", res:[["STAR method","https://www.techinterviewhandbook.org/behavioral-interview/"]]},
+    {t:"Polish resume: quantify impact, feature the LeetCode clone", res:[]},
+    {t:"Target list: YC jobs, Wellfound, LinkedIn — filter React Native / Node.js", res:[["YC jobs","https://www.workatastartup.com/"],["Wellfound","https://wellfound.com/"]]},
+    {t:"Apply to 15–20 roles that match your stack", res:[]},
+  ]
+},
+{ id:"w8", cat:"weeks", badge:"b-week", label:"Week 8",
+  name:"Week 8 — Interview loop & negotiation",
+  desc:"Stay sharp, interview, and close.",
+  goal:"Actively interviewing; warm-up routine before each; negotiating offers.",
+  items:[
+    {t:"Daily warm-up: 1 easy DSA + skim mistakes log before any interview", res:[]},
+    {t:"Keep applying to backfill the pipeline", res:[]},
+    {t:"Negotiation prep: know your number, competing offers, how to ask", res:[["Salary negotiation","https://www.techinterviewhandbook.org/negotiation/"]]},
+    {t:"After each interview: log what was asked + what you'd improve", res:[]},
+  ]
+},
+
+/* ========== TOPIC TRACKS (reference, use across weeks) ========== */
+{ id:"t-dsa", cat:"tracks", badge:"b-track", label:"Track",
+  name:"Track · DSA patterns (NeetCode 150)",
+  desc:"Don't grind 300 problems. Do NeetCode 150 in order, 2/day, 25-min attempt then watch the video either way.",
+  goal:"Cover all 18 pattern categories. ~90% of startup SDE-2 DSA lives here.",
+  items:[
+    {t:"Arrays & Hashing", res:[["NeetCode 150","https://neetcode.io/practice"]]},
+    {t:"Two Pointers", res:[]},
+    {t:"Sliding Window", res:[]},
+    {t:"Stack", res:[]},
+    {t:"Binary Search", res:[]},
+    {t:"Linked List", res:[]},
+    {t:"Trees + Tries", res:[]},
+    {t:"Heap / Priority Queue", res:[]},
+    {t:"Backtracking", res:[]},
+    {t:"Graphs + Advanced Graphs", res:[]},
+    {t:"1-D & 2-D Dynamic Programming", res:[]},
+    {t:"Greedy + Intervals", res:[]},
+    {t:"Bit manipulation + Math basics", res:[]},
+  ]
+},
+{ id:"t-js", cat:"tracks", badge:"b-track", label:"Track",
+  name:"Track · JavaScript & TypeScript core",
+  desc:"The fundamentals interviewers probe to test depth beyond framework usage.",
+  goal:"Explain any of these clearly with an example.",
+  items:[
+    {t:"Closures, scope, hoisting, TDZ", res:[["javascript.info","https://javascript.info/"]]},
+    {t:"this, call/apply/bind, arrow vs function", res:[]},
+    {t:"Prototype chain & prototypal inheritance", res:[["Prototypes","https://javascript.info/prototype-inheritance"]]},
+    {t:"Event loop, microtasks vs macrotasks", res:[["Event loop","https://javascript.info/event-loop"]]},
+    {t:"Promises, async/await, error handling, Promise.all/race/allSettled", res:[]},
+    {t:"Debounce/throttle, deep clone, currying (implement from scratch)", res:[]},
+    {t:"TypeScript: generics, utility types, narrowing, discriminated unions", res:[["TS handbook","https://www.typescriptlang.org/docs/handbook/intro.html"]]},
+  ]
+},
+{ id:"t-rn", cat:"tracks", badge:"b-track", label:"Track",
+  name:"Track · React & React Native deep dive",
+  desc:"Where your last RN interview went deep. Know the internals, not just the API.",
+  goal:"Explain rendering, refs, perf, and RN architecture under follow-up questions.",
+  items:[
+    {t:"Render/commit, reconciliation, keys, why components re-render", res:[["react.dev","https://react.dev/learn/render-and-commit"]]},
+    {t:"memo, useMemo, useCallback — when they actually help (and don't)", res:[]},
+    {t:"useRef, forwardRef, useImperativeHandle, useLayoutEffect", res:[["useImperativeHandle","https://react.dev/reference/react/useImperativeHandle"]]},
+    {t:"Custom hooks + rules of hooks", res:[]},
+    {t:"State management: Context pitfalls, Redux/Zustand, server state (React Query)", res:[]},
+    {t:"RN architecture: old bridge vs new (JSI, Fabric, TurboModules), threads", res:[["RN architecture","https://reactnative.dev/architecture/landing-page"]]},
+    {t:"RN performance: FlatList tuning, re-render control, Hermes, native modules", res:[["RN performance","https://reactnative.dev/docs/performance"]]},
+  ]
+},
+{ id:"t-fesd", cat:"tracks", badge:"b-track", label:"Track",
+  name:"Track · Frontend system design",
+  desc:"A weak spot you flagged. Use a repeatable framework so you never freeze.",
+  goal:"Walk through any frontend design with: requirements → architecture → data → state → optimizations.",
+  items:[
+    {t:"Framework: clarify requirements (functional + non-functional) first", res:[["GreatFrontend","https://www.greatfrontend.com/system-design"]]},
+    {t:"Component architecture & data flow / API contract design", res:[]},
+    {t:"State management & caching strategy", res:[]},
+    {t:"Performance: rendering, bundle size, lazy loading, virtualization", res:[["patterns.dev","https://www.patterns.dev/"]]},
+    {t:"Accessibility, error/loading/empty states, optimistic UI", res:[]},
+    {t:"Practice designs: news feed, autocomplete/typeahead, chat, image carousel, dashboard", res:[]},
+  ]
+},
+{ id:"t-besd", cat:"tracks", badge:"b-track", label:"Track",
+  name:"Track · Backend & distributed system design",
+  desc:"Lean on your real LeetCode-clone work — it's your strongest differentiator.",
+  goal:"Confidently design and defend a scalable backend; tell your project story crisply.",
+  items:[
+    {t:"Fundamentals: horizontal scaling, load balancing, caching layers, CDNs", res:[["System Design Primer","https://github.com/donnemartin/system-design-primer"]]},
+    {t:"Databases: SQL vs NoSQL, indexing, replication, sharding, CAP", res:[]},
+    {t:"Async & messaging: queues (SQS), pub/sub, idempotency, exactly-once vs at-least-once", res:[]},
+    {t:"Your LeetCode clone: write the design doc + Excalidraw diagram + 3-min pitch", note:"SQS FIFO, S3 code storage, sandboxed runner isolation, Redis pub/sub for WS fanout, scaling the judge workers.", res:[["Excalidraw","https://excalidraw.com/"]]},
+    {t:"Classic problems: URL shortener, rate limiter, chat app, news feed, notification system", res:[["ByteByteGo","https://bytebytego.com/"]]},
+    {t:"API design: REST vs GraphQL, pagination, versioning, auth (JWT/sessions)", res:[]},
+  ]
+},
+{ id:"t-soft", cat:"tracks", badge:"b-soft", label:"Behavioral",
+  name:"Track · Behavioral, resume & job search",
+  desc:"The non-coding half that decides offers and pay. Don't skip it.",
+  goal:"Tell compelling stories, target the right companies, and negotiate well.",
+  items:[
+    {t:"6–8 STAR stories: a failure, a conflict, ownership, a hard bug, leadership/impact", res:[["Behavioral guide","https://www.techinterviewhandbook.org/behavioral-interview/"]]},
+    {t:"'Tell me about yourself' — a tight 90-second pitch", res:[]},
+    {t:"Resume: quantify impact, lead with the LeetCode clone + AWS work", res:[]},
+    {t:"Targeting: YC/Wellfound/LinkedIn filtered for React Native + Node.js stacks", res:[["Work at a Startup","https://www.workatastartup.com/"]]},
+    {t:"Questions to ask interviewers (signals seniority & interest)", res:[]},
+    {t:"Negotiation: know your number, leverage competing offers", res:[["Negotiation","https://www.techinterviewhandbook.org/negotiation/"]]},
+  ]
+},
+
+/* ========== REACT NATIVE DEEP DIVE ========== */
+{ id:"rn-arch", cat:"rn", badge:"b-rn", label:"RN",
+  name:"React Native · Architecture & Threading",
+  desc:"The internals your last RN interview drilled into. Know the old vs new architecture cold.",
+  goal:"Explain how RN renders, the role of each thread, and why the new architecture is faster.",
+  items:[
+    {t:"Old bridge architecture — what it was, why it was slow", pri:"must", note:"Serialized JSON over an async bridge = batching bottleneck between JS and native."},
+    {t:"New architecture: JSI, Fabric, TurboModules — how they replaced the bridge", pri:"must", note:"JSI = a C++ interface allowing synchronous calls with no JSON serialization.", res:[["RN architecture","https://reactnative.dev/architecture/landing-page"]]},
+    {t:"Three threads: JS, UI, Shadow — what each does", pri:"must", note:"JS = logic; Shadow = layout via Yoga; UI = renders native views."},
+    {t:"Metro bundler — what it does, HMR, bundle splitting", pri:"know"},
+    {t:"Hermes engine — AOT/bytecode compilation, how it improves TTI", pri:"deep", res:[["Hermes","https://reactnative.dev/docs/hermes"]]},
+  ]
+},
+{ id:"rn-hooks", cat:"rn", badge:"b-rn", label:"RN",
+  name:"React Native · Hooks & Patterns",
+  desc:"The hook questions that trip people up — including the ones you got asked.",
+  goal:"Explain each hook's exact behavior, timing, and when it actually helps.",
+  items:[
+    {t:"useImperativeHandle + forwardRef — exactly what they do", pri:"must", note:"Exposes imperative methods on a child to the parent via a ref (e.g. modalRef.open()).", res:[["React docs","https://react.dev/reference/react/useImperativeHandle"]]},
+    {t:"useLayoutEffect vs useEffect — timing difference, when to use each", pri:"deep", note:"useLayoutEffect fires synchronously before paint — avoid in RN unless measuring layout."},
+    {t:"Custom hooks: rules, composability, when vs HOC or render props", pri:"must"},
+    {t:"useMemo vs useCallback — what they memoize, when they actually help", pri:"must", note:"Most devs overuse these. Know when they don't help (cheap renders, unstable deps)."},
+    {t:"useRef for mutable values vs element refs — the dual-use pattern", pri:"deep"},
+  ]
+},
+{ id:"rn-lists", cat:"rn", badge:"b-rn", label:"RN",
+  name:"React Native · Lists & Rendering",
+  desc:"List virtualization is a classic RN performance interview topic.",
+  goal:"Explain windowing, when to switch to FlashList, and common list anti-patterns.",
+  items:[
+    {t:"FlatList internals: windowing, getItemLayout, keyExtractor impact", pri:"must", res:[["RN performance","https://reactnative.dev/docs/optimizing-flatlist-configuration"]]},
+    {t:"FlashList vs FlatList — recycling vs windowing, when to switch", pri:"deep"},
+    {t:"SectionList, VirtualizedList — when each applies", pri:"know"},
+    {t:"Why you should never nest a FlatList inside a ScrollView", pri:"must", note:"It disables virtualization — all items render at once."},
+  ]
+},
+{ id:"rn-anim", cat:"rn", badge:"b-rn", label:"RN",
+  name:"React Native · Animations & Gestures",
+  desc:"Know what runs on which thread — that's the whole game for smooth animation.",
+  goal:"Explain why Reanimated/native driver are smooth and what they can/can't animate.",
+  items:[
+    {t:"Animated API: useNativeDriver — what it offloads, what it can't", pri:"must", note:"Moves animation to the UI thread; only works for transform/opacity, not layout props."},
+    {t:"Reanimated 2/3: worklets, useSharedValue, useAnimatedStyle", pri:"deep", note:"Runs on the UI thread via JSI — no JS-thread involvement.", res:[["Reanimated","https://docs.swmansion.com/react-native-reanimated/"]]},
+    {t:"Gesture Handler vs PanResponder — why GH is preferred", pri:"know"},
+    {t:"Skia for RN — when to reach for it vs Reanimated", pri:"know"},
+  ]
+},
+{ id:"rn-nav", cat:"rn", badge:"b-rn", label:"RN",
+  name:"React Native · Navigation",
+  desc:"Navigation architecture and deep-linking edge cases.",
+  goal:"Compose navigators correctly and handle deep links including cold start.",
+  items:[
+    {t:"React Navigation v6: stack, tab, drawer — how they compose", pri:"must", res:[["React Navigation","https://reactnavigation.org/docs/getting-started"]]},
+    {t:"Deep linking: universal links vs URI schemes, handling in cold start", pri:"deep"},
+    {t:"Navigation state: passing params, resetting stack, guarded routes", pri:"must"},
+    {t:"Expo Router vs React Navigation — file-based routing tradeoffs", pri:"know"},
+  ]
+},
+{ id:"rn-native", cat:"rn", badge:"b-rn", label:"RN",
+  name:"React Native · Native & Platform",
+  desc:"Bridging to native and handling platform differences cleanly.",
+  goal:"Know when to drop to native and how to manage lifecycle + platform branching.",
+  items:[
+    {t:"Native modules: when to write one, bridging with ObjC/Java basics", pri:"deep"},
+    {t:"Platform.OS, Platform.select — handling iOS/Android differences cleanly", pri:"must"},
+    {t:"App lifecycle: AppState, background/foreground transitions", pri:"know"},
+  ]
+},
+
+/* ========== DSA PROBLEM SETS (merged from your DSA prep page) ========== */
+{ id:"dsa-arrays", cat:"dsa", badge:"b-dsa", label:"DSA",
+  name:"DSA · Arrays & Hashing",
+  desc:"The most common warm-up category. Master these first.",
+  goal:"Patterns — frequency counting with hash maps · prefix sums · in-place manipulation · set/seen lookups for O(1) checks.",
+  items:[
+    {t:"Two Sum", pri:"Easy", u:"https://leetcode.com/problems/two-sum/"},
+    {t:"Contains Duplicate", pri:"Easy", u:"https://leetcode.com/problems/contains-duplicate/"},
+    {t:"Valid Anagram", pri:"Easy", u:"https://leetcode.com/problems/valid-anagram/"},
+    {t:"Group Anagrams", pri:"Medium", u:"https://leetcode.com/problems/group-anagrams/"},
+    {t:"Top K Frequent Elements", pri:"Medium", u:"https://leetcode.com/problems/top-k-frequent-elements/"},
+    {t:"Product of Array Except Self", pri:"Medium", u:"https://leetcode.com/problems/product-of-array-except-self/"},
+  ]
+},
+{ id:"dsa-twop", cat:"dsa", badge:"b-dsa", label:"DSA",
+  name:"DSA · Two Pointers & Sliding Window",
+  desc:"Hugely favored at startups — clean, optimal, easy to discuss. (Your move-zeros gap lives here.)",
+  goal:"Patterns — opposite-end pointers on sorted arrays · fast/slow pointers · fixed & variable-size windows.",
+  items:[
+    {t:"Valid Palindrome", pri:"Easy", u:"https://leetcode.com/problems/valid-palindrome/"},
+    {t:"Move Zeroes", pri:"Easy", u:"https://leetcode.com/problems/move-zeroes/"},
+    {t:"Two Sum II (sorted)", pri:"Medium", u:"https://leetcode.com/problems/two-sum-ii-input-array-is-sorted/"},
+    {t:"3Sum", pri:"Medium", u:"https://leetcode.com/problems/3sum/"},
+    {t:"Container With Most Water", pri:"Medium", u:"https://leetcode.com/problems/container-with-most-water/"},
+    {t:"Longest Substring Without Repeating Characters", pri:"Medium", u:"https://leetcode.com/problems/longest-substring-without-repeating-characters/"},
+    {t:"Minimum Window Substring", pri:"Hard", u:"https://leetcode.com/problems/minimum-window-substring/"},
+  ]
+},
+{ id:"dsa-stack", cat:"dsa", badge:"b-dsa", label:"DSA",
+  name:"DSA · Stack",
+  desc:"Parsing, matching, and monotonic-stack tricks.",
+  goal:"Patterns — matching pairs · monotonic stack for next-greater · expression evaluation.",
+  items:[
+    {t:"Valid Parentheses", pri:"Easy", u:"https://leetcode.com/problems/valid-parentheses/"},
+    {t:"Min Stack", pri:"Medium", u:"https://leetcode.com/problems/min-stack/"},
+    {t:"Evaluate Reverse Polish Notation", pri:"Medium", u:"https://leetcode.com/problems/evaluate-reverse-polish-notation/"},
+    {t:"Daily Temperatures", pri:"Medium", u:"https://leetcode.com/problems/daily-temperatures/"},
+  ]
+},
+{ id:"dsa-bin", cat:"dsa", badge:"b-dsa", label:"DSA",
+  name:"DSA · Binary Search",
+  desc:"Know the template cold — off-by-one bugs cost offers.",
+  goal:"Patterns — classic search · search on the answer space · find first/last boundary · rotated arrays.",
+  items:[
+    {t:"Binary Search", pri:"Easy", u:"https://leetcode.com/problems/binary-search/"},
+    {t:"Search a 2D Matrix", pri:"Medium", u:"https://leetcode.com/problems/search-a-2d-matrix/"},
+    {t:"Find Minimum in Rotated Sorted Array", pri:"Medium", u:"https://leetcode.com/problems/find-minimum-in-rotated-sorted-array/"},
+    {t:"Search in Rotated Sorted Array", pri:"Medium", u:"https://leetcode.com/problems/search-in-rotated-sorted-array/"},
+    {t:"Koko Eating Bananas", pri:"Medium", u:"https://leetcode.com/problems/koko-eating-bananas/"},
+  ]
+},
+{ id:"dsa-ll", cat:"dsa", badge:"b-dsa", label:"DSA",
+  name:"DSA · Linked Lists",
+  desc:"Pointer manipulation under pressure. Practice until automatic.",
+  goal:"Patterns — dummy head node · fast/slow for cycle & midpoint · in-place reversal · merging.",
+  items:[
+    {t:"Reverse Linked List", pri:"Easy", u:"https://leetcode.com/problems/reverse-linked-list/"},
+    {t:"Merge Two Sorted Lists", pri:"Easy", u:"https://leetcode.com/problems/merge-two-sorted-lists/"},
+    {t:"Linked List Cycle", pri:"Easy", u:"https://leetcode.com/problems/linked-list-cycle/"},
+    {t:"Remove Nth Node From End of List", pri:"Medium", u:"https://leetcode.com/problems/remove-nth-node-from-end-of-list/"},
+    {t:"Reorder List", pri:"Medium", u:"https://leetcode.com/problems/reorder-list/"},
+  ]
+},
+{ id:"dsa-trees", cat:"dsa", badge:"b-dsa", label:"DSA",
+  name:"DSA · Trees & BSTs",
+  desc:"Recursion fluency is tested here constantly.",
+  goal:"Patterns — DFS (pre/in/post) · BFS level-order with a queue · BST invariants · divide & conquer.",
+  items:[
+    {t:"Invert Binary Tree", pri:"Easy", u:"https://leetcode.com/problems/invert-binary-tree/"},
+    {t:"Maximum Depth of Binary Tree", pri:"Easy", u:"https://leetcode.com/problems/maximum-depth-of-binary-tree/"},
+    {t:"Binary Tree Level Order Traversal", pri:"Medium", u:"https://leetcode.com/problems/binary-tree-level-order-traversal/"},
+    {t:"Validate Binary Search Tree", pri:"Medium", u:"https://leetcode.com/problems/validate-binary-search-tree/"},
+    {t:"Lowest Common Ancestor of a BST", pri:"Medium", u:"https://leetcode.com/problems/lowest-common-ancestor-of-a-binary-search-tree/"},
+  ]
+},
+{ id:"dsa-heap", cat:"dsa", badge:"b-dsa", label:"DSA",
+  name:"DSA · Heaps / Priority Queue",
+  desc:"Top-K and streaming problems — quick wins once you know the API.",
+  goal:"Patterns — min/max heap for top-K · two heaps for median · merge K sorted · scheduling by priority.",
+  items:[
+    {t:"Kth Largest Element in a Stream", pri:"Easy", u:"https://leetcode.com/problems/kth-largest-element-in-a-stream/"},
+    {t:"Last Stone Weight", pri:"Easy", u:"https://leetcode.com/problems/last-stone-weight/"},
+    {t:"K Closest Points to Origin", pri:"Medium", u:"https://leetcode.com/problems/k-closest-points-to-origin/"},
+    {t:"Find Median from Data Stream", pri:"Hard", u:"https://leetcode.com/problems/find-median-from-data-stream/"},
+  ]
+},
+{ id:"dsa-graph", cat:"dsa", badge:"b-dsa", label:"DSA",
+  name:"DSA · Graphs",
+  desc:"Grid problems and BFS/DFS show up at most startups.",
+  goal:"Patterns — BFS/DFS on grids & adjacency lists · connected components / flood fill · topological sort · Union-Find.",
+  items:[
+    {t:"Number of Islands", pri:"Medium", u:"https://leetcode.com/problems/number-of-islands/"},
+    {t:"Clone Graph", pri:"Medium", u:"https://leetcode.com/problems/clone-graph/"},
+    {t:"Course Schedule", pri:"Medium", u:"https://leetcode.com/problems/course-schedule/"},
+    {t:"Pacific Atlantic Water Flow", pri:"Medium", u:"https://leetcode.com/problems/pacific-atlantic-water-flow/"},
+    {t:"Rotting Oranges", pri:"Medium", u:"https://leetcode.com/problems/rotting-oranges/"},
+  ]
+},
+{ id:"dsa-back", cat:"dsa", badge:"b-dsa", label:"DSA",
+  name:"DSA · Backtracking",
+  desc:"Generate-all problems. Learn the recursion template.",
+  goal:"Patterns — choose / explore / un-choose · subsets & permutations · pruning · grid path search.",
+  items:[
+    {t:"Subsets", pri:"Medium", u:"https://leetcode.com/problems/subsets/"},
+    {t:"Combination Sum", pri:"Medium", u:"https://leetcode.com/problems/combination-sum/"},
+    {t:"Permutations", pri:"Medium", u:"https://leetcode.com/problems/permutations/"},
+    {t:"Word Search", pri:"Medium", u:"https://leetcode.com/problems/word-search/"},
+  ]
+},
+{ id:"dsa-dp", cat:"dsa", badge:"b-dsa", label:"DSA",
+  name:"DSA · Dynamic Programming",
+  desc:"The differentiator. Start 1-D, then 2-D. Don't skip.",
+  goal:"Patterns — 1-D DP (climbing/robber) · 2-D grid DP · knapsack variants · subsequence/edit-distance.",
+  items:[
+    {t:"Climbing Stairs", pri:"Easy", u:"https://leetcode.com/problems/climbing-stairs/"},
+    {t:"House Robber", pri:"Medium", u:"https://leetcode.com/problems/house-robber/"},
+    {t:"Coin Change", pri:"Medium", u:"https://leetcode.com/problems/coin-change/"},
+    {t:"Longest Increasing Subsequence", pri:"Medium", u:"https://leetcode.com/problems/longest-increasing-subsequence/"},
+    {t:"Unique Paths", pri:"Medium", u:"https://leetcode.com/problems/unique-paths/"},
+    {t:"Longest Common Subsequence", pri:"Medium", u:"https://leetcode.com/problems/longest-common-subsequence/"},
+  ]
+},
+{ id:"dsa-greedy", cat:"dsa", badge:"b-dsa", label:"DSA",
+  name:"DSA · Greedy & Intervals",
+  desc:"Sorting + a smart choice. Common in product-style rounds.",
+  goal:"Patterns — sort then sweep · interval merging/overlap · local→global optimum · reach/jump.",
+  items:[
+    {t:"Maximum Subarray", pri:"Medium", u:"https://leetcode.com/problems/maximum-subarray/"},
+    {t:"Merge Intervals", pri:"Medium", u:"https://leetcode.com/problems/merge-intervals/"},
+    {t:"Insert Interval", pri:"Medium", u:"https://leetcode.com/problems/insert-interval/"},
+    {t:"Jump Game", pri:"Medium", u:"https://leetcode.com/problems/jump-game/"},
+  ]
+},
+];
+
+/* ---------- STATE ---------- */
+const DONE_KEY = "prep_roadmap_done_v1";
+const OPEN_KEY = "prep_roadmap_open_v1";
+const REV_KEY  = "prep_roadmap_revisit_v1";
+const CT_KEY   = "prep_roadmap_tracks_v1";   // user-created tracks
+const CI_KEY   = "prep_roadmap_items_v1";    // user-created items
+const LINK_KEY = "prep_roadmap_links_v1";    // user-saved useful links
+let done = JSON.parse(localStorage.getItem(DONE_KEY) || "{}");
+let openState = JSON.parse(localStorage.getItem(OPEN_KEY) || "{}");
+let revisit = JSON.parse(localStorage.getItem(REV_KEY) || "{}");
+let customTracks = JSON.parse(localStorage.getItem(CT_KEY) || "[]");
+let customItems = JSON.parse(localStorage.getItem(CI_KEY) || "[]");
+let links = JSON.parse(localStorage.getItem(LINK_KEY) || "[]");
+let filter = "all";
+
+function iid(mod,i){return mod.id+"#"+i;}
+function saveDone(){localStorage.setItem(DONE_KEY, JSON.stringify(done));}
+function saveOpen(){localStorage.setItem(OPEN_KEY, JSON.stringify(openState));}
+function saveRev(){localStorage.setItem(REV_KEY, JSON.stringify(revisit));}
+function saveCT(){localStorage.setItem(CT_KEY, JSON.stringify(customTracks));}
+function saveCI(){localStorage.setItem(CI_KEY, JSON.stringify(customItems));}
+function saveLinks(){localStorage.setItem(LINK_KEY, JSON.stringify(links));}
+function esc(s){return String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));}
+
+// built-in modules + user-created tracks
+function allModules(){
+  const ct = customTracks.map(c=>({
+    id:c.id, cat:"tracks", badge:"b-mine", label:"Yours",
+    name:c.name, desc:c.desc, goal:c.goal||"", items:[], isCustomTrack:true
+  }));
+  return MODULES.concat(ct);
+}
+// rows for a module: built-in items + user items, each {it, id, isCustom}
+function itemsFor(mod){
+  const rows = (mod.items||[]).map((it,i)=>({it, id:iid(mod,i), isCustom:false}));
+  customItems.filter(c=>c.mod===mod.id).forEach(c=>rows.push({it:{t:c.t,note:c.note,u:c.u}, id:c.id, isCustom:true}));
+  return rows;
+}
+function allRows(){
+  const out=[];
+  allModules().forEach(m=>itemsFor(m).forEach(r=>out.push({mod:m, ...r})));
+  return out;
+}
+function totalCount(){return allRows().length;}
+function doneCount(){return allRows().filter(r=>done[r.id]).length;}
+
+const PRI_LABEL = {must:"must", deep:"deep", know:"know"};
+function itemRow(row, modName, showModTag){
+  const {it, id, isCustom} = row;
+  const isDone = !!done[id];
+  const isRev = !!revisit[id];
+  const resHtml = (it.res||[]).map(r=>`<a class="res" href="${esc(r[1])}" target="_blank" rel="noopener">↗ ${esc(r[0])}</a>`).join("");
+  const title = it.u
+    ? `<a href="${esc(it.u)}" target="_blank" rel="noopener">${esc(it.t)}</a>`
+    : esc(it.t);
+  const pill = it.pri ? `<span class="pill p-${esc(it.pri)}">${esc(PRI_LABEL[it.pri]||it.pri)}</span>` : "";
+  return `<div class="item ${isDone?'done':''}">
+    <input type="checkbox" data-check="${id}" ${isDone?'checked':''}>
+    <div class="body">
+      <div class="t">${title}${pill}${isCustom?'<span class="mine">yours</span>':''}${showModTag?`<span class="topic-tag">${esc(modName)}</span>`:''}</div>
+      ${it.note?`<div class="note">${esc(it.note)}</div>`:""}
+      ${resHtml?`<div>${resHtml}</div>`:""}
+    </div>
+    <button class="star ${isRev?'on':''}" data-star="${id}" title="${isRev?'Remove from revisit':'Mark to revisit later'}">${isRev?'★':'☆'}</button>
+    ${isCustom?`<button class="del" data-del-item="${id}" title="Delete this item">✕</button>`:''}
+  </div>`;
+}
+
+function renderRevisit(root){
+  const items = allRows().filter(r=>revisit[r.id]);
+  if(items.length===0){
+    root.innerHTML = `<div class="empty">No items flagged yet. Tap the ☆ next to any topic to add it here for later review.</div>`;
+    return;
+  }
+  const el = document.createElement("div");
+  el.className = "mod open";
+  el.innerHTML = `
+    <div class="mod-head" style="cursor:default">
+      <span class="badge b-prio">★ Revisit</span>
+      <div class="m-title">
+        <h2>Things to revisit</h2>
+        <p>Everything you've flagged across all weeks and tracks. Un-star to remove.</p>
+      </div>
+      <div class="m-prog">${items.length} flagged</div>
+    </div>
+    <div class="mod-body">
+      ${items.map(r=>itemRow(r, r.mod.name, true)).join("")}
+    </div>`;
+  root.appendChild(el);
+}
+
+function linkRow(l){
+  return `<div class="item">
+    <span style="flex:0 0 auto;margin-top:2px">🔗</span>
+    <div class="body">
+      <div class="t"><a href="${esc(l.url)}" target="_blank" rel="noopener">${esc(l.title||l.url)}</a></div>
+      ${l.note?`<div class="note">${esc(l.note)}</div>`:""}
+      <div class="note" style="opacity:.65;word-break:break-all">${esc(l.url)}</div>
+    </div>
+    <button class="del" data-del-link="${l.id}" title="Delete this link">✕</button>
+  </div>`;
+}
+
+function renderLinks(root){
+  const form = `
+    <div class="addbox open" style="margin-bottom:16px">
+      <h3>Save a useful link</h3>
+      <div class="addgrid">
+        <div class="field grow"><label for="lTitle">Title</label><input id="lTitle" type="text" placeholder="e.g. NeetCode roadmap"></div>
+        <div class="field grow"><label for="lUrl">URL</label><input id="lUrl" type="text" placeholder="https://..."></div>
+        <div class="field grow"><label for="lNote">Note (optional)</label><input id="lNote" type="text" placeholder="why it's useful"></div>
+        <button class="add" onclick="addLink()">Save link</button>
+      </div>
+      <div class="addnote" id="lErr"></div>
+    </div>`;
+  let list;
+  if(links.length===0){
+    list = `<div class="empty">No links saved yet. Add your favourite resources above — docs, cheat sheets, problem lists, blog posts.</div>`;
+  } else {
+    list = `<div class="mod open">
+      <div class="mod-head" style="cursor:default">
+        <span class="badge b-rn">🔗 Links</span>
+        <div class="m-title"><h2>My useful links</h2><p>Your saved resources — click any to open. They travel with your backups.</p></div>
+        <div class="m-prog">${links.length} saved</div>
+      </div>
+      <div class="mod-body">${links.map(linkRow).join("")}</div>
+    </div>`;
+  }
+  root.innerHTML = form + list;
+  document.querySelectorAll("[data-del-link]").forEach(b=>{
+    b.addEventListener("click",()=>{
+      const id = b.getAttribute("data-del-link");
+      const l = links.find(x=>x.id===id);
+      if(l && confirm(`Delete link "${l.title||l.url}"?`)){
+        links = links.filter(x=>x.id!==id);
+        saveLinks(); render();
+      }
+    });
+  });
+}
+
+function addLink(){
+  const err = document.getElementById("lErr");
+  let url = document.getElementById("lUrl").value.trim();
+  if(!url){ err.textContent = "Please enter a URL."; return; }
+  if(!/^https?:\/\//i.test(url)) url = "https://" + url;
+  const title = document.getElementById("lTitle").value.trim();
+  links.push({
+    id:"l_"+Date.now()+"_"+Math.random().toString(36).slice(2,6),
+    title: title || url,
+    url,
+    note: document.getElementById("lNote").value.trim()
+  });
+  saveLinks(); render();
+}
+
+function render(){
+  const root = document.getElementById("mods");
+  root.innerHTML = "";
+
+  if(filter==="revisit"){ renderRevisit(root); wireEvents(); updateDash(); return; }
+  if(filter==="links"){ renderLinks(root); updateDash(); return; }
+  if(filter==="links"){ renderLinks(root); updateDash(); return; }
+
+  let shown = 0;
+  allModules().forEach(mod=>{
+    if(filter!=="all" && filter!=="incomplete" && mod.cat!==filter) return;
+    const rows = itemsFor(mod);
+    const d = rows.filter(r=>done[r.id]).length;
+    const tot = rows.length;
+    if(filter==="incomplete" && tot>0 && d===tot) return;
+    shown++;
+    const el = document.createElement("div");
+    el.className = "mod" + (mod.cat==="prio"?" prio":"") + (openState[mod.id]?" open":"");
+    el.innerHTML = `
+      <div class="mod-head" data-toggle="${mod.id}">
+        <div class="chev">▶</div>
+        <span class="badge ${mod.badge}">${esc(mod.label)}</span>
+        <div class="m-title">
+          <h2>${esc(mod.name)}${mod.isCustomTrack?`<button class="del del-track" data-del-track="${mod.id}" title="Delete this track">✕</button>`:''}</h2>
+          <p>${esc(mod.desc)}</p>
+        </div>
+        <div class="m-prog">${d}/${tot}
+          <div class="bar"><i style="width:${tot?Math.round(d/tot*100):0}%"></i></div>
+        </div>
+      </div>
+      <div class="mod-body">
+        ${mod.goal?`<div class="goal">🎯 <b>Goal:</b> ${esc(mod.goal)}</div>`:""}
+        ${rows.length?rows.map(r=>itemRow(r, mod.name, false)).join(""):'<div class="note" style="padding:8px 4px">No items yet — use “+ Add topic / track” to add some.</div>'}
+      </div>`;
+    root.appendChild(el);
+  });
+  if(shown===0){
+    root.innerHTML = `<div class="empty">Nothing here — you've completed everything in this view. 🎉</div>`;
+  }
+  wireEvents();
+  updateDash();
+}
+
+function wireEvents(){
+  document.querySelectorAll("[data-toggle]").forEach(h=>{
+    h.addEventListener("click",e=>{
+      if(e.target.closest("a")||e.target.closest("input")||e.target.closest("button")) return;
+      const id = h.getAttribute("data-toggle");
+      openState[id] = !openState[id];
+      saveOpen(); render();
+    });
+  });
+  document.querySelectorAll("[data-check]").forEach(c=>{
+    c.addEventListener("change",()=>{
+      const id = c.getAttribute("data-check");
+      if(c.checked) done[id]=true; else delete done[id];
+      saveDone(); render();
+    });
+  });
+  document.querySelectorAll("[data-star]").forEach(b=>{
+    b.addEventListener("click",()=>{
+      const id = b.getAttribute("data-star");
+      if(revisit[id]) delete revisit[id]; else revisit[id]=true;
+      saveRev(); render();
+    });
+  });
+  document.querySelectorAll("[data-del-item]").forEach(b=>{
+    b.addEventListener("click",()=>{
+      const id = b.getAttribute("data-del-item");
+      const it = customItems.find(c=>c.id===id);
+      if(it && confirm(`Delete "${it.t}"?`)){
+        customItems = customItems.filter(c=>c.id!==id);
+        delete done[id]; delete revisit[id];
+        saveCI(); saveDone(); saveRev(); render();
+      }
+    });
+  });
+  document.querySelectorAll("[data-del-track]").forEach(b=>{
+    b.addEventListener("click",e=>{
+      e.stopPropagation();
+      const id = b.getAttribute("data-del-track");
+      const tr = customTracks.find(c=>c.id===id);
+      if(tr && confirm(`Delete your track "${tr.name}" and all its items?`)){
+        const childIds = customItems.filter(c=>c.mod===id).map(c=>c.id);
+        customItems = customItems.filter(c=>c.mod!==id);
+        customTracks = customTracks.filter(c=>c.id!==id);
+        childIds.forEach(cid=>{delete done[cid]; delete revisit[cid];});
+        delete openState[id];
+        saveCT(); saveCI(); saveDone(); saveRev(); saveOpen();
+        populateTrackSelect(); render();
+      }
+    });
+  });
+}
+
+function updateDash(){
+  const total = totalCount();
+  const d = doneCount();
+  const pct = total ? Math.round(d/total*100) : 0;
+  document.getElementById("pctText").textContent = pct+"%";
+  document.getElementById("solvedCount").textContent = `${d} / ${total} done`;
+  const circ = 2*Math.PI*42;
+  document.getElementById("ringFill").setAttribute("stroke-dashoffset", circ*(1-pct/100));
+  const msgs = [
+    "Start with the Quick Wins section — it closes your known gaps in days.",
+    "Good — momentum matters more than intensity. Keep the daily rhythm.",
+    "You're building real depth now. Trust the process.",
+    "Past the hump. Start doing things out loud, not just reading.",
+    "More than halfway — schedule your first mock interview.",
+    "Strong progress. Time to start applying in parallel.",
+    "Interview-ready. Warm up daily and keep the pipeline full.",
+    "You're there. Go get the offer — and negotiate it."
+  ];
+  document.getElementById("encourage").textContent = msgs[Math.min(msgs.length-1, Math.floor(pct/13))];
+  const rc = allRows().filter(r=>revisit[r.id]).length;
+  document.getElementById("revCount").textContent = rc ? "("+rc+")" : "";
+  document.getElementById("linkCount").textContent = links.length ? "("+links.length+")" : "";
+}
+
+document.querySelectorAll(".chip").forEach(ch=>{
+  ch.addEventListener("click",()=>{
+    document.querySelectorAll(".chip").forEach(c=>c.classList.remove("active"));
+    ch.classList.add("active");
+    filter = ch.getAttribute("data-f");
+    render();
+  });
+});
+
+function expandAll(open){ allModules().forEach(m=>openState[m.id]=open); saveOpen(); render(); }
+function resetProgress(){ if(confirm("Reset all checkmarks? (Your custom tracks and items are kept.)")){ done={}; saveDone(); render(); } }
+
+function setActiveChip(f){
+  document.querySelectorAll(".chip").forEach(c=>c.classList.toggle("active", c.getAttribute("data-f")===f));
+}
+function toggleAdd(){ document.getElementById("addbox").classList.toggle("open"); }
+
+function populateTrackSelect(){
+  const sel = document.getElementById("iTrack");
+  sel.innerHTML = allModules().map(m=>`<option value="${m.id}">${esc(m.name)}</option>`).join("");
+}
+
+function addItem(){
+  const err = document.getElementById("iErr");
+  const tEl = document.getElementById("iTitle");
+  const title = tEl.value.trim();
+  if(!title){ err.textContent = "Please enter a topic/item."; tEl.focus(); return; }
+  let url = document.getElementById("iUrl").value.trim();
+  if(url && !/^https?:\/\//i.test(url)) url = "https://" + url;
+  const modId = document.getElementById("iTrack").value;
+  customItems.push({
+    id:"ci_"+Date.now()+"_"+Math.random().toString(36).slice(2,6),
+    mod: modId, t: title,
+    note: document.getElementById("iNote").value.trim(),
+    u: url
+  });
+  saveCI();
+  tEl.value=""; document.getElementById("iNote").value=""; document.getElementById("iUrl").value=""; err.textContent="";
+  openState[modId]=true; saveOpen();
+  if(filter==="revisit" || filter==="prio" || filter==="weeks"){ filter="all"; setActiveChip("all"); }
+  render();
+}
+
+function addTrack(){
+  const err = document.getElementById("tErr");
+  const nEl = document.getElementById("tName");
+  const name = nEl.value.trim();
+  if(!name){ err.textContent = "Please enter a track name."; nEl.focus(); return; }
+  const id = "ct_"+Date.now()+"_"+Math.random().toString(36).slice(2,6);
+  customTracks.push({ id, name, desc: document.getElementById("tDesc").value.trim() || "Your custom track." });
+  saveCT();
+  nEl.value=""; document.getElementById("tDesc").value=""; err.textContent="";
+  openState[id]=true; saveOpen();
+  populateTrackSelect();
+  filter="tracks"; setActiveChip("tracks");
+  render();
+}
+
+/* ---------- BACKUP / RESTORE ---------- */
+function toggleBackup(){ document.getElementById("backupbox").classList.toggle("open"); }
+function bkMsg(t){ const e=document.getElementById("bkNote"); if(e) e.textContent=t; }
+
+function collectState(){
+  return { app:"interview-prep-roadmap", version:1, exportedAt:new Date().toISOString(),
+    done, openState, revisit, customTracks, customItems, links };
+}
+function applyState(o){
+  if(!o || typeof o!=="object") throw new Error("bad data");
+  done        = o.done || {};
+  revisit     = o.revisit || {};
+  customTracks= Array.isArray(o.customTracks)? o.customTracks : [];
+  customItems = Array.isArray(o.customItems) ? o.customItems  : [];
+  links       = Array.isArray(o.links)       ? o.links        : [];
+  if(o.openState && typeof o.openState==="object") openState = o.openState;
+  saveDone(); saveRev(); saveCT(); saveCI(); saveLinks(); saveOpen();
+  populateTrackSelect(); render();
+}
+
+function download(filename, content, mime){
+  const blob = new Blob([content], {type:mime});
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = filename;
+  document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(()=>URL.revokeObjectURL(a.href), 1500);
+}
+
+function exportJSON(){
+  download("interview-prep-backup.json", JSON.stringify(collectState(),null,2), "application/json");
+  bkMsg("Exported JSON ✓  (keep this file — import it on any machine to restore everything)");
+}
+function importJSON(file){
+  if(!file) return;
+  const r = new FileReader();
+  r.onload = ()=>{ try{ applyState(JSON.parse(r.result)); bkMsg("Imported from JSON ✓"); }
+                   catch(e){ bkMsg("Couldn't read that JSON file."); } };
+  r.readAsText(file);
+}
+
+// Build a portable SQLite text dump (works fully offline)
+function buildSQLDump(){
+  const q = v => (v==null||v==="") ? "NULL" : "'"+String(v).replace(/'/g,"''")+"'";
+  const L = [];
+  L.push("-- Interview Prep Roadmap backup");
+  L.push("-- exported "+new Date().toISOString());
+  L.push("BEGIN TRANSACTION;");
+  L.push("CREATE TABLE IF NOT EXISTS item_state (item_id TEXT PRIMARY KEY, done INTEGER, revisit INTEGER);");
+  L.push("CREATE TABLE IF NOT EXISTS custom_tracks (id TEXT PRIMARY KEY, name TEXT, descr TEXT);");
+  L.push("CREATE TABLE IF NOT EXISTS custom_items (id TEXT PRIMARY KEY, module_id TEXT, title TEXT, note TEXT, url TEXT);");
+  L.push("CREATE TABLE IF NOT EXISTS links (id TEXT PRIMARY KEY, title TEXT, url TEXT, note TEXT);");
+  L.push("CREATE TABLE IF NOT EXISTS ui_state (key TEXT PRIMARY KEY, value TEXT);");
+  const ids = new Set([...Object.keys(done), ...Object.keys(revisit)]);
+  ids.forEach(id=>L.push(`INSERT INTO item_state VALUES (${q(id)}, ${done[id]?1:0}, ${revisit[id]?1:0});`));
+  customTracks.forEach(t=>L.push(`INSERT INTO custom_tracks VALUES (${q(t.id)}, ${q(t.name)}, ${q(t.desc)});`));
+  customItems.forEach(c=>L.push(`INSERT INTO custom_items VALUES (${q(c.id)}, ${q(c.mod)}, ${q(c.t)}, ${q(c.note)}, ${q(c.u)});`));
+  links.forEach(l=>L.push(`INSERT INTO links VALUES (${q(l.id)}, ${q(l.title)}, ${q(l.url)}, ${q(l.note)});`));
+  Object.keys(openState).forEach(k=>L.push(`INSERT INTO ui_state VALUES (${q("open:"+k)}, ${q(openState[k]?"1":"0")});`));
+  L.push("COMMIT;");
+  return L.join("\n");
+}
+function exportSQLDump(){
+  download("interview-prep.sql", buildSQLDump(), "application/sql");
+  bkMsg("Exported SQL dump ✓  (open in any SQLite tool, or use it to rebuild the database)");
+}
+
+// Real SQLite .db via sql.js (loads the engine from CDN once — needs internet)
+async function getSQL(){
+  if(window.__SQL) return window.__SQL;
+  if(typeof initSqlJs!=="function") throw new Error("engine not loaded");
+  window.__SQL = await initSqlJs({ locateFile:f=>"https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.10.3/"+f });
+  return window.__SQL;
+}
+async function exportSQLite(){
+  bkMsg("Building SQLite database…");
+  try{
+    const SQL = await getSQL();
+    const db = new SQL.Database();
+    db.run(buildSQLDump());
+    const bytes = db.export();
+    db.close();
+    download("interview-prep.db", bytes, "application/x-sqlite3");
+    bkMsg("Exported SQLite .db ✓  (a real database file — open/query/dump it anywhere)");
+  }catch(e){
+    bkMsg("Couldn't load the SQLite engine (needs internet). Use Export JSON or the .sql dump — both work offline.");
+  }
+}
+async function importSQLite(file){
+  if(!file) return;
+  bkMsg("Reading SQLite file…");
+  try{
+    const SQL = await getSQL();
+    const buf = new Uint8Array(await file.arrayBuffer());
+    const db  = new SQL.Database(buf);
+    const nd={}, nr={}, nt=[], ni=[], nl=[], no={...openState};
+    const each=(sql,cb)=>{ try{ const res=db.exec(sql); if(res[0]) res[0].values.forEach(cb); }catch(e){} };
+    each("SELECT item_id, done, revisit FROM item_state", r=>{ if(r[1]) nd[r[0]]=true; if(r[2]) nr[r[0]]=true; });
+    each("SELECT id, name, descr FROM custom_tracks", r=>nt.push({id:r[0], name:r[1], desc:r[2]||""}));
+    each("SELECT id, module_id, title, note, url FROM custom_items", r=>ni.push({id:r[0], mod:r[1], t:r[2], note:r[3]||"", u:r[4]||""}));
+    each("SELECT id, title, url, note FROM links", r=>nl.push({id:r[0], title:r[1]||r[2], url:r[2], note:r[3]||""}));
+    each("SELECT key, value FROM ui_state", r=>{ if(String(r[0]).startsWith("open:")) no[String(r[0]).slice(5)] = (r[1]==="1"); });
+    db.close();
+    applyState({ done:nd, revisit:nr, customTracks:nt, customItems:ni, links:nl, openState:no });
+    bkMsg("Imported from SQLite ✓");
+  }catch(e){
+    bkMsg("Couldn't read that .db (the engine needs internet to load). Try importing a JSON backup instead.");
+  }
+}
+
+// open Quick Wins + Week 1 by default on first load
+if(Object.keys(openState).length===0){ openState["qw"]=true; openState["w1"]=true; saveOpen(); }
+populateTrackSelect();
+render();
+</script>
+</body>
+</html>

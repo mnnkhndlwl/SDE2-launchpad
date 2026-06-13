@@ -1,0 +1,55 @@
+---
+title: "Classics: URL shortener & rate limiter"
+track: system-design
+summary: "Two designs that show up constantly — and the reusable ideas (id generation, token bucket) inside them."
+order: 5
+est: 24
+difficulty: medium
+priority: deep
+tags: [url-shortener, rate-limiter, design]
+whyAsked: "These two are the most common warm-up designs. They're small enough to finish in 30 minutes but rich enough to show your reasoning."
+followUps:
+  - "How do you generate short, unique, non-guessable keys?"
+  - "How do you handle the read-heavy traffic of redirects?"
+  - "How does a token-bucket rate limiter work in a distributed system?"
+resources:
+  - { label: "ByteByteGo", url: "https://bytebytego.com/" }
+---
+
+## Design a URL shortener (TinyURL)
+
+**Requirements.** Functional: create a short link for a long URL; redirect a short link to the long URL. Non-functional: **read-heavy** (far more redirects than creations), low-latency redirects, links don't change.
+
+**API.** `POST /shorten {url}` → `{shortUrl}`; `GET /{key}` → 301 redirect.
+
+**Key generation — the core decision.** You need a short, unique key (say 7 base-62 chars = 62⁷ ≈ 3.5 trillion). Options:
+
+- **Counter + base-62 encode.** A global incrementing id, encoded to base-62. Simple and dense, but sequential keys are guessable and the counter is a coordination point (use ranges handed out to each server, or a service like a ticket server).
+- **Hash (MD5/SHA) of the URL, take 7 chars.** Risk of collisions → check-and-retry on insert.
+- **Random + collision check.** Generate random 7 chars, insert if unused.
+
+**Storage.** A key-value store maps `key → longUrl` — perfect for NoSQL at scale, or a simple indexed SQL table. It's read-heavy, so put a **cache** (Redis) in front; most redirects never touch the DB.
+
+**Scale.** Redirects are the hot path: cache aggressively, serve from many stateless app nodes behind a load balancer, optionally a CDN. Use **301** (permanent) for cacheable redirects or **302** if you want to count clicks.
+
+## Design a rate limiter
+
+**Goal.** Allow at most N requests per user per window; reject or throttle the rest. Protects against abuse and overload.
+
+**Token bucket (the standard answer).** Each user has a bucket that refills at a steady rate up to a capacity. Each request consumes a token; no token → reject (429). It allows short bursts (up to capacity) while bounding the average rate — which is why it's preferred over a fixed window (which allows double-rate spikes at the boundary).
+
+```
+on request(user):
+  refill bucket based on time elapsed since last check
+  if tokens >= 1: tokens -= 1; allow
+  else: reject (429)
+```
+
+**Distributed.** With many app servers, the count must be **shared** — store each bucket in **Redis** (atomic decrement / Lua script) so the limit holds across the whole fleet, not per server. Tradeoff: a Redis round trip per request (mitigated by local pre-checks or sharding by user).
+
+**Alternatives to mention:** fixed window (simple, boundary-burst problem), sliding window log (accurate, more memory), sliding window counter (a good middle ground).
+
+<div class="callout key">
+  <div class="ct">The reusable ideas</div>
+  URL shortener → <b>id generation + read-heavy caching</b>. Rate limiter → <b>token bucket + shared state in Redis</b>. Both reduce to picking a data structure and a place to store shared state — exactly the building-blocks reasoning.
+</div>

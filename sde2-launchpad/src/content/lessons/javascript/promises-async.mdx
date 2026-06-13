@@ -1,0 +1,84 @@
+---
+title: "Promises & async/await"
+track: javascript
+summary: "States, chaining, error handling, and the concurrency helpers — plus how await maps back to the event loop."
+order: 5
+est: 22
+difficulty: medium
+priority: must
+tags: [promises, async-await, concurrency, error-handling]
+whyAsked: "Async correctness separates juniors from mid/senior. Expect questions on error propagation, running things in parallel vs series, and what await actually does."
+followUps:
+  - "How do you run independent async calls in parallel instead of in series?"
+  - "Difference between Promise.all, allSettled, race, and any?"
+  - "How does error handling differ between .then/.catch and try/catch with await?"
+  - "Is await blocking?"
+resources:
+  - { label: "javascript.info: Promises, async/await", url: "https://javascript.info/async" }
+---
+import JsPlayground from '../../../components/JsPlayground.astro';
+
+A **Promise** is an object representing a value that will exist later. It's in one of three states: **pending**, then exactly once it becomes **fulfilled** (with a value) or **rejected** (with a reason). Once settled, it never changes again.
+
+## Chaining and flattening
+
+`.then` returns a *new* promise, so calls chain. Crucially, if a `.then` callback returns a promise, the chain waits for it — promises auto-flatten, which is what makes sequential async readable.
+
+```js
+fetchUser(id)
+  .then(user => fetchPosts(user.id))   // returns a promise → chain waits
+  .then(posts => render(posts))
+  .catch(err => showError(err))        // one catch handles any earlier rejection
+  .finally(() => stopSpinner());       // runs regardless
+```
+
+A single `.catch` at the end handles a rejection from *any* preceding step, because a rejection skips `.then` handlers until it finds a `.catch`.
+
+## async/await is the same thing, nicer
+
+`async` functions always return a promise. `await` pauses the function until the awaited promise settles, then resumes with its value (or throws its rejection). With `await`, you use ordinary `try/catch`:
+
+```js
+async function load(id) {
+  try {
+    const user = await fetchUser(id);
+    const posts = await fetchPosts(user.id);
+    render(posts);
+  } catch (err) {
+    showError(err);
+  } finally {
+    stopSpinner();
+  }
+}
+```
+
+<div class="callout warn">
+  <div class="ct">await is not blocking the thread</div>
+  <code>await</code> suspends only the <i>async function</i>, not the whole program. The engine is free to run other tasks meanwhile; when the promise settles, the rest of the function is scheduled as a <b>microtask</b>. (See the Event Loop lesson — everything after an <code>await</code> is a microtask continuation.)
+</div>
+
+## Series vs parallel — the most common mistake
+
+Awaiting in a loop runs requests **one at a time**. If they're independent, that's needlessly slow. Kick them all off, then await together:
+
+<JsPlayground code={`function task(n, ms){ return new Promise(r => setTimeout(() => r(n), ms)); }
+
+(async () => {
+  // SERIES: ~300ms total (100+100+100)
+  // PARALLEL: ~100ms total — start all, then await
+  const results = await Promise.all([task(1,100), task(2,100), task(3,100)]);
+  console.log('parallel results:', results.join(', '));
+})();`} height={170} />
+
+## The concurrency combinators
+
+| Helper | Resolves when | Rejects when | Use for |
+|---|---|---|---|
+| `Promise.all` | all fulfil | any rejects (fail-fast) | need every result |
+| `Promise.allSettled` | all settle | never | want each outcome regardless |
+| `Promise.race` | first settles | first settles (if reject) | timeouts |
+| `Promise.any` | first fulfils | all reject | first success wins |
+
+## Say it out loud (30s)
+
+> "A promise is a future value in pending/fulfilled/rejected. `.then` returns a new promise and auto-flattens returned promises, so chains stay flat; one trailing `.catch` handles any rejection. `async/await` is sugar over this with normal try/catch. `await` suspends only its function — the continuation runs as a microtask — so to parallelize independent work I start all the promises and `Promise.all` them rather than awaiting in a loop."
