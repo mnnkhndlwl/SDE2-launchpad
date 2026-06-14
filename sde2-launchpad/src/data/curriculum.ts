@@ -64,6 +64,7 @@ export type TrackId =
   | 'lld'
   | 'frontend-system-design'
   | 'hld'
+  | 'backend'
   // QA program
   | 'qa-foundations'
   | 'qa-programming'
@@ -186,6 +187,15 @@ export const TRACKS: TrackMeta[] = [
     goal: 'Use the 6-step framework to design any system and defend every architectural decision under follow-up.',
     accent: '--accent-2',
     icon: '🏗️',
+  },
+  {
+    id: 'backend',
+    program: 'sde2',
+    name: 'Backend Engineering Essentials',
+    blurb: 'The 11 skills that keep a backend dev relevant in 2026 — APIs, auth, databases, caching, event-driven systems, concurrency, distributed systems, security, observability, cloud, and AI integration.',
+    goal: 'Speak to each of the 11 areas with real depth, defend tradeoffs under follow-up, and connect them into a coherent production architecture.',
+    accent: '--hot',
+    icon: '🛠️',
   },
   {
     id: 'qa-foundations',
@@ -464,6 +474,33 @@ export const PLAN: PlanWeek[] = [
       { text: 'Negotiation: know your number', lesson: 'behavioral/negotiation' },
       { text: 'Daily warm-up: 1 easy DSA + mistakes log' },
       { text: 'After each interview: log what was asked' },
+    ],
+  },
+  {
+    id: 'w11',
+    title: 'Week 11 — Backend Essentials I: APIs, auth, data & concurrency',
+    focus: 'The backend depth that keeps you relevant — the request path from API to database.',
+    goal: 'Design a clean API contract, explain auth end to end, and reason about indexing, caching, and concurrency under load.',
+    items: [
+      { text: 'API design: REST, gRPC & GraphQL', lesson: 'backend/api-design' },
+      { text: 'Auth: OAuth2, JWT, OIDC & Passkeys', lesson: 'backend/auth-and-authz' },
+      { text: 'Databases: SQL/NoSQL, sharding, indexing, query tuning', lesson: 'backend/databases' },
+      { text: 'Caching: Redis, CDN & edge strategies', lesson: 'backend/caching' },
+      { text: 'Concurrency & async: reactive & structured concurrency', lesson: 'backend/concurrency-and-async' },
+    ],
+  },
+  {
+    id: 'w12',
+    title: 'Week 12 — Backend Essentials II: scale, security & operations',
+    focus: 'Distributed systems, security, observability, cloud, and AI integration — the senior-signal layer.',
+    goal: 'Defend eventual consistency, the OWASP Top 10, OpenTelemetry, a K8s/GitOps deploy, and a RAG pipeline under follow-up.',
+    items: [
+      { text: 'Event-driven systems: Kafka, Pulsar & streaming', lesson: 'backend/event-driven-systems' },
+      { text: 'Distributed systems: microservices, service mesh, eventual consistency', lesson: 'backend/distributed-systems' },
+      { text: 'Security: HTTPS, encryption, zero trust, OWASP Top 10', lesson: 'backend/security' },
+      { text: 'Observability: logs, metrics, traces & OpenTelemetry', lesson: 'backend/observability' },
+      { text: 'Cloud & deployment: Docker, Kubernetes, serverless, GitOps', lesson: 'backend/cloud-and-deployment' },
+      { text: 'AI integration: LLM APIs, vector DBs & RAG', lesson: 'backend/ai-integration' },
     ],
   },
 ];

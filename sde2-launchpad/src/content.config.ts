@@ -17,6 +17,7 @@ const lessons = defineCollection({
       'lld',
       'frontend-system-design',
       'hld',
+      'backend',
       // QA / Automation program
       'qa-foundations',
       'qa-programming',
