@@ -2,7 +2,57 @@
 // Lessons themselves live in src/content/lessons/*. This file describes how
 // they are grouped and the recommended week-by-week path.
 
+export type ProgramId = 'sde2' | 'qa';
+
+export interface ProgramMeta {
+  id: ProgramId;
+  name: string;
+  tagline: string;
+  blurb: string;
+  home: string; // route to the program dashboard
+  logo: string; // 2-char brand mark
+  icon: string;
+  accent: string;
+  highlights: string[];
+}
+
+export const PROGRAMS: ProgramMeta[] = [
+  {
+    id: 'sde2',
+    name: 'SDE-2 Launchpad',
+    tagline: 'Software Engineer · Full-stack / Frontend / Backend',
+    blurb:
+      'An 8–10 week path to a higher-paying product/startup engineering role. DSA patterns, JS/TS internals, React Native, system design, and behavioral — with visualizers, drills, and mocks.',
+    home: '/sde2',
+    logo: 'S2',
+    icon: '🚀',
+    accent: '--accent',
+    highlights: [
+      'DSA Quest + in-browser Code Lab',
+      'JS output quiz & system-design canvas',
+      'Spaced-repetition flashcards & mock mode',
+    ],
+  },
+  {
+    id: 'qa',
+    name: 'QA · Automation Launchpad',
+    tagline: 'Manual → Automation · SDET / Test Engineer',
+    blurb:
+      'A 12-week path from manual tester to full-fledged automation engineer / SDET, tuned for the 2026 market. One language, Selenium & Playwright, API testing, framework design, CI/CD, performance, AI-assisted testing, plus cheat sheets and interview prep.',
+    home: '/qa',
+    logo: 'QA',
+    icon: '🧪',
+    accent: '--accent-2',
+    highlights: [
+      'Selenium + Playwright + API automation',
+      'Framework design, CI/CD & AI testing',
+      '12-week plan, cheat sheets & certs path',
+    ],
+  },
+];
+
 export type TrackId =
+  // SDE-2 program
   | 'quick-wins'
   | 'javascript'
   | 'react-native'
@@ -13,10 +63,23 @@ export type TrackId =
   | 'js-output'
   | 'lld'
   | 'frontend-system-design'
-  | 'hld';
+  | 'hld'
+  // QA program
+  | 'qa-foundations'
+  | 'qa-programming'
+  | 'qa-web'
+  | 'qa-api'
+  | 'qa-framework'
+  | 'qa-cicd'
+  | 'qa-performance'
+  | 'qa-ai'
+  | 'qa-mobile'
+  | 'qa-career'
+  | 'qa-cheatsheets';
 
 export interface TrackMeta {
   id: TrackId;
+  program: ProgramId;
   name: string;
   blurb: string;
   goal: string;
@@ -27,6 +90,7 @@ export interface TrackMeta {
 export const TRACKS: TrackMeta[] = [
   {
     id: 'quick-wins',
+    program: 'sde2',
     name: 'Quick Wins',
     blurb: 'Close your known interview gaps first — blind spots, not deep gaps.',
     goal: 'Solve move-zeros cold, explain the prototype chain on a whiteboard, and explain useImperativeHandle with a real use case.',
@@ -35,6 +99,7 @@ export const TRACKS: TrackMeta[] = [
   },
   {
     id: 'javascript',
+    program: 'sde2',
     name: 'JavaScript & TypeScript Core',
     blurb: 'The language internals interviewers probe to test depth beyond framework usage.',
     goal: 'Explain closures, the event loop, prototypes, and async clearly with examples.',
@@ -43,6 +108,7 @@ export const TRACKS: TrackMeta[] = [
   },
   {
     id: 'react-native',
+    program: 'sde2',
     name: 'React & React Native',
     blurb: 'Know the internals, not just the API — rendering, refs, perf, architecture.',
     goal: 'Explain rendering, refs, performance, and RN architecture under follow-up questions.',
@@ -51,6 +117,7 @@ export const TRACKS: TrackMeta[] = [
   },
   {
     id: 'dsa',
+    program: 'sde2',
     name: 'Data Structures & Algorithms',
     blurb: 'The 18 patterns that cover ~90% of startup SDE-2 DSA. Quality over grind.',
     goal: 'Recognize the pattern instantly and code the template without bugs.',
@@ -59,6 +126,7 @@ export const TRACKS: TrackMeta[] = [
   },
   {
     id: 'system-design',
+    program: 'sde2',
     name: 'System Design',
     blurb: 'Frontend and backend design — a repeatable framework and the core building blocks.',
     goal: 'Structure any design answer and defend every tradeoff.',
@@ -67,6 +135,7 @@ export const TRACKS: TrackMeta[] = [
   },
   {
     id: 'behavioral',
+    program: 'sde2',
     name: 'Behavioral & Job Search',
     blurb: 'The non-coding half that decides offers and pay. Do not skip it.',
     goal: 'Tell compelling STAR stories, target the right companies, negotiate well.',
@@ -75,6 +144,7 @@ export const TRACKS: TrackMeta[] = [
   },
   {
     id: 'ai-engineering',
+    program: 'sde2',
     name: 'AI Engineering Roadmap',
     blurb: 'A 6-phase path to become an AI engineer — built on your existing backend skills, hosted on your LeetCode clone.',
     goal: 'Ship raw LLM APIs → RAG on pgvector → a tool-using agent → evals & observability, one public project per phase.',
@@ -83,6 +153,7 @@ export const TRACKS: TrackMeta[] = [
   },
   {
     id: 'js-output',
+    program: 'sde2',
     name: 'JS Output Questions',
     blurb: '72 predict-the-output questions — the category that trips up even experienced JS devs in real interviews.',
     goal: 'Predict the output of any hoisting, closure, async, coercion, or prototype question without running it.',
@@ -91,6 +162,7 @@ export const TRACKS: TrackMeta[] = [
   },
   {
     id: 'lld',
+    program: 'sde2',
     name: 'Low-Level Design (LLD)',
     blurb: 'Design real UI systems from scratch — EventEmitter, Modal, Autocomplete, Toast, and Form Validation with full TypeScript implementations.',
     goal: 'Walk through a component LLD in under 30 minutes: requirements → API → data model → working code.',
@@ -99,6 +171,7 @@ export const TRACKS: TrackMeta[] = [
   },
   {
     id: 'frontend-system-design',
+    program: 'sde2',
     name: 'Frontend System Design',
     blurb: 'Architect production-scale frontend systems — feeds, chat, video, Kanban — using the 6-step framework.',
     goal: 'Apply the framework to any frontend design question, defend rendering/state/perf decisions under follow-up.',
@@ -107,11 +180,111 @@ export const TRACKS: TrackMeta[] = [
   },
   {
     id: 'hld',
+    program: 'sde2',
     name: 'High-Level Design (HLD)',
     blurb: 'Design scalable backend systems — URL shortener, rate limiter, Twitter feed, notifications, and search autocomplete.',
     goal: 'Use the 6-step framework to design any system and defend every architectural decision under follow-up.',
     accent: '--accent-2',
     icon: '🏗️',
+  },
+  {
+    id: 'qa-foundations',
+    program: 'qa',
+    name: 'Testing Foundations',
+    blurb: 'The vocabulary, techniques and process every QA interview and certification expects.',
+    goal: 'Design test cases, write a clear bug report, and explain SDLC/STLC, test types and the defect lifecycle.',
+    accent: '--accent',
+    icon: '🧪',
+  },
+  {
+    id: 'qa-programming',
+    program: 'qa',
+    name: 'Programming for Testers',
+    blurb: 'Pick one language and go deep — the coding depth that separates an automation engineer from a script-copier.',
+    goal: 'Write clean OOP code, handle data/files/JSON, and query a database with SQL.',
+    accent: '--accent-2',
+    icon: '💻',
+  },
+  {
+    id: 'qa-web',
+    program: 'qa',
+    name: 'Web UI Automation',
+    blurb: 'Locators, Selenium and Playwright — drive the browser reliably and kill flakiness.',
+    goal: 'Build a stable cross-browser UI suite and explain every flakiness fix.',
+    accent: '--accent-2',
+    icon: '🌐',
+  },
+  {
+    id: 'qa-api',
+    program: 'qa',
+    name: 'API Testing',
+    blurb: 'The highest-ROI test layer — stable, fast, and in higher demand than UI testing in 2026.',
+    goal: 'Test REST APIs in Postman and automate them in code with status, body and schema assertions.',
+    accent: '--warn',
+    icon: '🔌',
+  },
+  {
+    id: 'qa-framework',
+    program: 'qa',
+    name: 'Framework Design',
+    blurb: 'What turns a scripter into an engineer: maintainable, scalable automation architecture.',
+    goal: 'Design a framework from scratch (POM + data-driven + config + reporting) and defend every choice.',
+    accent: '--mine',
+    icon: '🏗️',
+  },
+  {
+    id: 'qa-cicd',
+    program: 'qa',
+    name: 'CI/CD & DevOps',
+    blurb: 'Tests only deliver value running continuously — Git, pipelines, Docker and cloud grids.',
+    goal: 'Run your suite automatically on every push, in parallel, across browsers, in CI.',
+    accent: '--accent',
+    icon: '⚙️',
+  },
+  {
+    id: 'qa-performance',
+    program: 'qa',
+    name: 'Performance & NFR',
+    blurb: 'Non-functional testing — load/performance, security and accessibility — makes you complete.',
+    goal: 'Run and interpret a load test and apply basic security & accessibility checks.',
+    accent: '--hot',
+    icon: '🚀',
+  },
+  {
+    id: 'qa-ai',
+    program: 'qa',
+    name: 'AI-Assisted Testing',
+    blurb: 'The fastest-growing 2026 skill: self-healing locators, LLM test generation, agentic testing.',
+    goal: 'Use AI to generate tests and self-heal locators — and explain the risks and limits.',
+    accent: '--accent-2',
+    icon: '🤖',
+  },
+  {
+    id: 'qa-mobile',
+    program: 'qa',
+    name: 'Mobile Automation',
+    blurb: 'Optional but valuable — automate native Android/iOS flows with Appium and beyond.',
+    goal: 'Automate a native mobile flow and understand mobile-specific challenges.',
+    accent: '--accent-2',
+    icon: '📱',
+  },
+  {
+    id: 'qa-career',
+    program: 'qa',
+    name: 'Career, Certs & Interviews',
+    blurb: 'Turn the skills into a title, a salary and an offer — portfolio, certifications, interview prep.',
+    goal: 'A quantified resume, the right certs (ISTQB to CTAL-TAE), and interview readiness.',
+    accent: '--mine',
+    icon: '🎯',
+  },
+  {
+    id: 'qa-cheatsheets',
+    program: 'qa',
+    name: 'Cheat Sheets',
+    blurb: 'Fast, printable quick reference — locators, Git, runners, HTTP codes, Playwright/Selenium APIs.',
+    goal: 'Write a robust locator, a Git command or an API assertion from memory.',
+    accent: '--warn',
+    icon: '📑',
   },
 ];
 
@@ -283,6 +456,153 @@ export const PLAN: PlanWeek[] = [
       { text: 'Negotiation: know your number', lesson: 'behavioral/negotiation' },
       { text: 'Daily warm-up: 1 easy DSA + mistakes log' },
       { text: 'After each interview: log what was asked' },
+    ],
+  },
+];
+
+// ───────────────── QA / Automation 12-week plan ─────────────────
+export const QA_PLAN: PlanWeek[] = [
+  {
+    id: 'qw1',
+    title: 'Week 1 — Setup, language basics & Git',
+    focus: 'Pick one language, install the tools, ship your first test.',
+    goal: 'A working IDE, Git + GitHub, and a passing UI test that opens a site and asserts a result.',
+    items: [
+      { text: 'Pick ONE language and set up your toolchain', lesson: 'qa-programming/pick-a-language' },
+      { text: 'Learn just enough Git; create your portfolio repo', lesson: 'qa-cicd/git-for-qa' },
+      { text: 'Write your first UI test (Playwright recommended)', lesson: 'qa-web/playwright-core' },
+      { text: 'Internalize the testing pyramid & start a mistakes log' },
+    ],
+  },
+  {
+    id: 'qw2',
+    title: 'Week 2 — Programming for testers',
+    focus: 'The coding constructs every framework leans on.',
+    goal: 'Write classes, handle collections, parse JSON/CSV, and read a stack trace.',
+    items: [
+      { text: 'OOP for testers: classes, inheritance, interfaces', lesson: 'qa-programming/oop-for-testers' },
+      { text: 'Collections, files, JSON/CSV, exceptions & debugging', lesson: 'qa-programming/oop-for-testers' },
+      { text: 'SQL for testers: SELECT, JOIN, WHERE, GROUP BY', lesson: 'qa-programming/sql-for-testers' },
+      { text: 'Mini project: a CLI that reads test data from a file' },
+    ],
+  },
+  {
+    id: 'qw3',
+    title: 'Week 3 — Testing fundamentals',
+    focus: 'Manual depth still matters — test design beats clicking robots.',
+    goal: 'Design test cases, write a great bug report, explain SDLC/STLC and the defect lifecycle.',
+    items: [
+      { text: 'SDLC vs STLC, Agile testing, shift-left', lesson: 'qa-foundations/testing-fundamentals' },
+      { text: 'Test design techniques (EP, BVA, decision table…)', lesson: 'qa-foundations/test-design-techniques' },
+      { text: 'Defect lifecycle, severity vs priority, bug reports', lesson: 'qa-foundations/bug-lifecycle' },
+      { text: 'Write 15 test cases + 3 bug reports for a real app' },
+    ],
+  },
+  {
+    id: 'qw4',
+    title: 'Week 4 — Web internals & locators',
+    focus: "You can't automate what you can't locate.",
+    goal: 'Write robust CSS and XPath locators for any element using DevTools.',
+    items: [
+      { text: 'HTML/DOM basics & DevTools', lesson: 'qa-web/locators' },
+      { text: 'CSS selectors & XPath for automation', lesson: 'qa-web/locators' },
+      { text: 'Validate selectors in the console; locate 20 elements' },
+    ],
+  },
+  {
+    id: 'qw5',
+    title: 'Week 5 — Selenium WebDriver core',
+    focus: 'The industry standard; most legacy suites are Selenium.',
+    goal: 'Drive a browser: find elements, interact, handle the common scenarios.',
+    items: [
+      { text: 'WebDriver setup, locators & interactions', lesson: 'qa-web/selenium-core' },
+      { text: 'Waits: implicit vs explicit (never Thread.sleep)', lesson: 'qa-web/waits-and-flakiness' },
+      { text: 'Alerts, frames, windows, Actions, JS executor', lesson: 'qa-web/selenium-core' },
+      { text: 'Project: automate login + add-to-cart + checkout' },
+    ],
+  },
+  {
+    id: 'qw6',
+    title: 'Week 6 — Playwright (the 2026 frontrunner)',
+    focus: 'Faster, auto-waiting, less flaky.',
+    goal: 'Write Playwright tests with auto-wait, web-first assertions, fixtures and traces.',
+    items: [
+      { text: 'Playwright setup, config, cross-browser projects', lesson: 'qa-web/playwright-core' },
+      { text: 'Resilient locators (getByRole/Text/TestId)', lesson: 'qa-web/playwright-core' },
+      { text: 'Selenium vs Playwright vs Cypress — when each wins', lesson: 'qa-web/tool-comparison' },
+      { text: 'Re-build the Week 5 flow in Playwright; compare' },
+    ],
+  },
+  {
+    id: 'qw7',
+    title: 'Week 7 — Runners, assertions & Page Object Model',
+    focus: 'From scripts to a maintainable, structured framework.',
+    goal: 'Structure tests with a runner, rich assertions and a clean POM.',
+    items: [
+      { text: 'Test runner: TestNG/JUnit/pytest/Playwright Test', lesson: 'qa-cheatsheets/cheatsheets' },
+      { text: 'Page Object Model: pages as classes', lesson: 'qa-framework/page-object-model' },
+      { text: 'Data-driven testing from JSON/CSV/Excel', lesson: 'qa-framework/framework-architecture' },
+      { text: 'Refactor your suite into clean POM' },
+    ],
+  },
+  {
+    id: 'qw8',
+    title: 'Week 8 — Build a real framework',
+    focus: 'Your portfolio centerpiece. Make it production-shaped.',
+    goal: 'POM + data-driven + config + logging + reporting, on GitHub with a README.',
+    items: [
+      { text: 'Build tool + config + secrets management', lesson: 'qa-framework/framework-architecture' },
+      { text: 'Logging, screenshots on failure & reporting (Allure)', lesson: 'qa-framework/framework-architecture' },
+      { text: 'Retry logic + cross-browser config' },
+      { text: 'Write a strong README — recruiters read it' },
+    ],
+  },
+  {
+    id: 'qw9',
+    title: 'Week 9 — API testing',
+    focus: 'In higher demand than UI testing in 2026.',
+    goal: 'Test REST APIs in Postman and automate them in code with assertions.',
+    items: [
+      { text: 'HTTP foundations: methods, codes, headers, auth', lesson: 'qa-api/http-foundations' },
+      { text: 'Postman: collections, variables, tests, Newman', lesson: 'qa-api/postman-and-automation' },
+      { text: 'Automate in code: REST Assured / requests+pytest', lesson: 'qa-api/postman-and-automation' },
+      { text: 'Project: full CRUD with assertions on a public API' },
+    ],
+  },
+  {
+    id: 'qw10',
+    title: 'Week 10 — CI/CD, Docker & cloud grids',
+    focus: '~89% of QA roles expect CI/CD.',
+    goal: 'Your suite runs automatically on every push, in parallel, in the cloud.',
+    items: [
+      { text: 'CI fundamentals + GitHub Actions / Jenkins', lesson: 'qa-cicd/ci-cd-docker' },
+      { text: 'Docker basics; run tests in a container', lesson: 'qa-cicd/ci-cd-docker' },
+      { text: 'Parallel runs, Grid/shards, cloud farms', lesson: 'qa-cicd/ci-cd-docker' },
+      { text: 'Make YOUR framework run green in CI on every push' },
+    ],
+  },
+  {
+    id: 'qw11',
+    title: 'Week 11 — Performance, AI tooling & mobile',
+    focus: 'Round out into a full-spectrum SDET.',
+    goal: 'Run a basic load test, use an AI testing assistant, and run one mobile test.',
+    items: [
+      { text: 'Performance testing with k6 / JMeter', lesson: 'qa-performance/performance-and-nfr' },
+      { text: 'Security (OWASP) & accessibility (axe) basics', lesson: 'qa-performance/performance-and-nfr' },
+      { text: 'AI-assisted testing: Copilot, self-healing, GenAI', lesson: 'qa-ai/ai-in-testing-2026' },
+      { text: 'Mobile automation intro with Appium', lesson: 'qa-mobile/appium-basics' },
+    ],
+  },
+  {
+    id: 'qw12',
+    title: 'Week 12 — Portfolio, resume & interviews',
+    focus: 'Convert skills into offers.',
+    goal: 'A polished portfolio, an SDET resume, and active applications + mocks.',
+    items: [
+      { text: 'Certifications path: ISTQB → CTAL-TAE', lesson: 'qa-career/certifications-and-roadmap' },
+      { text: 'Portfolio + SDET resume + interview prep', lesson: 'qa-career/resume-portfolio-interview' },
+      { text: 'Mock interviews out loud; apply to 5–10 roles/week' },
+      { text: 'After each interview, log what was asked' },
     ],
   },
 ];

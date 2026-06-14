@@ -1,0 +1,1146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Automation QA / SDET Roadmap</title>
+<style>
+  :root{
+    --bg:#0f1117; --panel:#181b24; --panel-2:#1f2330; --line:#2a2f3d;
+    --text:#e7eaf0; --muted:#9aa3b2; --accent:#6ea8fe; --accent-2:#7ee787;
+    --warn:#f2cc60; --hot:#ff7b72; --cyan:#56d4dd; --purple:#c8a6ff;
+    --radius:14px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    background:radial-gradient(1200px 600px at 70% -10%,#1b2030,transparent),var(--bg);
+    color:var(--text);line-height:1.55;padding:0 0 90px;
+  }
+  .wrap{max-width:1100px;margin:0 auto;padding:0 22px}
+  header{padding:42px 22px 22px;max-width:1100px;margin:0 auto}
+  h1{font-size:30px;letter-spacing:-0.5px}
+  .sub{color:var(--muted);margin-top:8px;font-size:15px;max-width:820px}
+  .profile{margin-top:14px;font-size:13px;color:var(--muted);background:var(--panel);
+    border:1px solid var(--line);border-radius:10px;padding:12px 14px;max-width:820px}
+  .profile b{color:var(--text)}
+  .profile code{background:var(--panel-2);padding:1px 6px;border-radius:5px;font-size:12px}
+
+  .dash{display:flex;flex-wrap:wrap;gap:18px;align-items:center;background:var(--panel);
+    border:1px solid var(--line);border-radius:var(--radius);padding:20px;margin:18px 0 22px}
+  .ring{position:relative;width:96px;height:96px;flex:0 0 auto}
+  .ring svg{transform:rotate(-90deg)}
+  .ring .pct{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:20px}
+  .dash-meta{flex:1;min-width:220px}
+  .dash-meta b{font-size:18px}
+  .dash-meta span{color:var(--muted);font-size:14px}
+  .controls{display:flex;gap:8px;flex-wrap:wrap}
+  button.ctrl{background:var(--panel-2);color:var(--text);border:1px solid var(--line);
+    padding:8px 14px;border-radius:9px;cursor:pointer;font-size:13px;transition:.15s}
+  button.ctrl:hover{border-color:var(--accent);color:var(--accent)}
+
+  .filters{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:18px}
+  .chip{background:var(--panel-2);border:1px solid var(--line);color:var(--muted);
+    padding:6px 13px;border-radius:20px;cursor:pointer;font-size:13px;transition:.15s}
+  .chip.active{background:var(--accent);color:#0b1020;border-color:var(--accent);font-weight:600}
+
+  .mod{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);
+    margin-bottom:16px;overflow:hidden}
+  .mod.prio{border-color:#5a4a2a;box-shadow:0 0 0 1px rgba(242,204,96,.15) inset}
+  .mod-head{display:flex;align-items:center;gap:14px;padding:18px 20px;cursor:pointer;user-select:none}
+  .mod-head:hover{background:var(--panel-2)}
+  .badge{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;
+    padding:3px 9px;border-radius:20px;white-space:nowrap}
+  .b-week{background:rgba(110,168,254,.15);color:var(--accent)}
+  .b-track{background:rgba(126,231,135,.13);color:var(--accent-2)}
+  .b-prio{background:rgba(242,204,96,.16);color:var(--warn)}
+  .b-soft{background:rgba(255,123,114,.14);color:var(--hot)}
+  .b-found{background:rgba(110,168,254,.15);color:var(--accent)}
+  .b-web{background:rgba(126,231,135,.15);color:var(--accent-2)}
+  .b-api{background:rgba(242,204,96,.16);color:var(--warn)}
+  .b-frame{background:rgba(200,166,255,.15);color:var(--purple)}
+  .b-perf{background:rgba(255,123,114,.15);color:var(--hot)}
+  .b-cicd{background:rgba(86,212,221,.15);color:var(--cyan)}
+  .b-ai{background:rgba(86,212,221,.15);color:var(--cyan)}
+  .b-mobile{background:rgba(126,231,135,.15);color:var(--accent-2)}
+  .b-cheat{background:rgba(242,204,96,.16);color:var(--warn)}
+  .b-career{background:rgba(200,166,255,.15);color:var(--purple)}
+  .b-trends{background:rgba(86,212,221,.15);color:var(--cyan)}
+  .m-title{flex:1}
+  .m-title h2{font-size:17.5px}
+  .m-title p{color:var(--muted);font-size:13px;margin-top:3px}
+  .m-prog{font-size:12px;color:var(--muted);white-space:nowrap;text-align:right}
+  .bar{height:6px;background:var(--panel-2);border-radius:6px;overflow:hidden;width:120px;margin-top:6px}
+  .bar > i{display:block;height:100%;background:linear-gradient(90deg,var(--accent),var(--accent-2));width:0;transition:width .3s}
+  .chev{transition:transform .2s;color:var(--muted)}
+  .mod.open .chev{transform:rotate(90deg)}
+  .mod-body{display:none;padding:4px 20px 16px}
+  .mod.open .mod-body{display:block}
+
+  .goal{font-size:13px;color:var(--muted);background:var(--panel-2);border-radius:10px;
+    padding:10px 14px;margin:8px 0 12px}
+  .goal b{color:var(--accent-2)}
+
+  .item{display:flex;align-items:flex-start;gap:12px;padding:11px 4px;border-top:1px solid var(--line)}
+  .item:first-of-type{border-top:none}
+  .item input{width:18px;height:18px;accent-color:var(--accent-2);cursor:pointer;flex:0 0 auto;margin-top:2px}
+  .item .body{flex:1}
+  .item .t{font-size:14.5px}
+  .item.done .t{color:var(--muted);text-decoration:line-through}
+  .item .note{font-size:12.5px;color:var(--muted);margin-top:2px}
+  .item .note code{background:var(--panel-2);padding:1px 5px;border-radius:5px;font-size:11.5px;color:var(--accent-2)}
+  .item a{color:var(--accent);text-decoration:none}
+  .item a:hover{text-decoration:underline}
+  .res{display:inline-block;font-size:11px;color:var(--accent);border:1px solid var(--line);
+    border-radius:6px;padding:1px 7px;margin:4px 6px 0 0;text-decoration:none;background:var(--panel-2)}
+  .res:hover{border-color:var(--accent)}
+
+  .empty{color:var(--muted);padding:30px;text-align:center;font-size:14px}
+
+  .b-mine{background:rgba(200,166,255,.15);color:#c8a6ff}
+  .star{background:none;border:none;cursor:pointer;font-size:18px;line-height:1;color:#4a5163;flex:0 0 auto;padding:0 2px;transition:.15s;margin-top:1px}
+  .star:hover{transform:scale(1.2)}
+  .star.on{color:var(--warn)}
+  .del{background:none;border:none;cursor:pointer;font-size:14px;color:#4a5163;flex:0 0 auto;padding:0 4px;transition:.15s}
+  .del:hover{color:var(--hot);transform:scale(1.2)}
+  .del-track{margin-left:6px}
+  .mine{font-size:10px;color:#c8a6ff;background:rgba(200,166,255,.12);padding:1px 7px;border-radius:20px;white-space:nowrap;margin-left:6px}
+  .topic-tag{font-size:10px;color:var(--accent);background:rgba(110,168,254,.12);padding:1px 8px;border-radius:20px;white-space:nowrap;margin-left:6px}
+  .pill{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;padding:1px 8px;border-radius:20px;white-space:nowrap;margin-left:6px}
+  .p-must{background:rgba(126,231,135,.15);color:var(--accent-2)}
+  .p-deep{background:rgba(242,204,96,.16);color:var(--warn)}
+  .p-know{background:rgba(110,168,254,.14);color:var(--accent)}
+  .p-Easy{background:rgba(126,231,135,.15);color:var(--accent-2)}
+  .p-Medium{background:rgba(242,204,96,.16);color:var(--warn)}
+  .p-Hard{background:rgba(255,123,114,.15);color:var(--hot)}
+  .b-rn{background:rgba(110,168,254,.16);color:var(--accent)}
+  .b-dsa{background:rgba(126,231,135,.15);color:var(--accent-2)}
+
+  .addbox{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:18px 20px;margin:0 0 20px;display:none}
+  .addbox.open{display:block}
+  .addbox h3{font-size:13px;margin-bottom:12px;color:var(--accent)}
+  .addgrid{display:flex;flex-wrap:wrap;gap:10px;align-items:flex-end}
+  .field{display:flex;flex-direction:column;gap:5px}
+  .field label{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px}
+  .field input,.field select{background:var(--panel-2);border:1px solid var(--line);color:var(--text);padding:9px 11px;border-radius:9px;font-size:14px;font-family:inherit}
+  .field input:focus,.field select:focus{outline:none;border-color:var(--accent)}
+  .field.grow{flex:1;min-width:170px}
+  .field.grow input{width:100%}
+  button.add{background:linear-gradient(90deg,var(--accent),var(--accent-2));color:#0b1020;border:none;padding:10px 18px;border-radius:9px;cursor:pointer;font-weight:700;font-size:14px}
+  button.add:hover{filter:brightness(1.08)}
+  .addnote{color:var(--hot);font-size:12px;margin-top:8px;min-height:14px}
+
+  footer{max-width:1100px;margin:28px auto 0;padding:0 22px;color:var(--muted);font-size:13px}
+  footer a{color:var(--accent);text-decoration:none}
+  .legend{display:flex;gap:14px;flex-wrap:wrap;font-size:12px;color:var(--muted);margin:0 0 18px}
+  .bk-row{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+  .filelbl{display:inline-flex;align-items:center}
+</style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.10.3/sql-wasm.js"></script>
+</head>
+<body>
+<header>
+  <h1>Automation QA → SDET Roadmap</h1>
+  <p class="sub">A complete, no-fluff path from manual tester to full-fledged automation engineer / SDET — built for the 2026 market. A 12-week plan plus deep topic tracks covering one language, Selenium &amp; Playwright, API testing, framework design, CI/CD, performance, AI-assisted testing, mobile, plus cheat sheets, certifications and interview prep. Check things off — progress saves automatically in this browser.</p>
+  <div class="profile">
+    <b>Who this is for:</b> manual testers moving to automation, fresh QA aspirants, or developers pivoting into test engineering.
+    <b>The 2026 reality:</b> Playwright adoption (~45%) has overtaken Selenium (~22%) and pays 5–15% more; engineers who know <b>both</b> earn 15–25% more. <b>API/integration tests</b> are now more in-demand than UI tests. <b>CI/CD</b> appears in ~89% of QA roles, and <b>AI-assisted testing</b> (self-healing, LLM test generation) is the fastest-rising skill. SDET = automation + APIs + CI/CD + cloud + AI fluency, on top of solid test fundamentals.
+    <b>Rule of the road:</b> pick <b>one</b> language (Java, Python, or JS/TS) and go deep — don't dabble in three.
+  </div>
+</header>
+
+<div class="wrap">
+  <div class="dash">
+    <div class="ring">
+      <svg width="96" height="96">
+        <circle cx="48" cy="48" r="42" stroke="#2a2f3d" stroke-width="8" fill="none"/>
+        <circle id="ringFill" cx="48" cy="48" r="42" stroke="#6ea8fe" stroke-width="8" fill="none"
+                stroke-linecap="round" stroke-dasharray="263.9" stroke-dashoffset="263.9"/>
+      </svg>
+      <div class="pct" id="pctText">0%</div>
+    </div>
+    <div class="dash-meta">
+      <b id="solvedCount">0 / 0 done</b><br>
+      <span id="encourage">Start with First Moves — it gets your tools installed and your first script running in days.</span>
+    </div>
+    <div class="controls">
+      <button class="ctrl" onclick="toggleAdd()">+ Add topic / track</button>
+      <button class="ctrl" onclick="toggleBackup()">⤓ Backup / Restore</button>
+      <button class="ctrl" onclick="expandAll(true)">Expand all</button>
+      <button class="ctrl" onclick="expandAll(false)">Collapse all</button>
+      <button class="ctrl" onclick="resetProgress()">Reset</button>
+    </div>
+  </div>
+
+  <div class="addbox" id="backupbox">
+    <h3>Backup &amp; restore — keep your progress forever / move it to another machine</h3>
+    <div class="bk-row">
+      <button class="add" onclick="exportJSON()">⬇ Export JSON</button>
+      <label class="ctrl filelbl">⬆ Import JSON<input type="file" accept="application/json,.json" onchange="importJSON(this.files[0]); this.value=''" hidden></label>
+      <button class="ctrl" onclick="exportSQLDump()">⬇ Export SQL dump (.sql)</button>
+      <button class="ctrl" onclick="exportSQLite()">⬇ Export SQLite (.db)</button>
+      <label class="ctrl filelbl">⬆ Import SQLite (.db)<input type="file" accept=".db,.sqlite,.sqlite3" onchange="importSQLite(this.files[0]); this.value=''" hidden></label>
+    </div>
+    <div class="addnote" id="bkNote" style="color:var(--muted)">JSON is the simplest, fully-offline way to move everything between machines. The .sql dump and .db are real SQLite (the .db/import needs internet once to load the engine).</div>
+  </div>
+
+  <div class="addbox" id="addbox">
+    <h3>Add a topic / item to a track</h3>
+    <div class="addgrid">
+      <div class="field grow"><label for="iTitle">Topic / item</label><input id="iTitle" type="text" placeholder="e.g. Practice explicit waits with ExpectedConditions"></div>
+      <div class="field grow"><label for="iNote">Note (optional)</label><input id="iNote" type="text" placeholder="short reminder"></div>
+      <div class="field grow"><label for="iUrl">Link (optional)</label><input id="iUrl" type="text" placeholder="https://..."></div>
+      <div class="field"><label for="iTrack">Add to track</label><select id="iTrack"></select></div>
+      <button class="add" onclick="addItem()">Add item</button>
+    </div>
+    <div class="addnote" id="iErr"></div>
+    <hr style="border:none;border-top:1px solid var(--line);margin:16px 0">
+    <h3>Create your own track</h3>
+    <div class="addgrid">
+      <div class="field grow"><label for="tName">Track name</label><input id="tName" type="text" placeholder="e.g. Company-specific prep"></div>
+      <div class="field grow"><label for="tDesc">Description (optional)</label><input id="tDesc" type="text" placeholder="what this track is for"></div>
+      <button class="add" onclick="addTrack()">Create track</button>
+    </div>
+    <div class="addnote" id="tErr"></div>
+  </div>
+
+  <div class="filters" id="filters">
+    <div class="chip active" data-f="all">Everything</div>
+    <div class="chip" data-f="prio">First Moves</div>
+    <div class="chip" data-f="weeks">12-Week Plan</div>
+    <div class="chip" data-f="found">Foundations</div>
+    <div class="chip" data-f="web">Web UI</div>
+    <div class="chip" data-f="api">API</div>
+    <div class="chip" data-f="frame">Frameworks</div>
+    <div class="chip" data-f="cicd">CI/CD &amp; DevOps</div>
+    <div class="chip" data-f="perf">Performance &amp; NFR</div>
+    <div class="chip" data-f="ai">AI Testing</div>
+    <div class="chip" data-f="mobile">Mobile</div>
+    <div class="chip" data-f="cheat">Cheat Sheets</div>
+    <div class="chip" data-f="career">Career &amp; Certs</div>
+    <div class="chip" data-f="trends">2026 Trends</div>
+    <div class="chip" data-f="revisit">★ Revisit <span id="revCount"></span></div>
+    <div class="chip" data-f="links">🔗 Links <span id="linkCount"></span></div>
+    <div class="chip" data-f="incomplete">Unfinished only</div>
+  </div>
+
+  <div class="legend">
+    <span>Priority tags:</span>
+    <span class="pill p-must">must</span> nail this
+    <span class="pill p-deep">deep</span> go deep
+    <span class="pill p-know">know</span> good to know
+  </div>
+
+  <div id="mods"></div>
+
+  <footer>
+    Daily rhythm: ~45–60 min hands-on coding/automation (build, don't just read) · ~30 min theory or a track · ~15 min notes/review.
+    Weekly: ship one small automated test suite to GitHub and write down what broke. Keep a "mistakes log" of every flaky test, locator fail and concept you missed.
+    Core resources: <a href="https://testautomationu.applitools.com/" target="_blank" rel="noopener">Test Automation University (free)</a> ·
+    <a href="https://playwright.dev/" target="_blank" rel="noopener">Playwright docs</a> ·
+    <a href="https://www.selenium.dev/documentation/" target="_blank" rel="noopener">Selenium docs</a> ·
+    <a href="https://learning.postman.com/" target="_blank" rel="noopener">Postman Learning Center</a> ·
+    <a href="https://www.ministryoftesting.com/" target="_blank" rel="noopener">Ministry of Testing</a>.
+    Practice targets: <a href="https://www.saucedemo.com/" target="_blank" rel="noopener">SauceDemo</a> ·
+    <a href="https://the-internet.herokuapp.com/" target="_blank" rel="noopener">the-internet</a> ·
+    <a href="https://reqres.in/" target="_blank" rel="noopener">ReqRes (API)</a>.
+  </footer>
+</div>
+
+<script>
+/* ---------- DATA ---------- */
+const MODULES = [
+
+/* ========== FIRST MOVES ========== */
+{ id:"qw", cat:"prio", badge:"b-prio", label:"First moves",
+  name:"First Moves — set up and ship your first automated test this week",
+  desc:"The fastest path to momentum: pick a language, install the tools, and get one green test running before you go theory-deep.",
+  goal:"By end of week 1: a working IDE, Git set up, and a passing Playwright/Selenium test that opens a site, clicks something, and asserts a result.",
+  items:[
+    {t:"Pick ONE language and commit to it", pri:"must", note:"Java (most enterprise/Selenium jobs, REST Assured), Python (fastest to learn, great for API + Playwright), or JavaScript/TypeScript (best for Playwright/Cypress + web teams). Don't learn three. Choose based on your target company's stack.",
+      res:[["TAU: pick a path","https://testautomationu.applitools.com/learningpaths.html"]]},
+    {t:"Install your toolchain", pri:"must", note:"IDE (IntelliJ for Java / VS Code or PyCharm for Python-JS), language SDK (JDK 21 / Python 3.12 / Node 20+), Git, and the browser. Add the language plugins to your IDE.",
+      res:[["VS Code","https://code.visualstudio.com/"],["IntelliJ","https://www.jetbrains.com/idea/"]]},
+    {t:"Learn just enough Git to commit & push", pri:"must", note:"clone, add, commit, push, branch, pull, merge, .gitignore. Make a GitHub repo today — every test you write goes here. This repo IS your portfolio.",
+      res:[["Learn Git Branching","https://learngitbranching.js.org/"],["GitHub","https://github.com/"]]},
+    {t:"Write your first UI test (Playwright recommended)", pri:"must", note:"npm init playwright@latest → open saucedemo.com → log in → assert the inventory page shows. Watch it pass. This is the whole job in miniature.",
+      res:[["Playwright getting started","https://playwright.dev/docs/intro"],["SauceDemo practice site","https://www.saucedemo.com/"]]},
+    {t:"Internalize the Testing Pyramid", pri:"must", note:"Many fast unit tests at the base, fewer API/integration tests in the middle, very few slow UI/E2E tests at top. Most beginners invert it (too many brittle UI tests) — don't.",
+      res:[["Martin Fowler: Test Pyramid","https://martinfowler.com/articles/practical-test-pyramid.html"]]},
+    {t:"Start a mistakes log", note:"One running doc. Every flaky locator, wrong wait, failed assertion, and 'why did this break' goes here with the fix. Re-read before interviews.", res:[]},
+  ]
+},
+
+/* ========== 12-WEEK PLAN ========== */
+{ id:"w1", cat:"weeks", badge:"b-week", label:"Week 1",
+  name:"Week 1 — Setup, language basics & Git",
+  desc:"Get the environment solid and write code every day.",
+  goal:"Comfortable running code, committing to GitHub, and reading basic syntax in your chosen language.",
+  items:[
+    {t:"Finish the entire First Moves section above", res:[]},
+    {t:"Language core: variables, types, conditionals, loops, functions", note:"Type a little code every day — don't just watch tutorials.", res:[["Python","https://docs.python.org/3/tutorial/"],["Java","https://dev.java/learn/"],["JS","https://javascript.info/"]]},
+    {t:"Git workflow: branch → commit → push → PR", res:[["Learn Git Branching","https://learngitbranching.js.org/"]]},
+    {t:"Set up tracking: this page + a GitHub repo + a mistakes log", res:[]},
+  ]
+},
+{ id:"w2", cat:"weeks", badge:"b-week", label:"Week 2",
+  name:"Week 2 — Programming for testers",
+  desc:"The coding constructs you'll use in every test framework.",
+  goal:"Can write classes, handle collections, read/write files, and parse JSON in your language.",
+  items:[
+    {t:"OOP: classes, objects, methods, inheritance, interfaces", pri:"must", note:"Page Object Model and framework design lean entirely on OOP.", res:[]},
+    {t:"Collections: list/array, map/dict, set — iterate & transform", res:[]},
+    {t:"Exceptions / error handling (try-catch, try-except)", res:[]},
+    {t:"Read/write files; parse JSON and CSV (test data)", res:[]},
+    {t:"Mini project: a CLI program that reads test data from a JSON/CSV file", res:[]},
+  ]
+},
+{ id:"w3", cat:"weeks", badge:"b-week", label:"Week 3",
+  name:"Week 3 — Testing fundamentals (the theory interviewers probe)",
+  desc:"Manual testing depth still matters — automation without test design is just clicking robots.",
+  goal:"Can design test cases, write a clear bug report, and explain SDLC/STLC, test types and the defect lifecycle.",
+  items:[
+    {t:"SDLC vs STLC; Agile/Scrum testing; shift-left", pri:"must", res:[["Ministry of Testing","https://www.ministryoftesting.com/"]]},
+    {t:"Test design techniques", pri:"must", note:"Equivalence partitioning, boundary value analysis, decision tables, state transition, pairwise. These come up in every interview.", res:[["ISTQB syllabus (free)","https://www.istqb.org/certifications/certified-tester-foundation-level"]]},
+    {t:"Test types: functional, regression, smoke, sanity, integration, E2E, UAT", res:[]},
+    {t:"Bug/defect lifecycle + writing a great bug report", pri:"must", note:"Title, steps, expected vs actual, severity vs priority, environment, evidence.", res:[]},
+    {t:"Write 15 test cases + 3 bug reports for a real app (e.g. a to-do app)", res:[]},
+  ]
+},
+{ id:"w4", cat:"weeks", badge:"b-week", label:"Week 4",
+  name:"Week 4 — Web internals & locators",
+  desc:"You can't automate what you can't locate. Master the DOM and selectors.",
+  goal:"Can write robust CSS and XPath locators for any element using DevTools, and read basic HTML/DOM structure.",
+  items:[
+    {t:"HTML & DOM basics: tags, attributes, hierarchy, shadow DOM", pri:"must", res:[["MDN HTML","https://developer.mozilla.org/en-US/docs/Web/HTML"]]},
+    {t:"CSS selectors for automation", pri:"must", note:"id #x, class .x, attribute [name='y'], descendant, child >, nth-of-type, contains via [attr*='val'].", res:[["devhints CSS","https://devhints.io/css"]]},
+    {t:"XPath: absolute vs relative, axes, functions", pri:"deep", note:"//tag[@attr='val'], contains(), text(), following-sibling, parent, ancestor. Prefer CSS; use XPath for text and traversal.", res:[["devhints XPath","https://devhints.io/xpath"]]},
+    {t:"Chrome DevTools: inspect, copy selector, test selectors in console", pri:"must", note:"In console: document.querySelector('css') and $x('//xpath') to validate before coding.", res:[]},
+    {t:"Practice: locate 20 elements on the-internet.herokuapp.com", res:[["the-internet","https://the-internet.herokuapp.com/"]]},
+  ]
+},
+{ id:"w5", cat:"weeks", badge:"b-week", label:"Week 5",
+  name:"Week 5 — Selenium WebDriver core",
+  desc:"The industry standard. Even if you favour Playwright, most legacy suites are Selenium.",
+  goal:"Can drive a browser: find elements, interact, and handle the common WebDriver scenarios.",
+  items:[
+    {t:"WebDriver setup + Selenium Manager (no more manual drivers)", pri:"must", res:[["Selenium docs","https://www.selenium.dev/documentation/"]]},
+    {t:"Locating elements & interactions: click, sendKeys, getText, dropdowns (Select)", pri:"must", res:[]},
+    {t:"Waits: implicit vs explicit (WebDriverWait + ExpectedConditions)", pri:"deep", note:"NEVER use Thread.sleep. Explicit waits are the #1 cure for flakiness — interviewers ask this constantly.", res:[]},
+    {t:"Handle alerts, frames/iframes, multiple windows/tabs", res:[]},
+    {t:"Actions API (hover, drag-drop), screenshots, JS executor", res:[]},
+    {t:"Project: automate a full login + add-to-cart + checkout flow on SauceDemo", res:[["SauceDemo","https://www.saucedemo.com/"]]},
+  ]
+},
+{ id:"w6", cat:"weeks", badge:"b-week", label:"Week 6",
+  name:"Week 6 — Playwright (the 2026 frontrunner)",
+  desc:"Faster, auto-waiting, less flaky. Learn it alongside Selenium for max employability.",
+  goal:"Can write Playwright tests with auto-wait, web-first assertions, fixtures, and the trace viewer.",
+  items:[
+    {t:"Playwright setup, test runner, config, projects (cross-browser)", pri:"must", res:[["Playwright docs","https://playwright.dev/docs/intro"]]},
+    {t:"Locators: getByRole, getByText, getByTestId (user-facing, resilient)", pri:"must", note:"Playwright's role/text locators are far more stable than CSS/XPath — this is why it's winning.", res:[["Playwright locators","https://playwright.dev/docs/locators"]]},
+    {t:"Auto-waiting & web-first assertions (expect(locator).toBeVisible())", pri:"deep", note:"No explicit waits needed — Playwright retries automatically. Huge flakiness reduction vs Selenium.", res:[]},
+    {t:"Fixtures, hooks, parallelism, trace viewer, codegen, UI mode", res:[["Trace viewer","https://playwright.dev/docs/trace-viewer"]]},
+    {t:"Network interception & API testing inside Playwright", res:[]},
+    {t:"Re-build the Week 5 SauceDemo flow in Playwright; compare speed & code", res:[]},
+  ]
+},
+{ id:"w7", cat:"weeks", badge:"b-week", label:"Week 7",
+  name:"Week 7 — Test runners, assertions & Page Object Model",
+  desc:"Move from scripts to a maintainable, structured framework.",
+  goal:"Can structure tests with a runner, rich assertions, and a clean Page Object Model.",
+  items:[
+    {t:"Test runner of your stack: TestNG/JUnit (Java), pytest (Python), Playwright Test/Jest (JS)", pri:"must", res:[["TestNG","https://testng.org/"],["pytest","https://docs.pytest.org/"],["JUnit5","https://junit.org/junit5/"]]},
+    {t:"Annotations/hooks: setup/teardown, groups, ordering, tags", res:[]},
+    {t:"Assertions & soft assertions; AssertJ / Hamcrest / expect", res:[]},
+    {t:"Page Object Model (POM): pages as classes, locators + actions encapsulated", pri:"must", note:"The most-asked framework concept. Keeps tests readable and locators in one place.", res:[]},
+    {t:"Data-driven testing: parametrize from JSON/CSV/Excel", pri:"deep", res:[]},
+    {t:"Refactor your SauceDemo suite into clean POM", res:[]},
+  ]
+},
+{ id:"w8", cat:"weeks", badge:"b-week", label:"Week 8",
+  name:"Week 8 — Build a real framework",
+  desc:"This is your portfolio centerpiece. Make it production-shaped.",
+  goal:"A reusable framework: POM + data-driven + config management + logging + reporting, on GitHub with a README.",
+  items:[
+    {t:"Project/build setup: Maven/Gradle (Java), poetry/pip (Python), npm (JS)", pri:"must", res:[]},
+    {t:"Config management: environments, base URLs, credentials via env/.properties", pri:"deep", note:"Never hardcode URLs or secrets. Read from config + environment variables.", res:[]},
+    {t:"Logging (Log4j/SLF4J / Python logging) + screenshots on failure", res:[]},
+    {t:"Reporting: Allure or Extent Reports / Playwright HTML report", pri:"deep", res:[["Allure","https://allurereport.org/"]]},
+    {t:"Retry logic for flaky tests; cross-browser config", res:[]},
+    {t:"Write a strong README (setup, run, structure) — recruiters read this", pri:"must", res:[]},
+  ]
+},
+{ id:"w9", cat:"weeks", badge:"b-week", label:"Week 9",
+  name:"Week 9 — API testing (in higher demand than UI in 2026)",
+  desc:"APIs are the fastest-growing test layer and the most stable to automate.",
+  goal:"Can test REST APIs manually in Postman and automate them in code with assertions on status, body and schema.",
+  items:[
+    {t:"HTTP foundations: methods, status codes, headers, auth (Bearer/OAuth), JSON", pri:"must", res:[["MDN HTTP","https://developer.mozilla.org/en-US/docs/Web/HTTP"]]},
+    {t:"Postman: requests, environments, variables, collections, tests, Newman (CLI)", pri:"must", res:[["Postman Learning","https://learning.postman.com/"]]},
+    {t:"Automate APIs in code: REST Assured (Java) / requests+pytest (Python) / Playwright APIRequest (JS)", pri:"deep", res:[["REST Assured","https://rest-assured.io/"]]},
+    {t:"Assertions: status, body fields (JSONPath), response time, JSON schema validation", res:[]},
+    {t:"Chaining requests, data setup/teardown via API, mocking (WireMock/Mockoon)", res:[]},
+    {t:"Project: automate ReqRes or a public API — full CRUD with assertions", res:[["ReqRes","https://reqres.in/"]]},
+  ]
+},
+{ id:"w10", cat:"weeks", badge:"b-week", label:"Week 10",
+  name:"Week 10 — CI/CD, Docker & cloud grids",
+  desc:"Tests that don't run in a pipeline barely count in 2026. ~89% of QA roles expect CI/CD.",
+  goal:"Your suite runs automatically on every push, in parallel, across browsers — in the cloud.",
+  items:[
+    {t:"CI fundamentals + pick one: GitHub Actions (easiest), Jenkins, or GitLab CI", pri:"must", res:[["GitHub Actions","https://docs.github.com/actions"],["Jenkins","https://www.jenkins.io/doc/"]]},
+    {t:"Write a pipeline: on push → install → run tests → publish report", pri:"deep", res:[]},
+    {t:"Docker basics: image, container, Dockerfile, run tests in a container", pri:"deep", note:"Consistent test environments + parallel runners.", res:[["Docker get started","https://docs.docker.com/get-started/"]]},
+    {t:"Parallel execution + Selenium Grid / Playwright shards", res:[]},
+    {t:"Cloud device/browser farms: BrowserStack / Sauce Labs / LambdaTest", pri:"know", res:[["BrowserStack","https://www.browserstack.com/"]]},
+    {t:"Make YOUR framework run green in GitHub Actions on every push", pri:"must", res:[]},
+  ]
+},
+{ id:"w11", cat:"weeks", badge:"b-week", label:"Week 11",
+  name:"Week 11 — Performance, BDD, AI tooling & mobile intro",
+  desc:"Round out into a full-spectrum SDET with the high-value extras.",
+  goal:"Can run a basic load test, write a BDD feature, use an AI testing assistant, and run one mobile test.",
+  items:[
+    {t:"Performance testing: k6 (modern) or JMeter — run a basic load test, read p95/throughput", pri:"deep", res:[["k6","https://k6.io/docs/"],["JMeter","https://jmeter.apache.org/"]]},
+    {t:"BDD: Cucumber/Gherkin (Given-When-Then) + step definitions", pri:"know", note:"Common in enterprise; pairs with your framework.", res:[["Cucumber","https://cucumber.io/docs/guides/"]]},
+    {t:"AI-assisted testing: Copilot for test code, self-healing locators, AI test generation", pri:"deep", note:"The fastest-rising 2026 skill — learn to use it as a force multiplier.", res:[["GitHub Copilot","https://github.com/features/copilot"]]},
+    {t:"Mobile automation intro: Appium concepts + one Android test", pri:"know", res:[["Appium","https://appium.io/"]]},
+    {t:"Visual & accessibility testing basics (Applitools / axe)", pri:"know", res:[["axe","https://www.deque.com/axe/"]]},
+  ]
+},
+{ id:"w12", cat:"weeks", badge:"b-week", label:"Week 12",
+  name:"Week 12 — Portfolio, resume, interviews & applications",
+  desc:"Convert skills into offers.",
+  goal:"A polished GitHub portfolio, an SDET-targeted resume, and active applications + mock interviews.",
+  items:[
+    {t:"Polish 2–3 portfolio repos (UI framework, API suite, CI pipeline) with READMEs", pri:"must", res:[]},
+    {t:"SDET resume: quantify (test count, time saved, flakiness reduced, coverage)", pri:"must", res:[["SDET resume guide","https://aitestingguide.com/sdet-resume/"]]},
+    {t:"Interview prep: framework design, waits/flakiness, POM, API, SQL, a little DSA", pri:"deep", note:"Be ready to whiteboard your framework architecture and debug a flaky test live.", res:[]},
+    {t:"Practice coding: easy/medium string & array problems (light DSA for SDET)", pri:"know", res:[["NeetCode","https://neetcode.io/practice"]]},
+    {t:"Mock interviews out loud; apply to 5–10 roles/week; track in a sheet", pri:"must", res:[]},
+  ]
+},
+
+/* ========== TRACK: FOUNDATIONS ========== */
+{ id:"t-prog", cat:"found", badge:"b-found", label:"Foundations",
+  name:"Track · Programming for testers (your one language)",
+  desc:"The coding depth that separates an automation engineer from a script-copier.",
+  goal:"You can write clean, OOP-structured code, handle data, and debug confidently.",
+  items:[
+    {t:"Syntax core: types, operators, control flow, functions/methods", pri:"must", res:[]},
+    {t:"OOP: classes, inheritance, interfaces/abstract, encapsulation, polymorphism", pri:"must", res:[]},
+    {t:"Collections & generics; streams/comprehensions; lambdas", pri:"deep", res:[]},
+    {t:"Strings & regex (validation, parsing logs/responses)", pri:"deep", res:[["regex101","https://regex101.com/"]]},
+    {t:"File & JSON/CSV handling; serialization (POJO/dataclass ↔ JSON)", res:[]},
+    {t:"Exceptions, debugging with breakpoints, reading stack traces", pri:"must", res:[]},
+    {t:"Design patterns used in test frameworks: Singleton, Factory, Builder, Page Object", pri:"deep", res:[["Refactoring Guru","https://refactoring.guru/design-patterns"]]},
+    {t:"SQL for testers: SELECT, JOIN, WHERE, GROUP BY, subqueries (DB validation)", pri:"must", res:[["SQLBolt","https://sqlbolt.com/"]]},
+  ]
+},
+{ id:"t-theory", cat:"found", badge:"b-found", label:"Foundations",
+  name:"Track · Testing theory & ISTQB foundation",
+  desc:"The vocabulary and techniques every interview and certification expects.",
+  goal:"You can talk fluently about test design, types, levels, and the defect lifecycle.",
+  items:[
+    {t:"Seven testing principles; SDLC, STLC, V-model, Agile testing", pri:"must", res:[["ISTQB Foundation","https://www.istqb.org/certifications/certified-tester-foundation-level"]]},
+    {t:"Black-box techniques: equivalence, BVA, decision table, state transition, pairwise", pri:"must", res:[]},
+    {t:"White-box: statement/branch/path coverage", pri:"know", res:[]},
+    {t:"Test levels (unit/integration/system/acceptance) & types (functional/non-functional)", res:[]},
+    {t:"Static testing, reviews; risk-based testing; test estimation", pri:"know", res:[]},
+    {t:"Defect lifecycle, severity vs priority, RCA, test metrics & coverage", pri:"deep", res:[]},
+    {t:"Test plan & test strategy documents (what each contains)", res:[]},
+  ]
+},
+
+/* ========== TRACK: WEB UI ========== */
+{ id:"t-sel", cat:"web", badge:"b-web", label:"Web UI",
+  name:"Track · Selenium WebDriver mastery",
+  desc:"Deep, interview-ready Selenium — still the most-requested tool by volume.",
+  goal:"You can architect, debug and explain a Selenium framework end to end.",
+  items:[
+    {t:"WebDriver architecture: W3C protocol, drivers, Selenium Manager", pri:"deep", res:[["Selenium docs","https://www.selenium.dev/documentation/"]]},
+    {t:"All 8 locator strategies; relative locators (above/below/near)", pri:"must", res:[]},
+    {t:"Waits deep: implicit vs explicit vs fluent; custom ExpectedConditions", pri:"must", note:"Top flakiness topic. Know why mixing implicit+explicit is harmful.", res:[]},
+    {t:"Frames, alerts, windows/tabs, shadow DOM, file upload/download", res:[]},
+    {t:"Actions (mouse/keyboard), JavascriptExecutor, scrolling, screenshots", res:[]},
+    {t:"Selenium Grid 4 (Docker) for parallel/distributed runs", pri:"deep", res:[]},
+    {t:"Common flakiness causes & fixes; stale element handling", pri:"must", res:[]},
+  ]
+},
+{ id:"t-pw", cat:"web", badge:"b-web", label:"Web UI",
+  name:"Track · Playwright mastery (2026 momentum tool)",
+  desc:"The modern, fast, low-flake framework gaining the most jobs and pay.",
+  goal:"You can build a parallel, cross-browser Playwright suite with traces and CI integration.",
+  items:[
+    {t:"Architecture: single API, browser contexts, auto-wait engine", pri:"deep", res:[["Playwright","https://playwright.dev/"]]},
+    {t:"Resilient locators: getByRole/Text/Label/TestId + filtering & chaining", pri:"must", res:[["Locators","https://playwright.dev/docs/locators"]]},
+    {t:"Web-first assertions with auto-retry; soft assertions", pri:"must", res:[]},
+    {t:"Fixtures, projects, parallelism, sharding, retries", pri:"deep", res:[]},
+    {t:"Network: route/mock/intercept; APIRequestContext for API tests", pri:"deep", res:[]},
+    {t:"Auth state reuse (storageState) for fast logged-in tests", pri:"deep", res:[]},
+    {t:"Trace viewer, codegen, UI mode, HTML report; visual comparisons", pri:"must", res:[["Trace viewer","https://playwright.dev/docs/trace-viewer"]]},
+    {t:"Component testing (React/Vue) basics", pri:"know", res:[]},
+  ]
+},
+{ id:"t-cy", cat:"web", badge:"b-web", label:"Web UI",
+  name:"Track · Cypress & tool comparison",
+  desc:"Know the third major player and when each tool wins — a classic interview question.",
+  goal:"You can justify a tool choice for a given context with real trade-offs.",
+  items:[
+    {t:"Cypress basics: architecture (runs in browser), auto-retry, time-travel", pri:"know", res:[["Cypress","https://docs.cypress.io/"]]},
+    {t:"Selenium vs Playwright vs Cypress: language support, speed, parallelism, flakiness, cost", pri:"must", note:"2026: Playwright leads on speed+multi-lang+auto-wait; Selenium on ecosystem/legacy/grid; Cypress on DX for JS frontend teams.", res:[["Comparison 2026","https://www.vervali.com/blog/web-services-testing-automation-tools-comparison-2026-selenium-vs-playwright-vs-cypress-and-beyond/"]]},
+    {t:"When NOT to automate via UI (prefer API/unit layer)", pri:"deep", res:[]},
+  ]
+},
+
+/* ========== TRACK: API ========== */
+{ id:"t-api", cat:"api", badge:"b-api", label:"API",
+  name:"Track · API & backend testing",
+  desc:"The highest-ROI test layer — stable, fast, and increasingly the bulk of the job.",
+  goal:"You can design and automate full API test suites with auth, schema and contract checks.",
+  items:[
+    {t:"REST deep: methods, idempotency, status codes, headers, content negotiation", pri:"must", res:[]},
+    {t:"Auth: API keys, Basic, Bearer/JWT, OAuth2 flows", pri:"deep", res:[]},
+    {t:"Postman mastery: collections, env/global vars, pre-request & test scripts, Newman in CI", pri:"must", res:[["Postman","https://learning.postman.com/"]]},
+    {t:"Code automation: REST Assured (given/when/then) or requests/httpx + pytest", pri:"deep", res:[["REST Assured","https://rest-assured.io/"]]},
+    {t:"JSON schema validation & contract testing (Pact basics)", pri:"deep", res:[]},
+    {t:"GraphQL testing basics; gRPC awareness", pri:"know", res:[]},
+    {t:"Mocking/stubbing services: WireMock / Mockoon / MSW", pri:"know", res:[]},
+    {t:"DB validation after API calls (SQL); test data setup via API", pri:"deep", res:[]},
+  ]
+},
+
+/* ========== TRACK: FRAMEWORKS ========== */
+{ id:"t-frame", cat:"frame", badge:"b-frame", label:"Frameworks",
+  name:"Track · Framework design & architecture",
+  desc:"What turns a scripter into an engineer: building maintainable, scalable automation.",
+  goal:"You can design a framework from scratch and defend every architectural choice.",
+  items:[
+    {t:"Framework types: linear, modular, data-driven, keyword-driven, hybrid, BDD", pri:"must", res:[]},
+    {t:"Page Object Model + Page Factory; component objects; fluent pages", pri:"must", res:[]},
+    {t:"Layered design: tests / pages / components / utils / config / data", pri:"deep", res:[]},
+    {t:"Config & environment management; secrets handling", pri:"deep", res:[]},
+    {t:"Build tools: Maven/Gradle, dependency management; npm scripts", pri:"must", res:[]},
+    {t:"Reporting (Allure/Extent), logging, screenshots/video on failure", pri:"deep", res:[["Allure","https://allurereport.org/"]]},
+    {t:"Data-driven from JSON/CSV/Excel/DB; test data factories", res:[]},
+    {t:"Parallel execution, thread-safety (ThreadLocal driver), retries", pri:"deep", res:[]},
+    {t:"BDD framework: Cucumber + Gherkin + step defs + hooks", pri:"know", res:[["Cucumber","https://cucumber.io/docs/guides/"]]},
+  ]
+},
+
+/* ========== TRACK: CI/CD & DEVOPS ========== */
+{ id:"t-cicd", cat:"cicd", badge:"b-cicd", label:"CI/CD",
+  name:"Track · CI/CD, Git, Docker & cloud",
+  desc:"Automation only delivers value when it runs continuously and reliably in pipelines.",
+  goal:"You can containerize and run your suite in CI on every change, in parallel, with reports.",
+  items:[
+    {t:"Git deep: branching strategies, rebase vs merge, conflict resolution, PR review", pri:"must", res:[["Learn Git Branching","https://learngitbranching.js.org/"]]},
+    {t:"CI/CD concepts: pipeline stages, triggers, artifacts, secrets, caching", pri:"must", res:[]},
+    {t:"GitHub Actions: workflows, matrix builds, scheduled runs, report upload", pri:"deep", res:[["GitHub Actions","https://docs.github.com/actions"]]},
+    {t:"Jenkins: pipelines (Jenkinsfile), agents, plugins (still common in enterprise)", pri:"know", res:[["Jenkins","https://www.jenkins.io/doc/"]]},
+    {t:"Docker: images, containers, Dockerfile, docker-compose for test envs", pri:"deep", res:[["Docker","https://docs.docker.com/get-started/"]]},
+    {t:"Parallel/distributed runs: Grid, Playwright shards, cloud farms", pri:"deep", res:[]},
+    {t:"Cloud basics (AWS/Azure) + Linux/CLI comfort for CI debugging", pri:"know", res:[]},
+    {t:"Test reporting in CI + Slack/Teams notifications on failure", res:[]},
+  ]
+},
+
+/* ========== TRACK: PERFORMANCE & NFR ========== */
+{ id:"t-perf", cat:"perf", badge:"b-perf", label:"Perf & NFR",
+  name:"Track · Performance, security & accessibility",
+  desc:"Non-functional testing makes you a complete, senior-leaning engineer.",
+  goal:"You can run and interpret a load test and apply basic security & accessibility checks.",
+  items:[
+    {t:"Performance concepts: load/stress/soak/spike; latency, throughput, p95/p99", pri:"deep", res:[]},
+    {t:"k6: scripting in JS, thresholds, stages, CI integration", pri:"deep", res:[["k6","https://k6.io/docs/"]]},
+    {t:"JMeter: thread groups, samplers, listeners, distributed testing", pri:"know", res:[["JMeter","https://jmeter.apache.org/"]]},
+    {t:"Reading results: bottlenecks, percentiles, error rate, resource use", pri:"deep", res:[]},
+    {t:"Security testing basics: OWASP Top 10, auth/IDOR, OWASP ZAP scan", pri:"know", res:[["OWASP Top 10","https://owasp.org/www-project-top-ten/"]]},
+    {t:"Accessibility: WCAG basics, axe-core automated checks", pri:"know", res:[["axe","https://www.deque.com/axe/"]]},
+    {t:"Visual regression testing (Applitools / Playwright snapshots)", pri:"know", res:[]},
+  ]
+},
+
+/* ========== TRACK: AI TESTING ========== */
+{ id:"t-ai", cat:"ai", badge:"b-ai", label:"AI Testing",
+  name:"Track · AI-assisted testing (the 2026 differentiator)",
+  desc:"The fastest-growing skill set. 58% of enterprises are upskilling QA in AI tools.",
+  goal:"You can use AI to generate tests, self-heal locators, and accelerate analysis — and explain the risks.",
+  items:[
+    {t:"LLM coding assistants for tests: Copilot / Cursor — generate & refactor test code", pri:"deep", note:"Treat as a force multiplier, not autopilot. Always review generated tests.", res:[["GitHub Copilot","https://github.com/features/copilot"]]},
+    {t:"Self-healing locators: how AI re-finds moved/renamed elements", pri:"deep", res:[]},
+    {t:"AI test generation from requirements / user stories / recordings", pri:"know", res:[]},
+    {t:"AI-native & low-code tools landscape: Testim, Mabl, Functionize, Applitools, KaneAI", pri:"know", res:[]},
+    {t:"MCP + agentic testing: AI agents driving Playwright (emerging 2026)", pri:"know", res:[]},
+    {t:"Visual/AI-powered validation; flaky-test detection with AI", res:[]},
+    {t:"Risks & limits: hallucinated assertions, false confidence, data privacy — when NOT to trust AI", pri:"must", res:[]},
+    {t:"Prompting for testing: generate edge cases, test data, boundary scenarios", pri:"deep", res:[]},
+  ]
+},
+
+/* ========== TRACK: MOBILE ========== */
+{ id:"t-mobile", cat:"mobile", badge:"b-mobile", label:"Mobile",
+  name:"Track · Mobile automation (Appium & beyond)",
+  desc:"Optional but valuable — mobile testing demand keeps rising.",
+  goal:"You can automate a native Android/iOS flow and understand mobile-specific challenges.",
+  items:[
+    {t:"Mobile testing basics: native vs hybrid vs web; emulators vs real devices", pri:"know", res:[]},
+    {t:"Appium setup, Appium Inspector, locator strategies for mobile", pri:"deep", res:[["Appium","https://appium.io/"]]},
+    {t:"Gestures, contexts (native/web), capabilities, waits on mobile", pri:"know", res:[]},
+    {t:"Cloud device farms: BrowserStack / Sauce Labs App Automate", pri:"know", res:[]},
+    {t:"Modern alternatives: Maestro, Espresso/XCUITest awareness", pri:"know", res:[]},
+  ]
+},
+
+/* ========== TRACK: CAREER & CERTS ========== */
+{ id:"t-career", cat:"career", badge:"b-career", label:"Career",
+  name:"Track · Career, certifications, resume & interviews",
+  desc:"Turn the skills into a title, a salary, and an offer.",
+  goal:"A portfolio, a quantified resume, the right certs, and interview readiness.",
+  items:[
+    {t:"GitHub portfolio: UI framework + API suite + CI pipeline, each with a README", pri:"must", res:[]},
+    {t:"SDET resume: quantify impact (coverage %, time saved, flakiness reduced, releases shipped)", pri:"must", res:[["SDET resume","https://aitestingguide.com/sdet-resume/"]]},
+    {t:"Certifications worth it: ISTQB Foundation → CTAL-TAE (Test Automation Engineer)", pri:"deep", res:[["ISTQB","https://www.istqb.org/"]]},
+    {t:"Supporting certs: AWS Cloud Practitioner, Agile/Scrum, vendor (Selenium/Playwright) courses", pri:"know", res:[]},
+    {t:"Interview prep: framework architecture, waits/flakiness, POM, OOP, API, SQL, CI", pri:"must", res:[]},
+    {t:"Coding round prep: easy/medium arrays & strings (light DSA)", pri:"deep", res:[["NeetCode","https://neetcode.io/practice"]]},
+    {t:"Behavioral: STAR stories on bugs caught, flaky-test fights, ownership", res:[]},
+    {t:"Mock interviews out loud; application tracker; networking (LinkedIn, MoT community)", pri:"must", res:[["Ministry of Testing","https://www.ministryoftesting.com/"]]},
+  ]
+},
+
+/* ========== TRACK: 2026 TRENDS ========== */
+{ id:"t-trends", cat:"trends", badge:"b-trends", label:"2026",
+  name:"Track · 2026 market trends & tool landscape",
+  desc:"What's actually moving the market right now — orient your learning to it.",
+  goal:"You can speak credibly about where automation testing is heading and why.",
+  items:[
+    {t:"Playwright overtaking Selenium (~45% vs ~22% adoption); both = +15–25% pay", pri:"must", res:[["Trends 2026","https://testguild.com/automation-testing-trends/"]]},
+    {t:"AI/ML in testing: self-healing, LLM generation, agentic testing — fastest-growing", pri:"must", res:[["QA→SDET 2026","https://quashbugs.com/blog/qa-to-sdet-ai-2026"]]},
+    {t:"API & integration testing now outweigh UI testing in demand", pri:"deep", res:[]},
+    {t:"CI/CD expected in ~89% of QA roles; shift-left & in-pipeline testing standard", pri:"deep", res:[]},
+    {t:"Cloud device/browser farms (BrowserStack/Sauce) are baseline infra", pri:"know", res:[]},
+    {t:"Codeless/low-code tools rising for breadth; coding still pays more for depth", pri:"know", res:[]},
+    {t:"Languages: Java & Python dominate; JS/TS & C# strong by stack", pri:"know", res:[["Jobs report 2026","https://testdino.com/blog/test-automation-jobs"]]},
+    {t:"SDET role growth ~50% since 2024; QA→SDET is the high-value transition", pri:"deep", res:[]},
+  ]
+},
+
+/* ========== CHEAT SHEETS ========== */
+{ id:"ch-loc", cat:"cheat", badge:"b-cheat", label:"Cheat",
+  name:"Cheat Sheet · CSS & XPath locators",
+  desc:"The selectors you'll write daily. Memorize the patterns; validate in DevTools console.",
+  goal:"You can write a robust locator for any element without trial-and-error.",
+  items:[
+    {t:"CSS — by id / class / tag", note:"#id  ·  .class  ·  tag  ·  tag.class  ·  tag#id", res:[["devhints CSS","https://devhints.io/css"]]},
+    {t:"CSS — attributes", note:"[name='q']  ·  [type='submit']  ·  [href^='https'] (starts)  ·  [src$='.png'] (ends)  ·  [class*='btn'] (contains)", res:[]},
+    {t:"CSS — combinators", note:"a b (descendant)  ·  a > b (child)  ·  a + b (next sibling)  ·  a ~ b (all siblings)  ·  li:nth-of-type(2)  ·  :first-child / :last-child", res:[]},
+    {t:"XPath — basics", note:"//tag  ·  //tag[@attr='val']  ·  //*[@id='x']  ·  //tag[text()='Login']  ·  //tag[contains(@class,'btn')]  ·  (//tag)[1]", res:[["devhints XPath","https://devhints.io/xpath"]]},
+    {t:"XPath — functions & logic", note:"contains() · starts-with() · text() · normalize-space() · and / or  →  //input[@type='text' and @name='user']", res:[]},
+    {t:"XPath — axes (traversal)", note:"following-sibling::  ·  preceding-sibling::  ·  parent::  ·  ancestor::  ·  child::  ·  descendant::", res:[]},
+    {t:"Validate in console", note:"CSS: document.querySelectorAll('css')  ·  XPath: $x(\"//xpath\")  — check count before coding.", res:[]},
+    {t:"Playwright resilient locators (prefer these)", note:"getByRole('button',{name:'Submit'}) · getByText('Welcome') · getByLabel('Email') · getByTestId('login')", res:[["Playwright locators","https://playwright.dev/docs/locators"]]},
+  ]
+},
+{ id:"ch-git", cat:"cheat", badge:"b-cheat", label:"Cheat",
+  name:"Cheat Sheet · Git commands",
+  desc:"Everything you need for day-to-day work and PRs.",
+  goal:"You never get stuck on Git in front of a teammate.",
+  items:[
+    {t:"Setup & clone", note:"git clone <url>  ·  git config --global user.name '...'  ·  git status", res:[]},
+    {t:"Stage & commit", note:"git add .  ·  git add <file>  ·  git commit -m 'msg'  ·  git commit --amend", res:[]},
+    {t:"Branch & switch", note:"git branch  ·  git checkout -b feature/x  ·  git switch main  ·  git branch -d x", res:[]},
+    {t:"Sync", note:"git pull  ·  git push  ·  git push -u origin feature/x  ·  git fetch", res:[]},
+    {t:"Merge & rebase", note:"git merge <branch>  ·  git rebase main  ·  resolve conflicts → git add → git rebase --continue", res:[]},
+    {t:"Undo", note:"git restore <file>  ·  git reset --soft HEAD~1  ·  git revert <hash>  ·  git stash / git stash pop", res:[]},
+    {t:"Inspect", note:"git log --oneline --graph  ·  git diff  ·  git blame <file>", res:[]},
+  ]
+},
+{ id:"ch-runner", cat:"cheat", badge:"b-cheat", label:"Cheat",
+  name:"Cheat Sheet · Test runner annotations & assertions",
+  desc:"Hooks and assertions across the three main stacks.",
+  goal:"You can scaffold a test class in any of the major runners from memory.",
+  items:[
+    {t:"TestNG (Java)", note:"@BeforeSuite/@BeforeClass/@BeforeMethod, @Test, @AfterMethod... · @Test(dataProvider=, groups=, priority=) · Assert.assertEquals/assertTrue · SoftAssert", res:[["TestNG","https://testng.org/"]]},
+    {t:"JUnit 5 (Java)", note:"@BeforeAll/@BeforeEach, @Test, @AfterEach/@AfterAll · @ParameterizedTest · Assertions.assertEquals/assertThrows · @DisplayName/@Tag", res:[["JUnit5","https://junit.org/junit5/"]]},
+    {t:"pytest (Python)", note:"def test_x(): · fixtures via @pytest.fixture · @pytest.mark.parametrize · assert x == y · conftest.py · -k / -m filters", res:[["pytest","https://docs.pytest.org/"]]},
+    {t:"Playwright Test (JS/TS)", note:"test('name', async ({page}) => {}) · test.beforeEach · expect(locator).toBeVisible() · test.describe · projects in config", res:[["Playwright test","https://playwright.dev/docs/test-assertions"]]},
+  ]
+},
+{ id:"ch-pw", cat:"cheat", badge:"b-cheat", label:"Cheat",
+  name:"Cheat Sheet · Playwright & Selenium API quick reference",
+  desc:"The actions you reach for constantly.",
+  goal:"You can write common interactions without docs.",
+  items:[
+    {t:"Playwright actions", note:"page.goto(url) · locator.click() · fill('text') · check() · selectOption() · page.waitForURL() · expect(loc).toHaveText()", res:[["Playwright","https://playwright.dev/docs/api/class-page"]]},
+    {t:"Playwright waits/network", note:"auto-waits by default · page.waitForResponse() · page.route('**/api',handler) · context.storageState() for auth reuse", res:[]},
+    {t:"Selenium actions", note:"driver.get(url) · findElement(By.cssSelector()) · .click()/.sendKeys()/.getText() · Select(el).selectByVisibleText()", res:[["Selenium","https://www.selenium.dev/documentation/"]]},
+    {t:"Selenium waits", note:"WebDriverWait(driver,Duration.ofSeconds(10)).until(ExpectedConditions.elementToBeClickable(by)) — never Thread.sleep", res:[]},
+    {t:"Selenium misc", note:"Actions(driver).moveToElement().perform() · ((JavascriptExecutor)driver).executeScript() · driver.switchTo().frame()/alert()/window()", res:[]},
+  ]
+},
+{ id:"ch-api", cat:"cheat", badge:"b-cheat", label:"Cheat",
+  name:"Cheat Sheet · HTTP status codes & API testing",
+  desc:"What to assert and what each code means.",
+  goal:"You instantly know if a response code is right for the scenario.",
+  items:[
+    {t:"2xx success", note:"200 OK · 201 Created (POST) · 202 Accepted · 204 No Content (DELETE)", res:[]},
+    {t:"3xx redirect", note:"301 Moved Permanently · 302 Found · 304 Not Modified", res:[]},
+    {t:"4xx client errors", note:"400 Bad Request · 401 Unauthorized (no/invalid auth) · 403 Forbidden (no permission) · 404 Not Found · 409 Conflict · 422 Unprocessable · 429 Too Many Requests", res:[]},
+    {t:"5xx server errors", note:"500 Internal Server Error · 502 Bad Gateway · 503 Service Unavailable · 504 Gateway Timeout", res:[]},
+    {t:"What to assert", note:"status code · response time · headers (content-type) · body fields (JSONPath) · schema validity · error message shape", res:[]},
+    {t:"REST Assured pattern", note:"given().header().body() .when().post('/users') .then().statusCode(201).body('id',notNullValue())", res:[["REST Assured","https://rest-assured.io/"]]},
+  ]
+},
+
+];
+
+const DONE_KEY = "qa_roadmap_done_v1";
+const OPEN_KEY = "qa_roadmap_open_v1";
+const REV_KEY  = "qa_roadmap_revisit_v1";
+const CT_KEY   = "qa_roadmap_tracks_v1";   // user-created tracks
+const CI_KEY   = "qa_roadmap_items_v1";    // user-created items
+const LINK_KEY = "qa_roadmap_links_v1";    // user-saved useful links
+let done = JSON.parse(localStorage.getItem(DONE_KEY) || "{}");
+let openState = JSON.parse(localStorage.getItem(OPEN_KEY) || "{}");
+let revisit = JSON.parse(localStorage.getItem(REV_KEY) || "{}");
+let customTracks = JSON.parse(localStorage.getItem(CT_KEY) || "[]");
+let customItems = JSON.parse(localStorage.getItem(CI_KEY) || "[]");
+let links = JSON.parse(localStorage.getItem(LINK_KEY) || "[]");
+let filter = "all";
+
+function iid(mod,i){return mod.id+"#"+i;}
+function saveDone(){localStorage.setItem(DONE_KEY, JSON.stringify(done));}
+function saveOpen(){localStorage.setItem(OPEN_KEY, JSON.stringify(openState));}
+function saveRev(){localStorage.setItem(REV_KEY, JSON.stringify(revisit));}
+function saveCT(){localStorage.setItem(CT_KEY, JSON.stringify(customTracks));}
+function saveCI(){localStorage.setItem(CI_KEY, JSON.stringify(customItems));}
+function saveLinks(){localStorage.setItem(LINK_KEY, JSON.stringify(links));}
+function esc(s){return String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));}
+
+// built-in modules + user-created tracks
+function allModules(){
+  const ct = customTracks.map(c=>({
+    id:c.id, cat:"tracks", badge:"b-mine", label:"Yours",
+    name:c.name, desc:c.desc, goal:c.goal||"", items:[], isCustomTrack:true
+  }));
+  return MODULES.concat(ct);
+}
+// rows for a module: built-in items + user items, each {it, id, isCustom}
+function itemsFor(mod){
+  const rows = (mod.items||[]).map((it,i)=>({it, id:iid(mod,i), isCustom:false}));
+  customItems.filter(c=>c.mod===mod.id).forEach(c=>rows.push({it:{t:c.t,note:c.note,u:c.u}, id:c.id, isCustom:true}));
+  return rows;
+}
+function allRows(){
+  const out=[];
+  allModules().forEach(m=>itemsFor(m).forEach(r=>out.push({mod:m, ...r})));
+  return out;
+}
+function totalCount(){return allRows().length;}
+function doneCount(){return allRows().filter(r=>done[r.id]).length;}
+
+const PRI_LABEL = {must:"must", deep:"deep", know:"know"};
+function itemRow(row, modName, showModTag){
+  const {it, id, isCustom} = row;
+  const isDone = !!done[id];
+  const isRev = !!revisit[id];
+  const resHtml = (it.res||[]).map(r=>`<a class="res" href="${esc(r[1])}" target="_blank" rel="noopener">↗ ${esc(r[0])}</a>`).join("");
+  const title = it.u
+    ? `<a href="${esc(it.u)}" target="_blank" rel="noopener">${esc(it.t)}</a>`
+    : esc(it.t);
+  const pill = it.pri ? `<span class="pill p-${esc(it.pri)}">${esc(PRI_LABEL[it.pri]||it.pri)}</span>` : "";
+  return `<div class="item ${isDone?'done':''}">
+    <input type="checkbox" data-check="${id}" ${isDone?'checked':''}>
+    <div class="body">
+      <div class="t">${title}${pill}${isCustom?'<span class="mine">yours</span>':''}${showModTag?`<span class="topic-tag">${esc(modName)}</span>`:''}</div>
+      ${it.note?`<div class="note">${esc(it.note)}</div>`:""}
+      ${resHtml?`<div>${resHtml}</div>`:""}
+    </div>
+    <button class="star ${isRev?'on':''}" data-star="${id}" title="${isRev?'Remove from revisit':'Mark to revisit later'}">${isRev?'★':'☆'}</button>
+    ${isCustom?`<button class="del" data-del-item="${id}" title="Delete this item">✕</button>`:''}
+  </div>`;
+}
+
+function renderRevisit(root){
+  const items = allRows().filter(r=>revisit[r.id]);
+  if(items.length===0){
+    root.innerHTML = `<div class="empty">No items flagged yet. Tap the ☆ next to any topic to add it here for later review.</div>`;
+    return;
+  }
+  const el = document.createElement("div");
+  el.className = "mod open";
+  el.innerHTML = `
+    <div class="mod-head" style="cursor:default">
+      <span class="badge b-prio">★ Revisit</span>
+      <div class="m-title">
+        <h2>Things to revisit</h2>
+        <p>Everything you've flagged across all weeks and tracks. Un-star to remove.</p>
+      </div>
+      <div class="m-prog">${items.length} flagged</div>
+    </div>
+    <div class="mod-body">
+      ${items.map(r=>itemRow(r, r.mod.name, true)).join("")}
+    </div>`;
+  root.appendChild(el);
+}
+
+function linkRow(l){
+  return `<div class="item">
+    <span style="flex:0 0 auto;margin-top:2px">🔗</span>
+    <div class="body">
+      <div class="t"><a href="${esc(l.url)}" target="_blank" rel="noopener">${esc(l.title||l.url)}</a></div>
+      ${l.note?`<div class="note">${esc(l.note)}</div>`:""}
+      <div class="note" style="opacity:.65;word-break:break-all">${esc(l.url)}</div>
+    </div>
+    <button class="del" data-del-link="${l.id}" title="Delete this link">✕</button>
+  </div>`;
+}
+
+function renderLinks(root){
+  const form = `
+    <div class="addbox open" style="margin-bottom:16px">
+      <h3>Save a useful link</h3>
+      <div class="addgrid">
+        <div class="field grow"><label for="lTitle">Title</label><input id="lTitle" type="text" placeholder="e.g. Playwright best practices"></div>
+        <div class="field grow"><label for="lUrl">URL</label><input id="lUrl" type="text" placeholder="https://..."></div>
+        <div class="field grow"><label for="lNote">Note (optional)</label><input id="lNote" type="text" placeholder="why it's useful"></div>
+        <button class="add" onclick="addLink()">Save link</button>
+      </div>
+      <div class="addnote" id="lErr"></div>
+    </div>`;
+  let list;
+  if(links.length===0){
+    list = `<div class="empty">No links saved yet. Add your favourite resources above — docs, cheat sheets, tutorials, blog posts.</div>`;
+  } else {
+    list = `<div class="mod open">
+      <div class="mod-head" style="cursor:default">
+        <span class="badge b-cicd">🔗 Links</span>
+        <div class="m-title"><h2>My useful links</h2><p>Your saved resources — click any to open. They travel with your backups.</p></div>
+        <div class="m-prog">${links.length} saved</div>
+      </div>
+      <div class="mod-body">${links.map(linkRow).join("")}</div>
+    </div>`;
+  }
+  root.innerHTML = form + list;
+  document.querySelectorAll("[data-del-link]").forEach(b=>{
+    b.addEventListener("click",()=>{
+      const id = b.getAttribute("data-del-link");
+      const l = links.find(x=>x.id===id);
+      if(l && confirm(`Delete link "${l.title||l.url}"?`)){
+        links = links.filter(x=>x.id!==id);
+        saveLinks(); render();
+      }
+    });
+  });
+}
+
+function addLink(){
+  const err = document.getElementById("lErr");
+  let url = document.getElementById("lUrl").value.trim();
+  if(!url){ err.textContent = "Please enter a URL."; return; }
+  if(!/^https?:\/\//i.test(url)) url = "https://" + url;
+  const title = document.getElementById("lTitle").value.trim();
+  links.push({
+    id:"l_"+Date.now()+"_"+Math.random().toString(36).slice(2,6),
+    title: title || url,
+    url,
+    note: document.getElementById("lNote").value.trim()
+  });
+  saveLinks(); render();
+}
+
+function render(){
+  const root = document.getElementById("mods");
+  root.innerHTML = "";
+
+  if(filter==="revisit"){ renderRevisit(root); wireEvents(); updateDash(); return; }
+  if(filter==="links"){ renderLinks(root); updateDash(); return; }
+
+  let shown = 0;
+  allModules().forEach(mod=>{
+    if(filter!=="all" && filter!=="incomplete" && mod.cat!==filter) return;
+    const rows = itemsFor(mod);
+    const d = rows.filter(r=>done[r.id]).length;
+    const tot = rows.length;
+    if(filter==="incomplete" && tot>0 && d===tot) return;
+    shown++;
+    const el = document.createElement("div");
+    el.className = "mod" + (mod.cat==="prio"?" prio":"") + (openState[mod.id]?" open":"");
+    el.innerHTML = `
+      <div class="mod-head" data-toggle="${mod.id}">
+        <div class="chev">▶</div>
+        <span class="badge ${mod.badge}">${esc(mod.label)}</span>
+        <div class="m-title">
+          <h2>${esc(mod.name)}${mod.isCustomTrack?`<button class="del del-track" data-del-track="${mod.id}" title="Delete this track">✕</button>`:''}</h2>
+          <p>${esc(mod.desc)}</p>
+        </div>
+        <div class="m-prog">${d}/${tot}
+          <div class="bar"><i style="width:${tot?Math.round(d/tot*100):0}%"></i></div>
+        </div>
+      </div>
+      <div class="mod-body">
+        ${mod.goal?`<div class="goal">🎯 <b>Goal:</b> ${esc(mod.goal)}</div>`:""}
+        ${rows.length?rows.map(r=>itemRow(r, mod.name, false)).join(""):'<div class="note" style="padding:8px 4px">No items yet — use “+ Add topic / track” to add some.</div>'}
+      </div>`;
+    root.appendChild(el);
+  });
+  if(shown===0){
+    root.innerHTML = `<div class="empty">Nothing here — you've completed everything in this view. 🎉</div>`;
+  }
+  wireEvents();
+  updateDash();
+}
+
+function wireEvents(){
+  document.querySelectorAll("[data-toggle]").forEach(h=>{
+    h.addEventListener("click",e=>{
+      if(e.target.closest("a")||e.target.closest("input")||e.target.closest("button")) return;
+      const id = h.getAttribute("data-toggle");
+      openState[id] = !openState[id];
+      saveOpen(); render();
+    });
+  });
+  document.querySelectorAll("[data-check]").forEach(c=>{
+    c.addEventListener("change",()=>{
+      const id = c.getAttribute("data-check");
+      if(c.checked) done[id]=true; else delete done[id];
+      saveDone(); render();
+    });
+  });
+  document.querySelectorAll("[data-star]").forEach(b=>{
+    b.addEventListener("click",()=>{
+      const id = b.getAttribute("data-star");
+      if(revisit[id]) delete revisit[id]; else revisit[id]=true;
+      saveRev(); render();
+    });
+  });
+  document.querySelectorAll("[data-del-item]").forEach(b=>{
+    b.addEventListener("click",()=>{
+      const id = b.getAttribute("data-del-item");
+      const it = customItems.find(c=>c.id===id);
+      if(it && confirm(`Delete "${it.t}"?`)){
+        customItems = customItems.filter(c=>c.id!==id);
+        delete done[id]; delete revisit[id];
+        saveCI(); saveDone(); saveRev(); render();
+      }
+    });
+  });
+  document.querySelectorAll("[data-del-track]").forEach(b=>{
+    b.addEventListener("click",e=>{
+      e.stopPropagation();
+      const id = b.getAttribute("data-del-track");
+      const tr = customTracks.find(c=>c.id===id);
+      if(tr && confirm(`Delete your track "${tr.name}" and all its items?`)){
+        const childIds = customItems.filter(c=>c.mod===id).map(c=>c.id);
+        customItems = customItems.filter(c=>c.mod!==id);
+        customTracks = customTracks.filter(c=>c.id!==id);
+        childIds.forEach(cid=>{delete done[cid]; delete revisit[cid];});
+        delete openState[id];
+        saveCT(); saveCI(); saveDone(); saveRev(); saveOpen();
+        populateTrackSelect(); render();
+      }
+    });
+  });
+}
+
+function updateDash(){
+  const total = totalCount();
+  const d = doneCount();
+  const pct = total ? Math.round(d/total*100) : 0;
+  document.getElementById("pctText").textContent = pct+"%";
+  document.getElementById("solvedCount").textContent = `${d} / ${total} done`;
+  const circ = 2*Math.PI*42;
+  document.getElementById("ringFill").setAttribute("stroke-dashoffset", circ*(1-pct/100));
+  const msgs = [
+    "Start with First Moves — it gets your tools installed and your first script running in days.",
+    "Tools are set up. Now code a little every single day — that's the whole game.",
+    "Foundations forming. Keep building tiny suites, not just watching tutorials.",
+    "You can drive a browser now. Push everything to GitHub as you go.",
+    "Halfway in: you're writing real frameworks. Add API tests next — they're in demand.",
+    "Strong. Get it running in CI and learn an AI testing tool — that's the 2026 edge.",
+    "Almost SDET-shaped. Polish the portfolio and quantify your impact.",
+    "Interview-ready. Apply weekly, mock out loud, and go get the role."
+  ];
+  document.getElementById("encourage").textContent = msgs[Math.min(msgs.length-1, Math.floor(pct/13))];
+  const rc = allRows().filter(r=>revisit[r.id]).length;
+  document.getElementById("revCount").textContent = rc ? "("+rc+")" : "";
+  document.getElementById("linkCount").textContent = links.length ? "("+links.length+")" : "";
+}
+
+document.querySelectorAll(".chip").forEach(ch=>{
+  ch.addEventListener("click",()=>{
+    document.querySelectorAll(".chip").forEach(c=>c.classList.remove("active"));
+    ch.classList.add("active");
+    filter = ch.getAttribute("data-f");
+    render();
+  });
+});
+
+function expandAll(open){ allModules().forEach(m=>openState[m.id]=open); saveOpen(); render(); }
+function resetProgress(){ if(confirm("Reset all checkmarks? (Your custom tracks and items are kept.)")){ done={}; saveDone(); render(); } }
+
+function setActiveChip(f){
+  document.querySelectorAll(".chip").forEach(c=>c.classList.toggle("active", c.getAttribute("data-f")===f));
+}
+function toggleAdd(){ document.getElementById("addbox").classList.toggle("open"); }
+
+function populateTrackSelect(){
+  const sel = document.getElementById("iTrack");
+  sel.innerHTML = allModules().map(m=>`<option value="${m.id}">${esc(m.name)}</option>`).join("");
+}
+
+function addItem(){
+  const err = document.getElementById("iErr");
+  const tEl = document.getElementById("iTitle");
+  const title = tEl.value.trim();
+  if(!title){ err.textContent = "Please enter a topic/item."; tEl.focus(); return; }
+  let url = document.getElementById("iUrl").value.trim();
+  if(url && !/^https?:\/\//i.test(url)) url = "https://" + url;
+  const modId = document.getElementById("iTrack").value;
+  customItems.push({
+    id:"ci_"+Date.now()+"_"+Math.random().toString(36).slice(2,6),
+    mod: modId, t: title,
+    note: document.getElementById("iNote").value.trim(),
+    u: url
+  });
+  saveCI();
+  tEl.value=""; document.getElementById("iNote").value=""; document.getElementById("iUrl").value=""; err.textContent="";
+  openState[modId]=true; saveOpen();
+  if(filter==="revisit" || filter==="links"){ filter="all"; setActiveChip("all"); }
+  render();
+}
+
+function addTrack(){
+  const err = document.getElementById("tErr");
+  const nEl = document.getElementById("tName");
+  const name = nEl.value.trim();
+  if(!name){ err.textContent = "Please enter a track name."; nEl.focus(); return; }
+  const id = "ct_"+Date.now()+"_"+Math.random().toString(36).slice(2,6);
+  customTracks.push({ id, name, desc: document.getElementById("tDesc").value.trim() || "Your custom track." });
+  saveCT();
+  nEl.value=""; document.getElementById("tDesc").value=""; err.textContent="";
+  openState[id]=true; saveOpen();
+  populateTrackSelect();
+  filter="all"; setActiveChip("all");
+  render();
+}
+
+/* ---------- BACKUP / RESTORE ---------- */
+function toggleBackup(){ document.getElementById("backupbox").classList.toggle("open"); }
+function bkMsg(t){ const e=document.getElementById("bkNote"); if(e) e.textContent=t; }
+
+function collectState(){
+  return { app:"automation-qa-roadmap", version:1, exportedAt:new Date().toISOString(),
+    done, openState, revisit, customTracks, customItems, links };
+}
+function applyState(o){
+  if(!o || typeof o!=="object") throw new Error("bad data");
+  done        = o.done || {};
+  revisit     = o.revisit || {};
+  customTracks= Array.isArray(o.customTracks)? o.customTracks : [];
+  customItems = Array.isArray(o.customItems) ? o.customItems  : [];
+  links       = Array.isArray(o.links)       ? o.links        : [];
+  if(o.openState && typeof o.openState==="object") openState = o.openState;
+  saveDone(); saveRev(); saveCT(); saveCI(); saveLinks(); saveOpen();
+  populateTrackSelect(); render();
+}
+
+function download(filename, content, mime){
+  const blob = new Blob([content], {type:mime});
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = filename;
+  document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(()=>URL.revokeObjectURL(a.href), 1500);
+}
+
+function exportJSON(){
+  download("automation-qa-backup.json", JSON.stringify(collectState(),null,2), "application/json");
+  bkMsg("Exported JSON ✓  (keep this file — import it on any machine to restore everything)");
+}
+function importJSON(file){
+  if(!file) return;
+  const r = new FileReader();
+  r.onload = ()=>{ try{ applyState(JSON.parse(r.result)); bkMsg("Imported from JSON ✓"); }
+                   catch(e){ bkMsg("Couldn't read that JSON file."); } };
+  r.readAsText(file);
+}
+
+// Build a portable SQLite text dump (works fully offline)
+function buildSQLDump(){
+  const q = v => (v==null||v==="") ? "NULL" : "'"+String(v).replace(/'/g,"''")+"'";
+  const L = [];
+  L.push("-- Automation QA / SDET Roadmap backup");
+  L.push("-- exported "+new Date().toISOString());
+  L.push("BEGIN TRANSACTION;");
+  L.push("CREATE TABLE IF NOT EXISTS item_state (item_id TEXT PRIMARY KEY, done INTEGER, revisit INTEGER);");
+  L.push("CREATE TABLE IF NOT EXISTS custom_tracks (id TEXT PRIMARY KEY, name TEXT, descr TEXT);");
+  L.push("CREATE TABLE IF NOT EXISTS custom_items (id TEXT PRIMARY KEY, module_id TEXT, title TEXT, note TEXT, url TEXT);");
+  L.push("CREATE TABLE IF NOT EXISTS links (id TEXT PRIMARY KEY, title TEXT, url TEXT, note TEXT);");
+  L.push("CREATE TABLE IF NOT EXISTS ui_state (key TEXT PRIMARY KEY, value TEXT);");
+  const ids = new Set([...Object.keys(done), ...Object.keys(revisit)]);
+  ids.forEach(id=>L.push(`INSERT INTO item_state VALUES (${q(id)}, ${done[id]?1:0}, ${revisit[id]?1:0});`));
+  customTracks.forEach(t=>L.push(`INSERT INTO custom_tracks VALUES (${q(t.id)}, ${q(t.name)}, ${q(t.desc)});`));
+  customItems.forEach(c=>L.push(`INSERT INTO custom_items VALUES (${q(c.id)}, ${q(c.mod)}, ${q(c.t)}, ${q(c.note)}, ${q(c.u)});`));
+  links.forEach(l=>L.push(`INSERT INTO links VALUES (${q(l.id)}, ${q(l.title)}, ${q(l.url)}, ${q(l.note)});`));
+  Object.keys(openState).forEach(k=>L.push(`INSERT INTO ui_state VALUES (${q("open:"+k)}, ${q(openState[k]?"1":"0")});`));
+  L.push("COMMIT;");
+  return L.join("\n");
+}
+function exportSQLDump(){
+  download("automation-qa.sql", buildSQLDump(), "application/sql");
+  bkMsg("Exported SQL dump ✓  (open in any SQLite tool, or use it to rebuild the database)");
+}
+
+// Real SQLite .db via sql.js (loads the engine from CDN once — needs internet)
+async function getSQL(){
+  if(window.__SQL) return window.__SQL;
+  if(typeof initSqlJs!=="function") throw new Error("engine not loaded");
+  window.__SQL = await initSqlJs({ locateFile:f=>"https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.10.3/"+f });
+  return window.__SQL;
+}
+async function exportSQLite(){
+  bkMsg("Building SQLite database…");
+  try{
+    const SQL = await getSQL();
+    const db = new SQL.Database();
+    db.run(buildSQLDump());
+    const bytes = db.export();
+    db.close();
+    download("automation-qa.db", bytes, "application/x-sqlite3");
+    bkMsg("Exported SQLite .db ✓  (a real database file — open/query/dump it anywhere)");
+  }catch(e){
+    bkMsg("Couldn't load the SQLite engine (needs internet). Use Export JSON or the .sql dump — both work offline.");
+  }
+}
+async function importSQLite(file){
+  if(!file) return;
+  bkMsg("Reading SQLite file…");
+  try{
+    const SQL = await getSQL();
+    const buf = new Uint8Array(await file.arrayBuffer());
+    const db  = new SQL.Database(buf);
+    const nd={}, nr={}, nt=[], ni=[], nl=[], no={...openState};
+    const each=(sql,cb)=>{ try{ const res=db.exec(sql); if(res[0]) res[0].values.forEach(cb); }catch(e){} };
+    each("SELECT item_id, done, revisit FROM item_state", r=>{ if(r[1]) nd[r[0]]=true; if(r[2]) nr[r[0]]=true; });
+    each("SELECT id, name, descr FROM custom_tracks", r=>nt.push({id:r[0], name:r[1], desc:r[2]||""}));
+    each("SELECT id, module_id, title, note, url FROM custom_items", r=>ni.push({id:r[0], mod:r[1], t:r[2], note:r[3]||"", u:r[4]||""}));
+    each("SELECT id, title, url, note FROM links", r=>nl.push({id:r[0], title:r[1]||r[2], url:r[2], note:r[3]||""}));
+    each("SELECT key, value FROM ui_state", r=>{ if(String(r[0]).startsWith("open:")) no[String(r[0]).slice(5)] = (r[1]==="1"); });
+    db.close();
+    applyState({ done:nd, revisit:nr, customTracks:nt, customItems:ni, links:nl, openState:no });
+    bkMsg("Imported from SQLite ✓");
+  }catch(e){
+    bkMsg("Couldn't read that .db (the engine needs internet to load). Try importing a JSON backup instead.");
+  }
+}
+
+// open First Moves + Week 1 by default on first load
+if(Object.keys(openState).length===0){ openState["qw"]=true; openState["w1"]=true; saveOpen(); }
+populateTrackSelect();
+render();
+</script>
+</body>
+</html>

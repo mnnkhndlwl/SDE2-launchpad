@@ -1,0 +1,60 @@
+---
+title: "Waits & killing flakiness"
+track: qa-web
+summary: "The single most important reliability topic — implicit vs explicit vs fluent waits, why Thread.sleep is banned, and a checklist to eliminate flaky tests."
+order: 4
+est: 16
+difficulty: medium
+priority: deep
+tags: [waits, flakiness, synchronization]
+whyAsked: "Flaky tests destroy trust in automation. 'How do you handle waits / fix a flaky test?' is asked in almost every automation interview."
+followUps:
+  - "Implicit vs explicit wait — and why not mix them?"
+  - "Why is Thread.sleep an anti-pattern?"
+  - "Name three causes of flakiness and your fixes."
+resources:
+  - { label: "Selenium waits", url: "https://www.selenium.dev/documentation/webdriver/waits/" }
+---
+
+Modern web apps load asynchronously. Acting before an element is ready is the root of most flaky tests. **Synchronization** is the cure.
+
+## The three Selenium waits
+
+- **Implicit wait** — a global "poll up to N seconds for any element". Simple but blunt; can hide real timing bugs.
+- **Explicit wait** — wait for a *specific condition* on a *specific element*. The correct tool:
+
+```java
+new WebDriverWait(driver, Duration.ofSeconds(10))
+    .until(ExpectedConditions.elementToBeClickable(By.id("pay")));
+```
+
+- **Fluent wait** — explicit wait with a custom polling interval and ignored exceptions.
+
+**Never mix implicit and explicit waits** — the timeouts compound unpredictably and cause weird, intermittent failures.
+
+## The cardinal sin: Thread.sleep
+
+```java
+Thread.sleep(5000); // ❌ never
+```
+
+It's either too short (still flaky) or too long (slow suite). It waits a fixed time regardless of whether the app is ready. Use conditional (explicit) waits instead.
+
+Playwright sidesteps all of this with **auto-waiting** — actions and `expect` retry automatically until ready.
+
+## Flakiness checklist
+
+| Cause | Fix |
+|---|---|
+| Acting before element ready | Explicit waits / Playwright auto-wait |
+| Brittle locators | data-testid, role/text locators |
+| Stale element after re-render | Re-find the element; don't cache it |
+| Test order dependency | Isolate state; set up/tear down data |
+| Animations | Wait for animation end / disable in test |
+| Hard-coded sleeps | Replace with conditional waits |
+| Shared test data races | Unique data per test; parallel-safe |
+
+<div class="callout warn">
+  <div class="ct">Mindset</div>
+  Treat every flaky test as a real bug in your automation, not random noise. Quarantine it, find the timing/state cause, fix it. A suite people don't trust is worse than no suite.
+</div>

@@ -1,0 +1,65 @@
+---
+title: "CI/CD, Docker & cloud grids"
+track: qa-cicd
+summary: "Make your suite run automatically on every push — pipelines (GitHub Actions/Jenkins), containers for consistent environments, and parallel/cloud execution."
+order: 2
+est: 20
+difficulty: medium
+priority: deep
+tags: [cicd, github-actions, jenkins, docker, grid]
+whyAsked: "~89% of QA roles expect CI/CD. Tests that don't run in a pipeline barely count in 2026."
+followUps:
+  - "Walk me through a pipeline that runs your tests."
+  - "Why run tests in Docker?"
+  - "How do you run tests in parallel across browsers?"
+resources:
+  - { label: "GitHub Actions", url: "https://docs.github.com/actions" }
+  - { label: "Jenkins", url: "https://www.jenkins.io/doc/" }
+  - { label: "Docker", url: "https://docs.docker.com/get-started/" }
+---
+
+Automation delivers value only when it runs **continuously and reliably**. CI/CD is how.
+
+## The idea
+
+On every push / PR, a pipeline automatically: checks out code → installs deps → runs tests → publishes a report → blocks the merge if tests fail. Bugs surface in minutes, not after release.
+
+## GitHub Actions (easiest to start)
+
+```yaml
+name: tests
+on: [push, pull_request]
+jobs:
+  e2e:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 20 }
+      - run: npm ci
+      - run: npx playwright install --with-deps
+      - run: npx playwright test
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with: { name: report, path: playwright-report }
+```
+
+**Jenkins** does the same via a `Jenkinsfile`; it's still common in enterprises.
+
+## Docker: consistent environments
+
+"Works on my machine" dies with containers. A `Dockerfile` pins the OS, browser and dependencies so the suite runs identically locally and in CI. `docker compose` can spin up the app + a Selenium Grid together.
+
+## Parallel & cloud execution
+
+- **Parallelize** to cut runtime: Playwright shards, TestNG/JUnit parallel, or **Selenium Grid 4**.
+- **Cloud farms** (BrowserStack, Sauce Labs, LambdaTest) run tests across dozens of real browsers/devices in parallel without you maintaining infra.
+
+## Reporting & notifications
+
+Publish the HTML/Allure report as a build artifact and post pass/fail to Slack/Teams so the team sees results without digging.
+
+<div class="callout key">
+  <div class="ct">Milestone</div>
+  Get YOUR framework green in GitHub Actions on every push, with the report uploaded as an artifact. Put the workflow file and a passing badge in your README.
+</div>

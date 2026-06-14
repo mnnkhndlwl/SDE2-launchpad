@@ -1,20 +1,74 @@
 ---
 import '../styles/global.css';
-const { title = 'SDE-2 Launchpad', desc = 'Your interactive, offline interview-prep platform.', active = '' } = Astro.props;
+const {
+  title = 'SDE-2 Launchpad',
+  desc = 'Your interactive, offline interview-prep platform.',
+  active = '',
+  program = 'sde2',
+} = Astro.props;
 const base = import.meta.env.BASE_URL.replace(/\/$/, '');
-const links = [
-  { href: '/', label: 'Today', key: 'home' },
-  { href: '/plan', label: 'Plan', key: 'plan' },
-  { href: '/tracks', label: 'Learn', key: 'tracks' },
-  { href: '/game', label: '🎮 DSA Quest', key: 'game' },
-  { href: '/practice/code', label: 'Code Lab', key: 'code' },
-  { href: '/practice/quiz', label: 'Output Quiz', key: 'quiz' },
-  { href: '/practice/flashcards', label: 'Flashcards', key: 'flash' },
-  { href: '/practice/mock', label: 'Mock', key: 'mock' },
-  { href: '/practice/stories', label: 'STAR Stories', key: 'stories' },
-  { href: '/practice/design', label: 'SD Canvas', key: 'design' },
-  { href: '/mistakes', label: 'Mistakes Log', key: 'mistakes' },
-];
+
+const NAVS = {
+  sde2: {
+    brand: 'SDE-2 Launchpad',
+    logo: 'S2',
+    home: '/sde2',
+    links: [
+      { href: '/sde2', label: 'Today', key: 'home' },
+      { href: '/plan', label: 'Plan', key: 'plan' },
+      { href: '/tracks', label: 'Learn', key: 'tracks' },
+      { href: '/game', label: '🎮 DSA Quest', key: 'game' },
+      { href: '/practice/code', label: 'Code Lab', key: 'code' },
+      { href: '/practice/quiz', label: 'Output Quiz', key: 'quiz' },
+      { href: '/practice/flashcards', label: 'Flashcards', key: 'flash' },
+      { href: '/practice/mock', label: 'Mock', key: 'mock' },
+      { href: '/practice/stories', label: 'STAR Stories', key: 'stories' },
+      { href: '/practice/design', label: 'SD Canvas', key: 'design' },
+      { href: '/mistakes', label: 'Mistakes Log', key: 'mistakes' },
+    ],
+    footer: [
+      { href: '/tracks', label: 'Curriculum' },
+      { href: '/game', label: 'DSA Quest' },
+      { href: '/practice/design', label: 'SD Canvas' },
+      { href: '/prep', label: 'Company Prep' },
+      { href: '/cheatsheets', label: 'Cheat Sheets' },
+      { href: '/diagnostic', label: 'Diagnostic' },
+      { href: '/mistakes', label: 'Mistakes' },
+    ],
+  },
+  qa: {
+    brand: 'QA · Automation Launchpad',
+    logo: 'QA',
+    home: '/qa',
+    links: [
+      { href: '/qa', label: 'Today', key: 'home' },
+      { href: '/qa/plan', label: '12-Week Plan', key: 'plan' },
+      { href: '/qa/tracks', label: 'Learn', key: 'tracks' },
+      { href: '/lessons/qa-web/playwright-core', label: 'Playwright', key: 'pw' },
+      { href: '/lessons/qa-web/selenium-core', label: 'Selenium', key: 'sel' },
+      { href: '/lessons/qa-api/http-foundations', label: 'API', key: 'api' },
+      { href: '/lessons/qa-ai/ai-in-testing-2026', label: '🤖 AI Testing', key: 'ai' },
+      { href: '/lessons/qa-cheatsheets/cheatsheets', label: 'Cheat Sheets', key: 'cheat' },
+      { href: '/mistakes', label: 'Mistakes Log', key: 'mistakes' },
+    ],
+    footer: [
+      { href: '/qa/tracks', label: 'Curriculum' },
+      { href: '/qa/plan', label: '12-Week Plan' },
+      { href: '/lessons/qa-web/playwright-core', label: 'Playwright' },
+      { href: '/lessons/qa-api/http-foundations', label: 'API Testing' },
+      { href: '/lessons/qa-cheatsheets/cheatsheets', label: 'Cheat Sheets' },
+      { href: '/lessons/qa-career/certifications-and-roadmap', label: 'Certifications' },
+      { href: '/mistakes', label: 'Mistakes' },
+    ],
+  },
+};
+const isHome = program === 'home';
+const nav = NAVS[program] || NAVS.sde2;
+const brandName = isHome ? 'Interview Launchpad' : nav.brand;
+const brandLogo = isHome ? 'IL' : nav.logo;
+const brandHref = isHome ? '/' : nav.home;
+const links = isHome ? [] : nav.links;
+const footerLinks = isHome ? [] : nav.footer;
 ---
 <!DOCTYPE html>
 <html lang="en">
@@ -35,14 +89,15 @@ const links = [
 <body>
   <nav class="topnav">
     <div class="inner">
-      <a class="brand" href={`${base}/`}>
-        <span class="logo">S2</span>
-        <span>SDE-2 Launchpad</span>
+      <a class="brand" href={`${base}${brandHref}`}>
+        <span class="logo">{brandLogo}</span>
+        <span>{brandName}</span>
       </a>
       <div class="navlinks" id="navlinks">
         {links.map((l) => (
           <a href={`${base}${l.href}`} class={active === l.key ? 'active' : ''}>{l.label}</a>
         ))}
+        {!isHome && <a href={`${base}/`} class="nav-switch" title="Switch path">⇄ Paths</a>}
       </div>
       <div class="nav-right">
         <button class="cmdk" id="cmdkBtn" title="Search lessons">
@@ -69,18 +124,13 @@ const links = [
   <footer class="site">
     <div class="wrap site-foot" style="padding:0">
       <div>
-        <div style="font-size:20px;font-weight:700;color:var(--text)">SDE-2 Launchpad</div>
+        <div style="font-size:20px;font-weight:700;color:var(--text)">{brandName}</div>
         <p style="margin-top:6px;max-width:460px">Everything is stored locally in your browser; nothing leaves this device. Precision practice for technical mastery.</p>
         <button class="btn hide" id="installBtn" style="margin-top:12px">📲 Install as an app</button>
       </div>
       <nav class="site-foot-links">
-        <a href={`${base}/tracks`}>Curriculum</a>
-        <a href={`${base}/game`}>DSA Quest</a>
-        <a href={`${base}/practice/design`}>SD Canvas</a>
-        <a href={`${base}/prep`}>Company Prep</a>
-        <a href={`${base}/cheatsheets`}>Cheat Sheets</a>
-        <a href={`${base}/diagnostic`}>Diagnostic</a>
-        <a href={`${base}/mistakes`}>Mistakes</a>
+        {footerLinks.map((l) => <a href={`${base}${l.href}`}>{l.label}</a>)}
+        <a href={`${base}/`}>⇄ Switch path</a>
       </nav>
     </div>
   </footer>

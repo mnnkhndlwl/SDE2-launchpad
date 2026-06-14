@@ -5,9 +5,12 @@ const { entry, lessons, prev, next } = Astro.props;
 const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 const d = entry.data;
 const trackMeta = TRACKS.find((t) => t.id === d.track);
+const program = trackMeta?.program ?? 'sde2';
+const learnHref = program === 'qa' ? '/qa/tracks' : '/tracks';
+const brandSuffix = program === 'qa' ? 'QA · Automation Launchpad' : 'SDE-2 Launchpad';
 
-// group sidebar lessons by track in curriculum order
-const order = TRACKS.map((t) => t.id);
+// group sidebar lessons by track in curriculum order — scoped to this lesson's program
+const order = TRACKS.filter((t) => t.program === program).map((t) => t.id);
 const grouped = order.map((tid) => ({
   track: TRACKS.find((t) => t.id === tid),
   items: lessons.filter((l) => l.data.track === tid).sort((a, b) => a.data.order - b.data.order),
@@ -16,7 +19,7 @@ const grouped = order.map((tid) => ({
 const diffClass = d.difficulty ? `p-${d.difficulty}` : '';
 const priClass = d.priority ? `p-${d.priority}` : '';
 ---
-<BaseLayout title={`${d.title} · SDE-2 Launchpad`} desc={d.summary} active="tracks">
+<BaseLayout title={`${d.title} · ${brandSuffix}`} desc={d.summary} active="tracks" program={program}>
   <!-- Visualizer registry is only loaded on lesson pages that can use it. -->
   <script is:inline slot="head" src={`${base}/viz-algos.js`}></script>
   <div class="wrap" style="max-width:1180px">
@@ -36,7 +39,7 @@ const priClass = d.priority ? `p-${d.priority}` : '';
 
       <div class="lesson-main">
         <div class="lesson-head">
-          <div class="crumbs"><a href={`${base}/tracks`}>Learn</a> › <a href={`${base}/tracks/${d.track}`}>{trackMeta?.name}</a></div>
+          <div class="crumbs"><a href={`${base}${learnHref}`}>Learn</a> › <a href={`${base}/tracks/${d.track}`}>{trackMeta?.name}</a></div>
           <h1>{d.title}</h1>
           <p class="sub">{d.summary}</p>
           <div class="meta">

@@ -1,0 +1,92 @@
+---
+title: "QA automation cheat sheets"
+track: qa-cheatsheets
+summary: "Fast reference you'll use daily — CSS/XPath locators, Git, test-runner annotations, HTTP status codes, and Playwright/Selenium API snippets."
+order: 1
+est: 10
+difficulty: easy
+priority: know
+tags: [cheatsheet, reference]
+resources:
+  - { label: "CSS", url: "https://devhints.io/css" }
+  - { label: "XPath", url: "https://devhints.io/xpath" }
+---
+
+Bookmark this. Everything here is muscle memory worth building.
+
+## CSS selectors
+
+```
+#id  .class  tag  tag.class
+[name='q']  [href^='https']  [src$='.png']  [class*='btn']
+a b (descendant)  a > b (child)  a + b (next sibling)
+li:nth-of-type(2)  :first-child  :last-child
+```
+
+## XPath
+
+```
+//tag[@attr='val']   //*[@id='x']
+//button[text()='Login']   //*[contains(.,'Log')]
+(//input)[1]
+following-sibling::  parent::  ancestor::  child::
+contains()  starts-with()  normalize-space()
+```
+
+## Git
+
+```
+git clone <url>          git checkout -b feat/x
+git add .                git commit -m "msg"
+git pull                 git push -u origin feat/x
+git merge <b>            git rebase main
+git restore <file>       git reset --soft HEAD~1
+git revert <hash>        git stash / git stash pop
+git log --oneline --graph
+```
+
+## Test-runner annotations & assertions
+
+```
+TestNG (Java):  @BeforeMethod @Test @AfterMethod  Assert.assertEquals  SoftAssert
+JUnit5 (Java):  @BeforeEach @Test @AfterEach  @ParameterizedTest  Assertions.assertEquals
+pytest (Py):    def test_x():  @pytest.fixture  @pytest.mark.parametrize  assert
+Playwright(JS): test('x', async ({page})=>{})  test.beforeEach  expect(loc).toBeVisible()
+```
+
+## HTTP status codes
+
+```
+200 OK   201 Created   204 No Content
+301/302 Redirect   304 Not Modified
+400 Bad Request   401 Unauthorized   403 Forbidden
+404 Not Found   409 Conflict   422 Unprocessable   429 Too Many Requests
+500 Server Error   502 Bad Gateway   503 Unavailable   504 Timeout
+```
+
+## Playwright API
+
+```
+page.goto(url)   getByRole('button',{name:'Submit'})
+locator.click() / .fill('x') / .check()
+expect(loc).toBeVisible() / toHaveText('x')
+page.route('**/api', handler)        // mock
+context.storageState({path:'auth.json'})  // reuse login
+```
+
+## Selenium API
+
+```
+driver.get(url)   findElement(By.cssSelector("..."))
+.click() / .sendKeys("x") / .getText()
+new Select(el).selectByVisibleText("x")
+new WebDriverWait(driver,Duration.ofSeconds(10))
+   .until(ExpectedConditions.elementToBeClickable(by))
+driver.switchTo().frame()/alert()/window(handle)
+((JavascriptExecutor)driver).executeScript("...")
+```
+
+<div class="callout tip">
+  <div class="ct">Rule</div>
+  Validate every locator in the DevTools console before putting it in code, and never use <code>Thread.sleep</code> — always conditional waits.
+</div>

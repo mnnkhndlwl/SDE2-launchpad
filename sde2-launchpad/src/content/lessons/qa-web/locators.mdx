@@ -1,0 +1,79 @@
+---
+title: "Locators: CSS selectors & XPath"
+track: qa-web
+summary: "You can't automate what you can't locate. Master CSS and XPath, validate them in DevTools, and prefer resilient locators that survive UI changes."
+order: 1
+est: 20
+difficulty: medium
+priority: must
+tags: [locators, css, xpath, devtools]
+whyAsked: "Brittle locators are the #1 cause of flaky tests. Interviewers test whether you can write robust selectors and know when to use CSS vs XPath."
+followUps:
+  - "When would you use XPath over CSS?"
+  - "How do you locate an element by its visible text?"
+  - "What makes a locator brittle and how do you fix it?"
+resources:
+  - { label: "CSS cheatsheet", url: "https://devhints.io/css" }
+  - { label: "XPath cheatsheet", url: "https://devhints.io/xpath" }
+  - { label: "Practice: the-internet", url: "https://the-internet.herokuapp.com/" }
+---
+
+Every UI action starts with finding an element. Robust locators are the difference between a stable suite and constant flakiness.
+
+## CSS selectors (prefer these)
+
+```
+#id                 → element with id
+.class              → element with class
+tag.class           → tag AND class
+[name='q']          → attribute equals
+[href^='https']     → starts with
+[src$='.png']       → ends with
+[class*='btn']      → contains
+a b                 → b inside a (descendant)
+a > b               → b direct child of a
+ul li:nth-of-type(2)→ second li
+```
+
+## XPath (for text & traversal)
+
+```
+//tag                       → anywhere in the DOM
+//tag[@attr='val']          → attribute match
+//*[@id='x']                → any tag with id
+//button[text()='Login']    → exact text
+//button[contains(.,'Log')] → partial text
+(//input)[1]                → first match
+//label[text()='Email']/following-sibling::input
+```
+
+XPath can traverse **up and sideways** (`parent::`, `ancestor::`, `following-sibling::`) — CSS cannot. Use XPath when you must select by text or relative position; otherwise prefer CSS (faster, more readable).
+
+## Validate before you code
+
+In Chrome DevTools console:
+
+```js
+document.querySelectorAll("css-here")   // CSS — check the count
+$x("//xpath-here")                       // XPath
+```
+
+If it returns exactly one element, your locator is good.
+
+## Resilient locators (the modern way)
+
+Brittle: `div > div:nth-child(3) > span` — breaks on any layout change.
+
+Resilient, in priority order:
+
+1. A dedicated **test id**: `[data-testid='login-btn']`.
+2. **Role + accessible name**: the button labelled "Submit".
+3. Stable **id** or **name** attributes.
+4. Visible **text**.
+
+Playwright bakes this in with `getByRole`, `getByText`, `getByLabel`, `getByTestId` — a big reason it's less flaky than raw CSS/XPath.
+
+<div class="callout warn">
+  <div class="ct">Avoid</div>
+  Absolute XPath (<code>/html/body/div[2]/...</code>), index-only chains, and selectors tied to styling classes that designers change. Ask your devs to add <code>data-testid</code> attributes — it's the cheapest flakiness fix there is.
+</div>

@@ -1,17 +1,17 @@
 ---
-import BaseLayout from '../../layouts/BaseLayout.astro';
+import BaseLayout from '../../../layouts/BaseLayout.astro';
 import { getCollection } from 'astro:content';
-import { TRACKS } from '../../data/curriculum';
+import { TRACKS } from '../../../data/curriculum';
 const base = import.meta.env.BASE_URL.replace(/\/$/, '');
-const PROGRAM = 'sde2';
+const PROGRAM = 'qa';
 const programTracks = TRACKS.filter((t) => t.program === PROGRAM);
 const lessons = (await getCollection('lessons')).filter((l) => !l.data.draft);
 const byTrack = (tid: string) => lessons.filter((l) => l.data.track === tid).sort((a, b) => a.data.order - b.data.order);
 ---
-<BaseLayout title="Learn · SDE-2 Launchpad" active="tracks" program={PROGRAM}>
+<BaseLayout title="Learn · QA · Automation Launchpad" active="tracks" program={PROGRAM}>
   <div class="wrap" style="padding-top:28px">
-    <h1>Learning tracks</h1>
-    <p class="sub">Every topic you need, with explanations, visuals, and practice. Pick a track or use ⌘K to jump anywhere.</p>
+    <h1>QA learning tracks</h1>
+    <p class="sub">Everything from testing fundamentals to AI-assisted automation, with explanations, code and cheat sheets. Pick a track or use ⌘K to jump anywhere.</p>
     {programTracks.map((t) => {
       const items = byTrack(t.id);
       return (
@@ -45,6 +45,7 @@ const byTrack = (tid: string) => lessons.filter((l) => l.data.track === tid).sor
   </div>
   <script define:vars={{ trackIds: programTracks.map((t) => t.id), lessonsByTrack: Object.fromEntries(programTracks.map((t) => [t.id, lessons.filter((l) => l.data.track === t.id).map((l) => l.id)])) }}>
     const store = window.SDE2;
+    try { localStorage.setItem('launchpad:lastPath', 'qa'); } catch (e) {}
     function paint() {
       const done = store.allDone();
       document.querySelectorAll('[data-mastery]').forEach((el) => {

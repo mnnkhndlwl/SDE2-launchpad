@@ -1,0 +1,73 @@
+---
+title: "API testing: Postman → automated in code"
+track: qa-api
+summary: "Explore and test APIs in Postman, then automate them with REST Assured (Java) or requests + pytest (Python) — collections, assertions, schema validation and CI."
+order: 2
+est: 20
+difficulty: medium
+priority: deep
+tags: [postman, rest-assured, pytest, newman]
+whyAsked: "Hands-on API automation is a core SDET skill. Expect to write or read a REST Assured / requests test in interviews."
+followUps:
+  - "How do you validate a JSON schema in your tests?"
+  - "How do you chain requests (use a token from one call in the next)?"
+  - "How do you run Postman tests in CI?"
+resources:
+  - { label: "Postman Learning", url: "https://learning.postman.com/" }
+  - { label: "REST Assured", url: "https://rest-assured.io/" }
+  - { label: "pytest", url: "https://docs.pytest.org/" }
+---
+
+Start exploratory in **Postman**, then move stable checks into **code** that runs in CI.
+
+## Postman essentials
+
+- **Collections** group related requests; **environments** hold variables (base URL, token).
+- Write tests in the *Tests* tab:
+
+```js
+pm.test("status is 200", () => pm.response.to.have.status(200));
+pm.test("has a token", () => pm.expect(pm.response.json().token).to.exist);
+pm.environment.set("token", pm.response.json().token); // chain to next request
+```
+
+- Run the whole collection headlessly in CI with **Newman** (`newman run collection.json`).
+
+## Automate in code — REST Assured (Java)
+
+```java
+given()
+    .header("Content-Type", "application/json")
+    .body("{ \"email\": \"a@b.com\", \"password\": \"x\" }")
+.when()
+    .post("https://reqres.in/api/login")
+.then()
+    .statusCode(200)
+    .body("token", notNullValue())
+    .time(lessThan(2000L));
+```
+
+## Automate in code — requests + pytest (Python)
+
+```python
+import requests
+
+def test_create_user():
+    r = requests.post("https://reqres.in/api/users",
+                      json={"name": "sahil", "job": "sdet"})
+    assert r.status_code == 201
+    body = r.json()
+    assert body["name"] == "sahil"
+    assert "id" in body
+```
+
+## Schema validation & chaining
+
+- Validate responses against a **JSON schema** so structural changes fail loudly.
+- **Chain**: capture a token/id from one response and pass it to the next request (auth flows, create-then-fetch).
+- **Mock** unstable dependencies with WireMock / Mockoon so tests stay deterministic.
+
+<div class="callout key">
+  <div class="ct">Portfolio project</div>
+  Automate full CRUD against a public API (ReqRes or your own): create → read → update → delete, with status, body and schema assertions, runnable from one command and in GitHub Actions.
+</div>

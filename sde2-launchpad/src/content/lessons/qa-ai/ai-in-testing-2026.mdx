@@ -1,0 +1,52 @@
+---
+title: "AI-assisted testing (the 2026 differentiator)"
+track: qa-ai
+summary: "The fastest-growing QA skill — using LLMs to generate tests, self-healing locators, AI-native tools, agentic testing, and knowing the real limits and risks."
+order: 1
+est: 16
+difficulty: medium
+priority: deep
+tags: [ai, llm, self-healing, copilot, genai]
+whyAsked: "58% of enterprises are upskilling QA in AI tools and SDET roles increasingly expect AI fluency. It's the clearest way to stand out in 2026."
+followUps:
+  - "How do you use AI without trusting it blindly?"
+  - "What is self-healing in test automation?"
+  - "Where does AI testing fail / mislead?"
+resources:
+  - { label: "GitHub Copilot", url: "https://github.com/features/copilot" }
+  - { label: "2026 trends", url: "https://testguild.com/automation-testing-trends/" }
+---
+
+AI won't replace testers — but testers who use AI well are replacing those who don't. Treat it as a **force multiplier**, not autopilot.
+
+## Where AI helps today
+
+- **LLM coding assistants** (Copilot, Cursor) — generate and refactor test code, scaffold Page Objects, draft assertions from a natural-language prompt.
+- **Self-healing locators** — when a button moves or is renamed, AI-backed tools re-find it by text/context and keep the test passing instead of failing, cutting locator maintenance.
+- **AI test generation** — produce test cases / edge cases from requirements, user stories or even a recorded session.
+- **Flaky-test detection** — ML flags tests that fail intermittently so you can quarantine and fix them.
+- **Visual/AI validation** — detect meaningful UI changes while ignoring trivial pixel noise.
+
+## The AI-native tool landscape
+
+Testim, Mabl, Functionize, Applitools, KaneAI and similar low-code/AI platforms speed up breadth. Coding frameworks (Playwright/Selenium) still pay more for depth — combine both.
+
+## Agentic & MCP testing (emerging)
+
+AI agents that drive Playwright via tools/MCP to explore an app and propose tests are appearing in 2026. Early but worth watching — and great portfolio fodder.
+
+## Prompting for testing
+
+Use AI to brainstorm coverage: "Given this signup form, list boundary and negative test cases" or "generate realistic invalid test data for an email field". You review and curate.
+
+## Risks & limits (say this in interviews)
+
+- **Hallucinated assertions** — AI can write tests that pass but assert the wrong thing. Always review.
+- **False confidence** — green AI-generated tests can give a false sense of coverage.
+- **Data privacy** — don't paste proprietary code/data into public tools.
+- **It can't own quality** — judgment, risk analysis and exploratory testing stay human.
+
+<div class="callout warn">
+  <div class="ct">The winning stance</div>
+  "I use AI to go faster — generating scaffolding, edge cases and healing brittle locators — but I review everything, keep humans on risk and exploratory testing, and never trust a generated assertion I haven't verified."
+</div>

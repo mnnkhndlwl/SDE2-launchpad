@@ -1,0 +1,60 @@
+---
+title: "Performance, security & accessibility testing"
+track: qa-performance
+summary: "Non-functional testing rounds you into a complete engineer — load testing with k6/JMeter, security basics (OWASP), and automated accessibility checks."
+order: 1
+est: 18
+difficulty: medium
+priority: deep
+tags: [performance, k6, jmeter, security, accessibility]
+whyAsked: "Non-functional awareness separates senior testers from juniors. Performance metrics (p95, throughput) and OWASP basics come up often."
+followUps:
+  - "What's the difference between load, stress and soak testing?"
+  - "What does p95 latency mean?"
+  - "Name a few OWASP Top 10 risks a tester should check."
+resources:
+  - { label: "k6 docs", url: "https://k6.io/docs/" }
+  - { label: "JMeter", url: "https://jmeter.apache.org/" }
+  - { label: "OWASP Top 10", url: "https://owasp.org/www-project-top-ten/" }
+  - { label: "axe", url: "https://www.deque.com/axe/" }
+---
+
+Functional testing asks "does it work?"; non-functional testing asks "does it work *well enough* — fast, secure, usable for everyone?"
+
+## Performance testing
+
+Types:
+
+- **Load** — expected traffic; does it hold up?
+- **Stress** — beyond expected; where does it break?
+- **Soak/endurance** — sustained load; memory leaks?
+- **Spike** — sudden surges.
+
+Key metrics: **latency** (response time), **throughput** (requests/sec), **error rate**, and percentiles — **p95/p99** (95%/99% of requests are faster than this). Averages lie; percentiles tell the truth about the slow tail.
+
+```js
+// k6 — a simple load test
+import http from 'k6/http';
+import { check } from 'k6';
+export const options = { vus: 50, duration: '1m',
+  thresholds: { http_req_duration: ['p(95)<500'] } };
+export default function () {
+  const res = http.get('https://test.k6.io');
+  check(res, { 'status 200': r => r.status === 200 });
+}
+```
+
+**k6** is the modern scriptable choice; **JMeter** is the GUI-driven classic still widely used.
+
+## Security testing (basics every tester should do)
+
+Know the **OWASP Top 10**: injection (SQL/XSS), broken authentication, broken access control (e.g. **IDOR** — changing an id in the URL to see someone else's data), security misconfiguration, sensitive data exposure. Run an automated scan with **OWASP ZAP** and always test that auth and authorization actually block what they should.
+
+## Accessibility (a11y)
+
+Test against **WCAG**: keyboard-only navigation, color contrast, alt text, labels, focus order. Automate the easy 30-40% with **axe-core** (or `@axe-core/playwright`); do the rest manually with a screen reader.
+
+<div class="callout tip">
+  <div class="ct">How to talk about it</div>
+  "I push performance and security left: a smoke load test in CI guards p95, axe checks run with my E2E tests, and I always include negative auth/authorization cases. It's cheaper to catch these continuously than in a pre-launch scramble."
+</div>

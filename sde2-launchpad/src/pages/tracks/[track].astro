@@ -8,13 +8,16 @@ export async function getStaticPaths() {
 }
 const { track } = Astro.props;
 const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+const program = track.program ?? 'sde2';
+const learnHref = program === 'qa' ? '/qa/tracks' : '/tracks';
+const brandSuffix = program === 'qa' ? 'QA · Automation Launchpad' : 'SDE-2 Launchpad';
 const lessons = (await getCollection('lessons'))
   .filter((l) => !l.data.draft && l.data.track === track.id)
   .sort((a, b) => a.data.order - b.data.order);
 ---
-<BaseLayout title={`${track.name} · SDE-2 Launchpad`} active="tracks">
+<BaseLayout title={`${track.name} · ${brandSuffix}`} active="tracks" program={program}>
   <div class="wrap" style="padding-top:28px;max-width:880px">
-    <div class="crumbs muted" style="font-size:13px"><a href={`${base}/tracks`}>Learn</a> › {track.name}</div>
+    <div class="crumbs muted" style="font-size:13px"><a href={`${base}${learnHref}`}>Learn</a> › {track.name}</div>
     <h1 style="margin-top:8px">{track.icon} {track.name}</h1>
     <p class="sub">{track.blurb}</p>
     <div class="callout key" style="margin-top:14px"><div class="ct">Goal</div>{track.goal}</div>

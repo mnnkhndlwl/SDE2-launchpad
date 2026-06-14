@@ -1,0 +1,51 @@
+---
+title: "Mobile automation with Appium"
+track: qa-mobile
+summary: "Optional but valuable — automate native Android/iOS flows with Appium, understand mobile-specific challenges, and know the modern alternatives."
+order: 1
+est: 14
+difficulty: medium
+priority: know
+tags: [mobile, appium, android, ios]
+whyAsked: "Mobile testing demand keeps rising. Even basic Appium knowledge widens your job pool."
+followUps:
+  - "Native vs hybrid vs mobile-web — how does testing differ?"
+  - "Emulator vs real device — trade-offs?"
+  - "How does Appium locate elements?"
+resources:
+  - { label: "Appium", url: "https://appium.io/" }
+---
+
+Appium automates native, hybrid and mobile-web apps on Android and iOS using the same WebDriver protocol you already know — so your Selenium skills transfer.
+
+## App types
+
+- **Native** — built with platform SDKs (Kotlin/Swift). Fastest, full device access.
+- **Hybrid** — web content in a native shell; you switch between native and web *contexts*.
+- **Mobile web** — a site in the mobile browser; test like web but on mobile viewports.
+
+## Emulator/simulator vs real device
+
+- **Emulators** — cheap, fast, parallelizable, good for early dev.
+- **Real devices** — catch performance, sensors, network and OEM quirks. Use cloud farms (BrowserStack/Sauce App Automate) for breadth.
+
+## Core concepts
+
+- **Desired capabilities** — platform, device, app path/package, automation engine (UiAutomator2 for Android, XCUITest for iOS).
+- **Appium Inspector** — point at the app to discover locators (accessibility id, id, XPath).
+- **Contexts** — `NATIVE_APP` vs `WEBVIEW_*` for hybrid apps.
+- **Gestures** — tap, swipe, scroll, long-press via the W3C Actions API.
+
+```python
+caps = {"platformName": "Android", "automationName": "UiAutomator2",
+        "appPackage": "com.example", "appActivity": ".MainActivity"}
+```
+
+## Modern alternatives
+
+**Maestro** (simple YAML flows), and platform-native **Espresso** (Android) / **XCUITest** (iOS) for dev-owned tests. Appium remains the cross-platform standard.
+
+<div class="callout tip">
+  <div class="ct">Scope it right</div>
+  Mobile is a bonus track — don't let it block your core web + API + framework skills. One working Appium test on an emulator is enough to put it on your resume.
+</div>

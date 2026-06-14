@@ -1,0 +1,48 @@
+---
+title: "Selenium vs Playwright vs Cypress (2026)"
+track: qa-web
+summary: "A clear-eyed comparison of the three major web automation tools — strengths, trade-offs, and how to justify a tool choice in an interview."
+order: 5
+est: 12
+difficulty: easy
+priority: deep
+tags: [comparison, selenium, playwright, cypress]
+whyAsked: "'Which tool would you choose and why?' tests judgment, not memorization. Knowing the trade-offs marks you as a senior thinker."
+followUps:
+  - "When would you still pick Selenium in 2026?"
+  - "What are Cypress's limitations?"
+  - "Why do engineers who know both Selenium and Playwright earn more?"
+resources:
+  - { label: "Tool comparison 2026", url: "https://www.vervali.com/blog/web-services-testing-automation-tools-comparison-2026-selenium-vs-playwright-vs-cypress-and-beyond/" }
+---
+
+There's no single "best" tool — only the best fit for a context. Here's the 2026 landscape.
+
+## At a glance
+
+| | Selenium | Playwright | Cypress |
+|---|---|---|---|
+| Languages | Java, Python, C#, JS, Ruby | JS/TS, Python, Java, C# | JS/TS only |
+| Browsers | All major | Chromium, Firefox, WebKit | Chromium-family, Firefox |
+| Waiting | Manual (explicit) | Auto-wait | Auto-retry |
+| Speed | Moderate | Fast | Fast |
+| Parallelism | Via Grid | Built-in | Paid dashboard / config |
+| Flakiness | Higher (manual sync) | Low | Low |
+| Best for | Enterprise, legacy, broad language support | Modern E2E, cross-browser, low flake | JS front-end teams, great DX |
+
+## The 2026 market reality
+
+- **Playwright** has overtaken Selenium in adoption (~45% vs ~22%) and pays 5-15% more.
+- Engineers who know **both Selenium and Playwright** earn 15-25% more than single-tool specialists — so learn Playwright, but don't drop Selenium.
+- **Cypress** runs inside the browser, giving superb developer experience for JS teams, but that architecture limits multi-tab, multi-origin and non-Chromium scenarios.
+
+## How to choose (say this in interviews)
+
+- Greenfield modern web app, want speed + low flake, cross-browser → **Playwright**.
+- Large existing Selenium suite, mixed languages, need Grid at scale, enterprise constraints → **Selenium**.
+- Pure JS/TS front-end team that values DX and component testing → **Cypress**.
+
+<div class="callout key">
+  <div class="ct">Senior framing</div>
+  "I'd push most coverage down to API and unit layers (the pyramid), keep UI E2E thin, and pick Playwright for new UI work for its auto-waiting and trace viewer — while maintaining the existing Selenium suite rather than a risky big-bang rewrite."
+</div>

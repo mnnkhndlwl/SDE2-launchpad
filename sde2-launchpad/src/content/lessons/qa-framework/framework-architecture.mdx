@@ -1,0 +1,68 @@
+---
+title: "Designing a real automation framework"
+track: qa-framework
+summary: "Go from scripts to a production-shaped framework — layered design, config & secrets, data-driven tests, logging, reporting, retries and a strong README."
+order: 2
+est: 22
+difficulty: hard
+priority: deep
+tags: [framework, data-driven, reporting, allure]
+whyAsked: "Senior automation interviews center on framework design. You'll be asked to architect one and defend every choice."
+followUps:
+  - "How do you manage test data and environments?"
+  - "How do you make tests thread-safe for parallel runs?"
+  - "What goes in your reporting and why?"
+resources:
+  - { label: "Allure Report", url: "https://allurereport.org/" }
+---
+
+A framework is what makes automation maintainable, scalable and trustworthy. This is your portfolio centerpiece.
+
+## Framework types
+
+Linear → modular → **data-driven** → keyword-driven → **hybrid** (most real frameworks) → **BDD** (Cucumber). Most teams land on hybrid: POM + data-driven + a runner.
+
+## Layered structure
+
+```
+src
+├── tests/        # test classes — orchestrate + assert
+├── pages/        # Page Objects — locators + actions
+├── components/   # reusable widgets (header, modal)
+├── utils/        # waits, file/JSON, db, api helpers
+├── config/       # env URLs, capabilities, secrets
+├── data/         # test data (JSON/CSV/Excel)
+└── reports/      # generated output
+```
+
+## Config & secrets
+
+Never hardcode URLs, credentials or tokens. Read them from **environment variables** or per-environment `.properties` / `.env` files, selected at runtime (`-Denv=staging`). This lets one suite run against dev, staging and prod.
+
+## Data-driven testing
+
+```python
+import pytest
+@pytest.mark.parametrize("user,pwd,ok", load_cases("login.json"))
+def test_login(user, pwd, ok):
+    ...
+```
+
+Separate test *logic* from test *data* so adding a case means adding a data row, not code.
+
+## Cross-cutting concerns
+
+- **Logging** (Log4j/SLF4J or Python `logging`) for traceable runs.
+- **Screenshots/video on failure** — auto-captured via a listener/hook.
+- **Reporting** — Allure or Extent (Java) / Playwright HTML report. Show pass/fail, steps, screenshots, history.
+- **Retries** for genuinely flaky externalities (but fix root causes, don't mask them).
+- **Parallel + thread-safety** — a `ThreadLocal` WebDriver so parallel tests don't share state.
+
+## The README (recruiters read this)
+
+Cover: what it tests, the stack, how to install, how to run (one command), folder structure, and a sample report screenshot. A clean README turns a repo into a portfolio piece.
+
+<div class="callout key">
+  <div class="ct">Deliverable</div>
+  A GitHub repo: POM + data-driven + config + logging + Allure report + a GitHub Actions workflow that runs it on every push. This single project demonstrates ~70% of SDET skills at once.
+</div>

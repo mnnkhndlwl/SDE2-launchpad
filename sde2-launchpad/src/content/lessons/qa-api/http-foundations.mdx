@@ -1,0 +1,64 @@
+---
+title: "HTTP & REST foundations for API testing"
+track: qa-api
+summary: "Methods, status codes, headers, auth and JSON — the protocol knowledge behind every API test, the layer in highest demand in 2026."
+order: 1
+est: 16
+difficulty: easy
+priority: must
+tags: [http, rest, api, json]
+whyAsked: "API/integration tests are now in higher demand than UI tests. Solid HTTP knowledge is the foundation interviewers check first."
+followUps:
+  - "Difference between 401 and 403?"
+  - "Is PUT idempotent? Is POST?"
+  - "What do you assert on an API response?"
+resources:
+  - { label: "MDN HTTP", url: "https://developer.mozilla.org/en-US/docs/Web/HTTP" }
+  - { label: "Practice: ReqRes", url: "https://reqres.in/" }
+---
+
+APIs are the fastest-growing, most stable test layer. They run in milliseconds, don't break on UI changes, and catch bugs before they reach the screen.
+
+## HTTP methods
+
+| Method | Purpose | Idempotent? |
+|---|---|---|
+| GET | Read | Yes |
+| POST | Create | No |
+| PUT | Replace | Yes |
+| PATCH | Partial update | No (usually) |
+| DELETE | Remove | Yes |
+
+*Idempotent* = calling it repeatedly has the same effect as once.
+
+## Status codes (memorize these)
+
+- **2xx** success — 200 OK, 201 Created, 204 No Content.
+- **3xx** redirect — 301, 302, 304 Not Modified.
+- **4xx** client error — 400 Bad Request, **401 Unauthorized** (not authenticated), **403 Forbidden** (authenticated but not allowed), 404 Not Found, 409 Conflict, 422 Unprocessable, 429 Too Many Requests.
+- **5xx** server error — 500, 502, 503, 504.
+
+401 vs 403 is a near-guaranteed question: *401 = who are you?* (no/invalid credentials); *403 = I know you, but no.*
+
+## Headers & auth
+
+- `Content-Type: application/json`, `Accept`, `Authorization`.
+- Auth schemes: API key, Basic, **Bearer/JWT**, OAuth2.
+
+```
+Authorization: Bearer eyJhbGciOi...
+```
+
+## What to assert on a response
+
+1. **Status code** matches the scenario.
+2. **Body fields** (via JSONPath) — values and types.
+3. **Response time** within an SLA.
+4. **Headers** (content-type, caching).
+5. **Schema validity** — the response matches the agreed JSON schema.
+6. **Negative cases** — invalid input returns the right 4xx with a clear error.
+
+<div class="callout tip">
+  <div class="ct">Test the contract, not just the happy path</div>
+  Good API testing covers auth failures, missing/extra fields, boundary values, and malformed requests — not just the 200 OK case.
+</div>

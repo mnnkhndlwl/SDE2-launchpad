@@ -1,0 +1,70 @@
+---
+title: "OOP & core programming for testers"
+track: qa-programming
+summary: "Classes, inheritance, collections, exceptions and JSON handling — the constructs every test framework (and the Page Object Model) is built on."
+order: 2
+est: 20
+difficulty: medium
+priority: must
+tags: [oop, collections, json, exceptions]
+whyAsked: "The Page Object Model and every framework lean on OOP. Interviewers probe whether you can write maintainable code, not just record-and-playback."
+followUps:
+  - "What is the Page Object Model in OOP terms?"
+  - "Difference between an interface and an abstract class?"
+  - "How do you handle a checked exception in a test?"
+resources:
+  - { label: "Refactoring Guru — patterns", url: "https://refactoring.guru/design-patterns" }
+---
+
+Automation *is* software engineering. These are the constructs you'll use daily.
+
+## OOP, the four pillars (with a testing lens)
+
+- **Encapsulation** — a `LoginPage` class hides its locators and exposes `login(user, pass)`. Tests don't touch raw selectors.
+- **Inheritance** — a `BasePage` holds shared waits/utilities; every page extends it.
+- **Polymorphism** — one `Page` interface, many page implementations; a method can accept any page.
+- **Abstraction** — tests read like English (`checkoutPage.placeOrder()`); the messy WebDriver calls live behind the method.
+
+This is exactly the **Page Object Model**: pages as classes, locators + actions encapsulated.
+
+## Collections (you'll use these constantly)
+
+```python
+prices = [199, 299, 99]          # list/array
+total = sum(prices)
+user = {"name": "Sahil", "age": 26}  # dict/map
+seen = set()                     # unique values
+for p in prices:
+    if p < 100: print("cheap", p)
+```
+
+Know: list/array, map/dict, set; how to iterate, filter and transform.
+
+## Exceptions & debugging
+
+```java
+try {
+    driver.findElement(By.id("pay")).click();
+} catch (NoSuchElementException e) {
+    // log + screenshot, then fail clearly
+    throw new AssertionError("Pay button missing", e);
+}
+```
+
+Read stack traces top-down: the first line of *your* code in the trace is usually the cause. Use IDE breakpoints rather than print-debugging.
+
+## JSON & test data
+
+Tests are data-driven. Be fluent serializing objects to/from JSON (responses, fixtures) and reading CSV/Excel for parameters.
+
+## Design patterns worth knowing
+
+- **Singleton** — one shared WebDriver/config instance.
+- **Factory** — create the right driver/page from a parameter.
+- **Builder** — assemble complex test data or API requests fluently.
+- **Page Object** — the pattern your whole UI suite is built on.
+
+<div class="callout key">
+  <div class="ct">Practice task</div>
+  Build a tiny `BasePage` + `LoginPage` + `InventoryPage` for SauceDemo. No test logic yet — just classes, locators and action methods. You've now written real framework code.
+</div>

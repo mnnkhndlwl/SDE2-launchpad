@@ -1,0 +1,62 @@
+---
+title: "Pick one language (and set up your toolchain)"
+track: qa-programming
+summary: "Java vs Python vs JavaScript/TypeScript for automation — how to choose, plus the IDE, runtime and Git setup to start coding today."
+order: 1
+est: 14
+difficulty: easy
+priority: must
+tags: [setup, java, python, javascript]
+whyAsked: "Employers want depth in one language, not a tour of three. Choosing well and explaining why shows judgment."
+followUps:
+  - "Why did you choose your language for automation?"
+  - "Which language pairs best with Playwright? With Selenium + REST Assured?"
+resources:
+  - { label: "Test Automation University", url: "https://testautomationu.applitools.com/" }
+  - { label: "Playwright", url: "https://playwright.dev/" }
+  - { label: "Selenium", url: "https://www.selenium.dev/documentation/" }
+---
+
+The single biggest beginner mistake is dabbling in three languages. Pick **one**, go deep, and you'll be far more employable.
+
+## How to choose
+
+| Language | Choose it when | Ecosystem |
+|---|---|---|
+| **Java** | Targeting enterprise / most Selenium + REST Assured jobs (very common in India) | TestNG/JUnit, Selenium, REST Assured, Maven/Gradle |
+| **Python** | You want the fastest ramp and great API + Playwright support | pytest, Playwright, requests, Selenium |
+| **JavaScript / TypeScript** | The team is JS/front-end heavy; you want Playwright/Cypress native | Playwright Test, Cypress, Jest |
+
+The honest rule: **match your target companies' stack.** When in doubt, Python (fastest to learn) or Java (most job listings).
+
+## Your toolchain (install today)
+
+- **IDE** — IntelliJ IDEA (Java) or VS Code / PyCharm (Python, JS).
+- **Runtime/SDK** — JDK 21, or Python 3.12, or Node.js 20+.
+- **Git** + a **GitHub** account. Every test you write goes in a repo — that repo is your portfolio.
+- The browser you'll automate (Chrome/Edge).
+
+## The minimum you must be able to do
+
+```python
+# Python — read test data and loop
+import json
+with open("users.json") as f:
+    users = json.load(f)
+for u in users:
+    print(u["name"], u["age"])
+```
+
+```java
+// Java — same idea
+List<User> users = mapper.readValue(new File("users.json"),
+        new TypeReference<List<User>>() {});
+for (User u : users) System.out.println(u.getName());
+```
+
+If you can read a file, loop, call a function, and use a class, you're ready to start automating. Build depth as you go.
+
+<div class="callout tip">
+  <div class="ct">First commit, today</div>
+  Create a GitHub repo, add a "hello world" test, commit and push. Momentum beats theory — you'll learn the language by automating real sites.
+</div>

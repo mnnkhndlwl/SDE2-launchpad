@@ -1,0 +1,54 @@
+---
+title: "Defect lifecycle & writing great bug reports"
+track: qa-foundations
+summary: "The states a defect moves through, severity vs priority, and how to write a bug report developers can act on immediately."
+order: 3
+est: 14
+difficulty: easy
+priority: must
+tags: [defect, bug-report, severity, priority]
+whyAsked: "Logging clear, reproducible defects is daily QA work. Severity vs priority is a near-guaranteed question."
+followUps:
+  - "Give an example of high severity but low priority, and vice versa."
+  - "What makes a bug report good?"
+  - "What is a deferred defect?"
+resources:
+  - { label: "Ministry of Testing", url: "https://www.ministryoftesting.com/" }
+---
+
+## The defect lifecycle
+
+A typical flow (names vary by tool):
+
+`New → Assigned → Open → Fixed → Retest → Closed`
+
+Branches: **Reopened** (fix didn't work), **Deferred** (valid, fixed later), **Rejected / Not a bug**, **Duplicate**.
+
+## Severity vs priority
+
+- **Severity** = technical impact of the defect.
+- **Priority** = how urgently it should be fixed (business view).
+
+They're independent:
+
+| Case | Severity | Priority |
+|---|---|---|
+| App crashes on a rarely-used admin screen | High | Low |
+| Company logo misspelled on the home page | Low | High |
+| Checkout fails for all users | High | High |
+| Minor typo in a help tooltip | Low | Low |
+
+## Anatomy of a great bug report
+
+1. **Title** — concise, specific: "Checkout fails with 500 when promo code is empty".
+2. **Environment** — build, browser/OS/device, URL, account.
+3. **Preconditions** — state needed before the steps.
+4. **Steps to reproduce** — numbered, exact, minimal.
+5. **Expected vs actual** result.
+6. **Evidence** — screenshot, video, console/network logs, stack trace.
+7. **Severity & priority** with a one-line justification.
+
+<div class="callout warn">
+  <div class="ct">The #1 rule</div>
+  A bug a developer can't reproduce gets closed. Reduce to the smallest reliable repro, attach logs, and state the exact environment. Reproducibility is your credibility.
+</div>

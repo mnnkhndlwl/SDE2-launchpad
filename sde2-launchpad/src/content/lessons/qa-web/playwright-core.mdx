@@ -1,0 +1,74 @@
+---
+title: "Playwright: the 2026 frontrunner"
+track: qa-web
+summary: "Faster, auto-waiting and far less flaky than Selenium — resilient locators, web-first assertions, fixtures, parallelism, network mocking and the trace viewer."
+order: 3
+est: 22
+difficulty: medium
+priority: must
+tags: [playwright, auto-wait, trace-viewer]
+whyAsked: "Playwright adoption (~45%) has overtaken Selenium (~22%) and pays more. Knowing it — especially auto-waiting and resilient locators — is a 2026 differentiator."
+followUps:
+  - "Why is Playwright less flaky than Selenium?"
+  - "What are web-first assertions?"
+  - "How do you reuse a logged-in session across tests?"
+resources:
+  - { label: "Playwright docs", url: "https://playwright.dev/docs/intro" }
+  - { label: "Locators", url: "https://playwright.dev/docs/locators" }
+  - { label: "Trace viewer", url: "https://playwright.dev/docs/trace-viewer" }
+---
+
+Playwright is a modern automation framework from Microsoft. One API drives Chromium, Firefox and WebKit, in JS/TS, Python, Java and C#.
+
+## Why it's winning
+
+- **Auto-waiting** — every action waits for the element to be actionable. No manual waits, far less flakiness.
+- **Resilient locators** — `getByRole`, `getByText`, `getByLabel`, `getByTestId` target what the *user* sees.
+- **Web-first assertions** — `expect(locator).toBeVisible()` retries until true or times out.
+- **Fast parallelism** out of the box, plus the killer **trace viewer** for debugging.
+
+## First test
+
+```ts
+import { test, expect } from '@playwright/test';
+
+test('checkout flow', async ({ page }) => {
+  await page.goto('https://www.saucedemo.com/');
+  await page.getByPlaceholder('Username').fill('standard_user');
+  await page.getByPlaceholder('Password').fill('secret_sauce');
+  await page.getByRole('button', { name: 'Login' }).click();
+  await expect(page.getByText('Products')).toBeVisible();
+});
+```
+
+No explicit waits — Playwright auto-waits for each step.
+
+## Network mocking
+
+```ts
+await page.route('**/api/cart', route =>
+  route.fulfill({ json: { items: [] } }));
+```
+
+Stub back-end responses to test edge cases (errors, empty states) deterministically.
+
+## Reuse a logged-in session (huge speed win)
+
+```ts
+// global setup: log in once, save storage state
+await page.context().storageState({ path: 'auth.json' });
+// then in config: use: { storageState: 'auth.json' }
+```
+
+Every test starts already authenticated — no re-login per test.
+
+## Debugging superpowers
+
+- `npx playwright test --ui` — interactive UI mode.
+- `npx playwright codegen` — record actions into code.
+- **Trace viewer** — time-travel through a failed run with DOM snapshots, network and console.
+
+<div class="callout tip">
+  <div class="ct">Do this</div>
+  Re-build your Selenium SauceDemo test in Playwright. Note how much shorter it is and that you deleted every explicit wait. That contrast is exactly what to say in interviews.
+</div>

@@ -1,0 +1,79 @@
+---
+title: "Selenium WebDriver core"
+track: qa-web
+summary: "The industry-standard browser automation tool — setup, finding and interacting with elements, dropdowns, frames, alerts, windows, Actions and the JS executor."
+order: 2
+est: 22
+difficulty: medium
+priority: must
+tags: [selenium, webdriver]
+whyAsked: "Selenium still appears in the majority of automation job listings and most legacy suites. Deep Selenium knowledge is expected even where teams are adopting Playwright."
+followUps:
+  - "How does WebDriver communicate with the browser?"
+  - "How do you handle a dropdown / an iframe / a new tab?"
+  - "When would you use the JavascriptExecutor?"
+resources:
+  - { label: "Selenium docs", url: "https://www.selenium.dev/documentation/" }
+  - { label: "Practice: SauceDemo", url: "https://www.saucedemo.com/" }
+---
+
+Selenium drives real browsers via the **W3C WebDriver protocol**. Your code → driver → browser. Since Selenium 4, **Selenium Manager** auto-downloads the right driver, so no more manual chromedriver juggling.
+
+## Setup & first script
+
+```java
+WebDriver driver = new ChromeDriver();
+driver.get("https://www.saucedemo.com/");
+driver.findElement(By.id("user-name")).sendKeys("standard_user");
+driver.findElement(By.id("password")).sendKeys("secret_sauce");
+driver.findElement(By.id("login-button")).click();
+String title = driver.findElement(By.className("title")).getText();
+Assert.assertEquals(title, "Products");
+driver.quit();
+```
+
+## Locator strategies
+
+`By.id`, `By.name`, `By.className`, `By.cssSelector`, `By.xpath`, `By.linkText`, `By.partialLinkText`, `By.tagName`. Plus **relative locators**: `with(By.tagName("input")).above(element)`.
+
+## Common interactions
+
+```java
+// dropdown
+new Select(driver.findElement(By.id("country"))).selectByVisibleText("India");
+
+// iframe
+driver.switchTo().frame("payment-frame");
+// ... do work ...
+driver.switchTo().defaultContent();
+
+// alert
+driver.switchTo().alert().accept();
+
+// new tab / window
+for (String h : driver.getWindowHandles()) driver.switchTo().window(h);
+```
+
+## Actions API & JS executor
+
+```java
+new Actions(driver).moveToElement(menu).click(submenu).perform();   // hover + click
+
+((JavascriptExecutor) driver)
+    .executeScript("arguments[0].scrollIntoView(true);", element);   // scroll
+```
+
+Use the JS executor sparingly — for scrolling or when a real user action genuinely can't be simulated.
+
+## Screenshots
+
+```java
+File src = ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
+```
+
+Capture on failure automatically — your future self debugging CI will thank you.
+
+<div class="callout key">
+  <div class="ct">Project</div>
+  Automate the full SauceDemo flow: login → add 2 items to cart → checkout → assert the confirmation. Then move it behind Page Objects (see the Framework track).
+</div>

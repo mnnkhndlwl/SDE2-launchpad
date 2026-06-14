@@ -1,0 +1,69 @@
+---
+title: "Test design techniques"
+track: qa-foundations
+summary: "How to derive a strong, minimal set of test cases — equivalence partitioning, boundary values, decision tables, state transitions and pairwise."
+order: 2
+est: 20
+difficulty: medium
+priority: must
+tags: [test-design, bva, equivalence, decision-table]
+whyAsked: "These techniques prove you can get maximum coverage from minimum tests. 'Write test cases for a login / an age field' is one of the most common QA interview tasks."
+followUps:
+  - "Write test cases for a field that accepts ages 18-60."
+  - "When would you use a decision table over BVA?"
+  - "What's the difference between positive and negative testing?"
+resources:
+  - { label: "ISTQB techniques", url: "https://www.istqb.org/certifications/certified-tester-foundation-level" }
+---
+
+You can never test everything, so you test **smart**. These black-box techniques turn requirements into a small, high-coverage set of cases.
+
+## Equivalence Partitioning (EP)
+
+Group inputs that should behave the same; test one value per group. For an age field accepting 18-60:
+
+- Invalid low: `< 18` (e.g. 10)
+- Valid: `18-60` (e.g. 35)
+- Invalid high: `> 60` (e.g. 75)
+
+Three tests instead of dozens.
+
+## Boundary Value Analysis (BVA)
+
+Bugs hide at the **edges**. For each boundary test just below, on, and just above:
+
+- 17, 18, 19 (lower boundary)
+- 59, 60, 61 (upper boundary)
+
+EP + BVA together are the workhorses of test design.
+
+## Decision tables
+
+Use when output depends on **combinations** of conditions. Example — discount eligibility:
+
+| Member? | Order > $100? | Discount |
+|---|---|---|
+| Yes | Yes | 20% |
+| Yes | No | 10% |
+| No | Yes | 5% |
+| No | No | 0% |
+
+Each row is a test case. Nothing gets missed.
+
+## State transition testing
+
+Use when behavior depends on **current state**. Example — an order: `Created → Paid → Shipped → Delivered`, with `Cancelled` reachable from some states. Test valid transitions *and* invalid ones (e.g. Shipped → Paid should be rejected).
+
+## Pairwise / combinatorial
+
+When there are many parameters (browser × OS × payment × currency), full coverage explodes. **Pairwise** testing covers every *pair* of values with far fewer combinations — most defects come from single values or pairs, not rare triples.
+
+## Positive vs negative testing
+
+- **Positive**: valid input, expected to succeed.
+- **Negative**: invalid input, expected to fail *gracefully* (clear error, no crash). Strong testers spend real effort here.
+
+<div class="callout key">
+  <div class="ct">Worked example — login form</div>
+  EP/BVA on field lengths · valid + invalid credentials (negative) · empty fields · SQL/script injection in inputs (security) · locked account after N attempts (state) · remember-me + session expiry · accessibility via keyboard only.
+</div>

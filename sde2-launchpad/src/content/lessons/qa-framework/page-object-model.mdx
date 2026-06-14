@@ -1,0 +1,62 @@
+---
+title: "The Page Object Model (POM)"
+track: qa-framework
+summary: "The most-asked framework pattern — encapsulate each page's locators and actions in a class so tests stay readable and maintenance stays in one place."
+order: 1
+est: 16
+difficulty: medium
+priority: must
+tags: [pom, design, maintainability]
+whyAsked: "POM is the default structure for UI automation. Expect to explain it and sketch one on a whiteboard."
+followUps:
+  - "What problem does POM solve?"
+  - "What is a Page Factory?"
+  - "Where do assertions live — in the page or the test?"
+resources:
+  - { label: "Selenium POM guide", url: "https://www.selenium.dev/documentation/test_practices/encouraged/page_object_models/" }
+---
+
+POM keeps your suite maintainable as it grows. Each page of the app becomes a class that hides *how* to interact and exposes *what* you can do.
+
+## The problem it solves
+
+Without POM, locators are scattered across hundreds of tests. One UI change → edit dozens of files. With POM, that locator lives in **one** place.
+
+## Structure
+
+```java
+public class LoginPage extends BasePage {
+    private final By username = By.id("user-name");
+    private final By password = By.id("password");
+    private final By loginBtn = By.id("login-button");
+
+    public InventoryPage login(String user, String pass) {
+        type(username, user);     // helpers from BasePage
+        type(password, pass);
+        click(loginBtn);
+        return new InventoryPage(driver); // return the next page
+    }
+}
+```
+
+```java
+// the test reads like English
+@Test
+public void userCanLogIn() {
+    InventoryPage inventory = new LoginPage(driver).login("standard_user", "secret_sauce");
+    Assert.assertTrue(inventory.isLoaded());
+}
+```
+
+## Key principles
+
+- **Locators + actions live in the page class.** Tests never touch raw selectors.
+- **Assertions live in the test**, not the page (pages do, tests verify) — though small "isLoaded" checks on pages are fine.
+- **Action methods return the next page object**, enabling fluent flows.
+- A **BasePage** holds shared utilities: waits, click/type wrappers, navigation.
+- **Page Factory** (`@FindBy` + `initElements`) is an older Selenium convenience for declaring locators; plain `By` fields are equally valid and clearer.
+
+<div class="callout tip">
+  <div class="ct">Rule of thumb</div>
+  If a test contains a CSS/XPath string, it's doing the page's job. Push it into the page object.
+</div>

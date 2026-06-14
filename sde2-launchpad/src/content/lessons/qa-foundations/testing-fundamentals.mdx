@@ -1,0 +1,68 @@
+---
+title: "Testing fundamentals: SDLC, STLC & Agile"
+track: qa-foundations
+summary: "The process and vocabulary every QA interview opens with — software/test life cycles, test levels and types, and where testing fits in Agile."
+order: 1
+est: 18
+difficulty: easy
+priority: must
+tags: [sdlc, stlc, agile, shift-left]
+whyAsked: "Before anyone trusts you to automate, they check that you understand what good testing is. Process fluency signals you'll test the right things, not just write clicking robots."
+followUps:
+  - "Difference between verification and validation?"
+  - "What is shift-left testing and why does it matter?"
+  - "Where does QA fit in a Scrum sprint?"
+resources:
+  - { label: "ISTQB Foundation syllabus", url: "https://www.istqb.org/certifications/certified-tester-foundation-level" }
+  - { label: "Ministry of Testing", url: "https://www.ministryoftesting.com/" }
+---
+
+Automation without test fundamentals is just code that clicks. This lesson is the base every QA role and certification expects.
+
+## The seven testing principles
+
+1. Testing shows the **presence** of defects, never their absence.
+2. **Exhaustive testing is impossible** — use risk and priorities instead.
+3. **Early testing** saves money (shift-left).
+4. Defects **cluster** — a few modules hold most bugs.
+5. The **pesticide paradox** — the same tests stop finding new bugs; keep evolving them.
+6. Testing is **context-dependent** — a bank app is tested differently from a game.
+7. **Absence-of-errors fallacy** — a bug-free product that doesn't meet needs is still a failure.
+
+## SDLC vs STLC
+
+The **SDLC** (Software Development Life Cycle) is the whole build: requirements → design → development → testing → deployment → maintenance.
+
+The **STLC** (Software Testing Life Cycle) is the testing slice inside it:
+
+| STLC phase | What you produce |
+|---|---|
+| Requirement analysis | Testable requirements, clarifying questions |
+| Test planning | Test plan, scope, estimate, tools |
+| Test case design | Test cases, test data, traceability matrix |
+| Environment setup | A ready, controlled test environment |
+| Test execution | Run tests, log defects, retest |
+| Closure | Metrics, summary report, lessons learned |
+
+## Test levels and types
+
+**Levels** (who/where): unit → integration → system → acceptance (UAT). This maps to the **test pyramid**: many fast unit tests at the base, fewer API/integration tests in the middle, very few slow UI/E2E tests at the top.
+
+**Types**: functional (does it do the right thing?) and non-functional (performance, security, usability, accessibility, compatibility). Plus **regression** (did a change break something?), **smoke** (is the build stable enough to test?), and **sanity** (does a specific fix work?).
+
+## Verification vs validation
+
+- **Verification** — "are we building it right?" Reviews, static analysis, no code execution.
+- **Validation** — "are we building the right thing?" Actually running and testing the software.
+
+## Testing in Agile / Scrum
+
+- Testers are part of the team, not a gate at the end.
+- **Shift-left**: testing starts at requirements — you review user stories for testability and define acceptance criteria before code exists.
+- Each story has a **Definition of Done** that includes tests.
+- You automate regression so each sprint's new work doesn't break old work.
+
+<div class="callout tip">
+  <div class="ct">Interview-ready summary</div>
+  "Testing proves defects exist, not that they're gone. I work shift-left in Agile — reviewing stories for testability, designing cases early, automating regression, and following the test pyramid so most coverage is fast unit and API tests, not brittle UI tests."
+</div>

@@ -1,0 +1,57 @@
+---
+title: "Git for QA engineers"
+track: qa-cicd
+summary: "Version control is non-negotiable for automation — branching, commits, pull requests, merge vs rebase, and resolving conflicts without fear."
+order: 1
+est: 12
+difficulty: easy
+priority: must
+tags: [git, github, version-control]
+whyAsked: "Your automation code lives in Git alongside the app's. Comfort with branches and PRs is assumed for any automation role."
+followUps:
+  - "Merge vs rebase — when do you use each?"
+  - "How do you undo the last commit without losing work?"
+  - "What goes in a .gitignore for a test project?"
+resources:
+  - { label: "Learn Git Branching", url: "https://learngitbranching.js.org/" }
+---
+
+Every test you write belongs in version control. Your GitHub repos are also your portfolio.
+
+## Daily workflow
+
+```bash
+git clone <url>
+git checkout -b feature/login-tests   # branch off
+# ...write tests...
+git add .
+git commit -m "Add login regression tests"
+git push -u origin feature/login-tests
+# open a Pull Request, get review, merge
+```
+
+## The commands you'll actually use
+
+```bash
+git status / git diff          # what changed
+git pull                       # get latest
+git log --oneline --graph      # history
+git stash / git stash pop      # park work temporarily
+git restore <file>             # discard local change
+git reset --soft HEAD~1        # undo last commit, keep changes
+git revert <hash>              # safely undo a pushed commit
+```
+
+## Merge vs rebase
+
+- **Merge** keeps full history with a merge commit — safe, the default for shared branches.
+- **Rebase** replays your commits on top of the latest main for a *linear* history — clean, but never rebase branches others are using.
+
+## Conflicts
+
+When two changes touch the same lines, Git marks `<<<<<<<` / `=======` / `>>>>>>>`. Edit to the desired result, then `git add` the file and continue. Conflicts are routine, not scary.
+
+<div class="callout tip">
+  <div class="ct">.gitignore for test repos</div>
+  Ignore <code>node_modules/</code>, <code>target/</code>, <code>__pycache__/</code>, reports, screenshots, and any secrets/<code>.env</code>. Never commit credentials.
+</div>

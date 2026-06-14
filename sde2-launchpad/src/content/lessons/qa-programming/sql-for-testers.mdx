@@ -1,0 +1,69 @@
+---
+title: "SQL for testers"
+track: qa-programming
+summary: "Query and validate data directly in the database — SELECT, WHERE, JOIN, GROUP BY and the queries you'll run to verify back-end state."
+order: 3
+est: 14
+difficulty: easy
+priority: must
+tags: [sql, database, validation]
+whyAsked: "Back-end and data validation is core QA work; nearly every QA interview includes a couple of SQL questions."
+followUps:
+  - "Difference between WHERE and HAVING?"
+  - "What does an INNER JOIN return vs a LEFT JOIN?"
+  - "Write a query to find duplicate emails."
+resources:
+  - { label: "SQLBolt (interactive)", url: "https://sqlbolt.com/" }
+---
+
+You'll constantly verify that an action in the UI/API produced the right data in the database.
+
+## The core you need
+
+```sql
+-- filter
+SELECT id, email, status FROM users WHERE status = 'active';
+
+-- sort + limit
+SELECT * FROM orders ORDER BY created_at DESC LIMIT 10;
+
+-- aggregate
+SELECT status, COUNT(*) FROM orders GROUP BY status;
+
+-- only groups matching a condition
+SELECT user_id, COUNT(*) AS n FROM orders
+GROUP BY user_id HAVING COUNT(*) > 5;
+```
+
+`WHERE` filters rows **before** grouping; `HAVING` filters **after** grouping.
+
+## Joins
+
+```sql
+-- INNER: only matching rows in both tables
+SELECT u.email, o.total
+FROM users u
+JOIN orders o ON o.user_id = u.id;
+
+-- LEFT: all users, even those with no orders (NULL totals)
+SELECT u.email, o.total
+FROM users u
+LEFT JOIN orders o ON o.user_id = u.id;
+```
+
+## Classic QA queries
+
+```sql
+-- find duplicate emails
+SELECT email, COUNT(*) FROM users
+GROUP BY email HAVING COUNT(*) > 1;
+
+-- verify an order was created after a UI/API action
+SELECT * FROM orders
+WHERE user_id = 42 ORDER BY created_at DESC LIMIT 1;
+```
+
+<div class="callout tip">
+  <div class="ct">Test data hygiene</div>
+  Use SQL to set up and tear down test data so runs are repeatable and isolated. Never let one test depend on leftovers from another.
+</div>

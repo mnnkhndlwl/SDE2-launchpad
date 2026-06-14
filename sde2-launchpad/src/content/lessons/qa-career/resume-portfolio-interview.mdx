@@ -1,0 +1,54 @@
+---
+title: "Portfolio, SDET resume & interview prep"
+track: qa-career
+summary: "Turn skills into offers — a GitHub portfolio recruiters trust, a quantified resume, and a focused interview checklist for automation/SDET roles."
+order: 2
+est: 16
+difficulty: medium
+priority: must
+tags: [resume, portfolio, interview, sdet]
+whyAsked: "This is the conversion step. A strong portfolio + quantified resume + interview readiness is what actually lands the role and the pay bump."
+followUps:
+  - "Walk me through a framework you built."
+  - "How would you reduce a flaky test suite's failures?"
+  - "How do you decide what to automate?"
+resources:
+  - { label: "SDET resume guide", url: "https://aitestingguide.com/sdet-resume/" }
+  - { label: "NeetCode (light DSA)", url: "https://neetcode.io/practice" }
+---
+
+You have the skills — now package and prove them.
+
+## Portfolio (the proof)
+
+Two or three polished public repos beat a long resume:
+
+1. **UI framework** — Playwright/Selenium + POM + data-driven + Allure report + CI.
+2. **API suite** — REST Assured / requests with schema validation, runnable in CI.
+3. **A CI pipeline** — GitHub Actions running the above, with a passing badge.
+
+Each needs a clear README (what, stack, how to run, sample report). This is the single highest-leverage thing you can build.
+
+## SDET resume — quantify everything
+
+Weak: "Wrote automated tests in Selenium."
+Strong: "Built a Playwright + POM framework covering 120 regression cases, cut regression time from 6 hours to 25 minutes, and reduced flaky failures by 80% via explicit-wait refactors and CI sharding."
+
+Lead with **impact** (time saved, coverage, flakiness reduced, releases unblocked), then the stack. List languages, tools, CI, and link the GitHub repos at the top.
+
+## Interview checklist
+
+- **Framework design** — be able to whiteboard your architecture and justify choices.
+- **Waits & flakiness** — explain implicit vs explicit and how you debugged a flaky test.
+- **POM & OOP** — sketch a page object; explain inheritance/encapsulation.
+- **API testing** — write a REST Assured/requests assertion; explain status codes & auth.
+- **SQL** — a couple of JOIN/GROUP BY queries.
+- **CI/CD** — describe a pipeline you set up.
+- **Light DSA** — easy/medium array & string problems; many SDET loops include one.
+- **"What would you automate / not automate?"** — answer with the test pyramid and ROI.
+- **Behavioral (STAR)** — a bug you caught that mattered, a flaky-suite you fixed, ownership you took.
+
+<div class="callout tip">
+  <div class="ct">The weekly loop</div>
+  Apply to 5-10 matched roles/week, run one mock out loud, and after every interview log exactly what was asked in your mistakes log. Tighten the gaps; repeat until offer.
+</div>
