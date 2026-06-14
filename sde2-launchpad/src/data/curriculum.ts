@@ -322,6 +322,7 @@ export const PLAN: PlanWeek[] = [
     items: [
       { text: 'Two Pointers pattern', lesson: 'dsa/two-pointers' },
       { text: 'Sliding Window pattern', lesson: 'dsa/sliding-window' },
+      { text: 'Linked Lists: dummy head, fast/slow, reversal', lesson: 'dsa/linked-lists' },
       { text: 'The event loop: microtasks vs macrotasks', lesson: 'javascript/event-loop' },
       { text: 'Promises & async/await', lesson: 'javascript/promises-async' },
       { text: 'this, call/apply/bind', lesson: 'javascript/this-binding' },
@@ -336,6 +337,7 @@ export const PLAN: PlanWeek[] = [
     items: [
       { text: 'Binary Search template', lesson: 'dsa/binary-search' },
       { text: 'Trees: DFS/BFS, BST, traversals', lesson: 'dsa/trees' },
+      { text: 'Stacks & queues + monotonic stack', lesson: 'dsa/stack-and-queue' },
       { text: 'RN architecture: bridge vs JSI/Fabric', lesson: 'react-native/architecture' },
       { text: 'Render, reconciliation & re-renders', lesson: 'react-native/rendering' },
       { text: 'Hooks deep dive: refs & memoization', lesson: 'react-native/hooks-deep' },
@@ -368,6 +370,8 @@ export const PLAN: PlanWeek[] = [
       { text: 'HLD: Design Twitter/X feed (fanout)', lesson: 'hld/design-twitter-feed' },
       { text: 'HLD: Design a notification system', lesson: 'hld/design-notification-system' },
       { text: 'HLD: Design search autocomplete', lesson: 'hld/design-search-autocomplete' },
+      { text: 'Caching & CDN: strategies, stampede, invalidation', lesson: 'system-design/caching-and-cdn' },
+      { text: 'API & communication: REST/gRPC/GraphQL, retries, circuit breakers', lesson: 'system-design/api-and-communication' },
       { text: 'Debounce & throttle — implement from scratch', lesson: 'javascript/debounce-throttle' },
       { text: 'Functional JS: currying, composition, pure functions', lesson: 'javascript/functional-js' },
       { text: 'React Navigation: stacks, tabs, deep links', lesson: 'react-native/navigation' },
@@ -379,7 +383,9 @@ export const PLAN: PlanWeek[] = [
     focus: 'Tighten DSA gaps; master list performance and animations.',
     goal: 'Re-solve every missed problem. Explain FlatList virtualization and Reanimated worklets.',
     items: [
-      { text: 'Heaps, backtracking, intervals', lesson: 'dsa/heaps' },
+      { text: 'Heaps & priority queues', lesson: 'dsa/heaps' },
+      { text: 'Backtracking: subsets, permutations, N-Queens', lesson: 'dsa/backtracking' },
+      { text: 'Intervals: merge, insert, meeting rooms', lesson: 'dsa/intervals' },
       { text: 'Node.js internals: event loop, streams', lesson: 'system-design/nodejs-internals' },
       { text: 'Databases: SQL vs NoSQL, indexing', lesson: 'system-design/databases' },
       { text: 'List performance: FlatList, FlashList & virtualization', lesson: 'react-native/list-performance' },
@@ -416,6 +422,7 @@ export const PLAN: PlanWeek[] = [
       { text: 'Expo, EAS Build & OTA updates', lesson: 'react-native/expo-eas' },
       { text: 'Prepare 6–8 STAR stories', lesson: 'behavioral/star-stories' },
       { text: '"Tell me about yourself" pitch', lesson: 'behavioral/tell-me-about-yourself' },
+      { text: 'Drill the behavioral question bank (40+ Qs)', lesson: 'behavioral/question-bank' },
     ],
   },
   {
@@ -451,6 +458,7 @@ export const PLAN: PlanWeek[] = [
       { text: 'Frontend SD: Design a Kanban board', lesson: 'frontend-system-design/design-kanban-board' },
       { text: 'Frontend SD: Design a video player', lesson: 'frontend-system-design/design-video-player' },
       { text: 'Run 3 mock interviews', lesson: 'behavioral/mock-strategy' },
+      { text: 'What interviewers actually evaluate (signals & leveling)', lesson: 'behavioral/what-interviewers-evaluate' },
       { text: 'Polish resume & target list' },
       { text: 'Apply to 15–20 matching roles' },
       { text: 'Negotiation: know your number', lesson: 'behavioral/negotiation' },

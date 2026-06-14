@@ -13,9 +13,12 @@ followUps:
   - "How does `class` relate to prototypes — is it a different mechanism?"
   - "What does `Object.create(null)` give you and why use it?"
   - "How does method lookup interact with `this`?"
+  - "How does `instanceof` work under the hood?"
+  - "What is property shadowing?"
 resources:
   - { label: "javascript.info: Prototypes", url: "https://javascript.info/prototype-inheritance" }
   - { label: "MDN: Inheritance & the prototype chain", url: "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Inheritance_and_the_prototype_chain" }
+  - { label: "MDN: Object.create", url: "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/create" }
 ---
 import PrototypeChain from '../../../components/PrototypeChain.astro';
 import JsPlayground from '../../../components/JsPlayground.astro';
@@ -44,7 +47,32 @@ d.__proto__ === Dog.prototype;            // true
 Object.getPrototypeOf(d) === Dog.prototype; // true (preferred)
 ```
 
-So `new Dog()` does roughly: create an empty object, set its `[[Prototype]]` to `Dog.prototype`, run the constructor with `this` bound to the new object, return it.
+So `new Dog()` does roughly: create an empty object, set its `[[Prototype]]` to `Dog.prototype`, run the constructor with `this` bound to the new object, return it (unless the constructor explicitly returns an object).
+
+A handy way to picture the three links per instance:
+
+```
+d.__proto__            === Dog.prototype
+Dog.prototype.__proto__ === Object.prototype
+Object.prototype.__proto__ === null   // top of the chain
+```
+
+And one that trips people up: `Dog.prototype.constructor === Dog`. The `prototype` object has a back-pointer to its constructor, so `d.constructor` resolves (via the chain) to `Dog`.
+
+## Reads vs writes: the asymmetry
+
+Property *lookup* walks the chain, but *assignment* does **not**. Writing `obj.x = 1` always creates/updates an **own** property directly on `obj` — it never modifies a prototype. This is **shadowing**: the own property hides the inherited one for that object only.
+
+<JsPlayground code={`const proto = { greeting: 'hi' };
+const a = Object.create(proto);
+const b = Object.create(proto);
+a.greeting = 'hello';            // creates an OWN prop on a (shadows proto)
+console.log(a.greeting);         // 'hello' (own)
+console.log(b.greeting);         // 'hi'    (inherited, unchanged)
+console.log(proto.greeting);     // 'hi'    (prototype untouched)
+console.log(Object.getPrototypeOf(a).greeting); // 'hi'`} height={210} />
+
+This is also why putting *mutable* data (like an array) on a prototype is a bug: all instances would share and mutate the one array, because reads find the shared one and `push` mutates it in place.
 
 ## `class` is sugar
 
@@ -60,7 +88,88 @@ class Dog extends Animal {
 }
 ```
 
-Here `greet` lives on `Animal.prototype`, `bark` on `Dog.prototype`, and `Dog.prototype`'s `[[Prototype]]` is `Animal.prototype`. `extends` just wires the chain; `super()` calls the parent constructor. Everything the visualizer showed still applies.
+Here `greet` lives on `Animal.prototype`, `bark` on `Dog.prototype`, and `Dog.prototype`'s `[[Prototype]]` is `Animal.prototype`. `extends` just wires the chain; `super()` calls the parent constructor (and you *must* call it before using `this` in a subclass constructor). `super.method()` calls the parent's version of a method. Everything the visualizer showed still applies.
+
+A few `class` specifics interviewers probe:
+
+- Methods are non-enumerable and live on the prototype (shared). **Class fields** (`x = 1`) are own per-instance properties set in the constructor.
+- The whole class body runs in **strict mode**.
+- Classes are not hoisted in a usable way — they sit in the TDZ like `let`/`const`.
+- `extends` can extend any expression that resolves to a constructor (even `null`).
+
+## `hasOwnProperty` & enumeration
+
+Because lookup walks the chain, you often need to know if a property is the object's *own* vs inherited:
+
+<JsPlayground code={`function Animal(name){ this.name = name; }
+Animal.prototype.legs = 4;
+const cat = new Animal('Cat');
+
+console.log('name' in cat);                       // true (own)
+console.log('legs' in cat);                       // true (inherited!)
+console.log(cat.hasOwnProperty('name'));          // true
+console.log(cat.hasOwnProperty('legs'));          // false — on prototype
+console.log(Object.keys(cat));                    // ['name'] — own enumerable only
+// safest form (works even if object has no prototype):
+console.log(Object.prototype.hasOwnProperty.call(cat, 'legs')); // false`} height={230} />
+
+`in` checks the whole chain; `hasOwnProperty` checks only own properties; `Object.keys`/`for...in` differ too (`for...in` walks the chain for *enumerable* keys, `Object.keys` is own-only).
+
+## `instanceof` under the hood
+
+`x instanceof C` does **not** compare types — it walks `x`'s prototype chain looking for `C.prototype`:
+
+<JsPlayground code={`class Animal {}
+class Dog extends Animal {}
+const d = new Dog();
+console.log(d instanceof Dog);    // true
+console.log(d instanceof Animal); // true — Animal.prototype is up the chain
+console.log(d instanceof Object); // true
+
+// equivalent manual check:
+function isInstance(obj, Ctor){
+  let p = Object.getPrototypeOf(obj);
+  while (p) { if (p === Ctor.prototype) return true; p = Object.getPrototypeOf(p); }
+  return false;
+}
+console.log(isInstance(d, Animal)); // true`} height={240} />
+
+## Mixins
+
+Since JS has single inheritance, shared behavior across unrelated classes is added via **mixins** — functions that copy methods onto a prototype:
+
+```js
+const Serializable = {
+  toJSON() { return JSON.stringify(this); }
+};
+class User { constructor(n){ this.name = n; } }
+Object.assign(User.prototype, Serializable); // mix in
+new User('Ada').toJSON(); // '{"name":"Ada"}'
+```
+
+## What's the output? (puzzles)
+
+**Puzzle 1 — shared mutable prototype state:**
+
+<JsPlayground code={`function Box(){}
+Box.prototype.items = [];      // shared array — bug!
+const x = new Box();
+const y = new Box();
+x.items.push('a');
+console.log(y.items);          // ?`} height={180} />
+
+Answer: `['a']`. Both instances read the *same* prototype array; `push` mutates it. Fix: initialize per-instance state in the constructor (`this.items = []`).
+
+**Puzzle 2 — shadowing then delete:**
+
+<JsPlayground code={`const proto = { v: 1 };
+const o = Object.create(proto);
+o.v = 2;                       // own prop shadows proto
+console.log(o.v);             // ?
+delete o.v;                   // remove own prop
+console.log(o.v);             // ?`} height={190} />
+
+Answer: `2` then `1`. The own property shadows the prototype's; deleting it un-hides the inherited value.
 
 <div class="callout key">
   <div class="ct">The one-sentence answer</div>
@@ -84,7 +193,40 @@ try { console.log(fn()); } catch(e){ console.log('this is undefined'); }`} heigh
 
 ## `Object.create(null)`
 
-`Object.create(proto)` makes a new object whose `[[Prototype]]` is exactly `proto`. Passing `null` gives a "bare" dictionary with **no** prototype — no `toString`, no `hasOwnProperty`. People use it for safe key/value maps where you don't want inherited keys colliding with user data.
+`Object.create(proto)` makes a new object whose `[[Prototype]]` is exactly `proto`. Passing `null` gives a "bare" dictionary with **no** prototype — no `toString`, no `hasOwnProperty`. People use it for safe key/value maps where you don't want inherited keys colliding with user data (and to avoid prototype-pollution risks). `Object.create` is also the pre-`class` way to set up inheritance manually: `Child.prototype = Object.create(Parent.prototype)`.
+
+## Common gotchas
+
+- **`__proto__` vs `prototype`** — `prototype` is on constructors; `__proto__`/`[[Prototype]]` is the link on instances. Use `Object.getPrototypeOf`/`setPrototypeOf` over the legacy `__proto__`.
+- **Mutable data on a prototype** — shared across all instances; keep state in the constructor.
+- **Assignment doesn't walk the chain** — `obj.x = v` always shadows with an own property; it never edits the prototype.
+- **`for...in` includes inherited enumerable keys** — guard with `hasOwnProperty` or use `Object.keys`.
+- **Forgetting `super()`** in a subclass constructor before touching `this` throws.
+- **Mutating `__proto__` at runtime** deoptimizes objects badly — set the prototype at creation instead.
+- **Arrow functions have no `prototype`** and can't be used with `new`.
+
+## Interview questions & model answers
+
+**Q: `__proto__` vs `prototype`?**
+`prototype` is a property on constructor functions — the object instances will link to. `__proto__` (a.k.a. `[[Prototype]]`) is the actual link on an instance, pointing at its constructor's `prototype`.
+
+**Q: Is `class` a new inheritance model?**
+No — it's syntax sugar over constructor functions and the prototype chain. Methods go on `.prototype`; `extends`/`super` wire the chain.
+
+**Q: How does property lookup work?**
+The engine checks own properties, then walks `[[Prototype]]` links upward until it finds the key or hits `null` (returning `undefined`).
+
+**Q: How does `instanceof` work?**
+It walks the object's prototype chain checking whether `Constructor.prototype` appears in it — it's structural, not type-based.
+
+**Q: What's shadowing?**
+An own property with the same name as an inherited one; the own property hides (shadows) the inherited value for that object only.
+
+**Q: Why `Object.create(null)`?**
+To get a prototype-less "pure dictionary" with no inherited keys like `toString`, avoiding collisions and prototype-pollution issues.
+
+**Q: How does method lookup interact with `this`?**
+Lookup finds the method on the prototype, but it runs with `this` bound to the *receiver* (the object before the dot) — lookup and binding are separate steps.
 
 ## Say it out loud (30s)
 
