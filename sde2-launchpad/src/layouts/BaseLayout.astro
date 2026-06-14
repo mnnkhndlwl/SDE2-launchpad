@@ -84,9 +84,11 @@ const footerLinks = isHome ? [] : nav.footer;
   <link rel="manifest" href={`${base}/manifest.webmanifest`} />
   <link rel="icon" href={`${base}/favicon.svg`} type="image/svg+xml" />
   <script is:inline src={`${base}/store.js`}></script>
+  <script is:inline src={`${base}/anim.js`} defer></script>
   <slot name="head" />
 </head>
 <body>
+  <div class="aurora-bg" aria-hidden="true"></div>
   <nav class="topnav">
     <div class="inner">
       <a class="brand" href={`${base}${brandHref}`}>

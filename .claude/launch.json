@@ -1,0 +1,12 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "dev",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["--prefix", "sde2-launchpad", "run", "dev", "--", "--port", "4330"],
+      "port": 4330,
+      "autoPort": false
+    }
+  ]
+}
