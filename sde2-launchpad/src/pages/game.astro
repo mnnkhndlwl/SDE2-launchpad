@@ -1,7 +1,9 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { PATTERNS, QUOTES } from '../data/dsaPatterns';
+import { CODE_PROBLEMS } from '../data/codeProblems';
 const totalProblems = PATTERNS.reduce((s, p) => s + p.problems.length, 0);
+const codeLabIds = CODE_PROBLEMS.map((p) => p.id);
 ---
 <BaseLayout title="DSA Quest · SDE-2 Launchpad" active="game">
   <div class="wrap" style="padding-top:28px;max-width:1100px">
@@ -250,6 +252,7 @@ const totalProblems = PATTERNS.reduce((s, p) => s + p.problems.length, 0);
     .r-xp { font-family:var(--mono); font-size:10px; color:var(--warn); opacity:.6; flex:0 0 auto; }
     .r-open { display:flex; align-items:center; gap:4px; font-family:var(--mono); font-size:11px; color:var(--accent); text-decoration:none; opacity:.5; transition:.15s; flex:0 0 auto; }
     .gm-row:hover .r-open { opacity:1; }
+    .r-lab { color:var(--accent-2); opacity:.75; }
 
     .gm-foot { padding:14px 22px; border-top:1px solid var(--line); background:rgba(19,27,46,.65); display:flex; justify-content:space-between; align-items:center; gap:14px; flex-wrap:wrap; }
     .gm-foot .f-stats { display:flex; align-items:center; gap:16px; }
@@ -275,7 +278,7 @@ const totalProblems = PATTERNS.reduce((s, p) => s + p.problems.length, 0);
   </style>
 
   <!-- ═══════════════ SCRIPT ═══════════════ -->
-  <script define:vars={{ PATTERNS, QUOTES, totalProblems }}>
+  <script define:vars={{ PATTERNS, QUOTES, totalProblems, codeLabIds, base: import.meta.env.BASE_URL.replace(/\/$/, '') }}>
     const store = window.SDE2;
     const el = (id) => document.getElementById(id);
 
@@ -480,6 +483,7 @@ const totalProblems = PATTERNS.reduce((s, p) => s + p.problems.length, 0);
                   <span class="gm-chip ${chipCls(pr.d)}">${pr.d}</span>
                 </div>
                 <span class="r-xp">+${xpFor(pr.d)}</span>
+                ${codeLabIds.includes(pr.id) ? `<a class="r-open r-lab" href="${base}/practice/code?p=${pr.id}">⚡ Code Lab</a>` : ''}
                 <a class="r-open" href="https://leetcode.com/problems/${pr.s}/" target="_blank" rel="noopener">
                   Open ${SVG.openNew}
                 </a>

@@ -11,6 +11,9 @@ window.SDE2 = (function () {
     customItems: NS + 'customItems', links: NS + 'links', revisit: NS + 'revisit',
     badges: NS + 'badges', notes: NS + 'notes',
     dsaSolved: NS + 'dsaSolved', dsaGoal: NS + 'dsaGoal', dsaDaily: NS + 'dsaDaily',
+    profile: NS + 'profile', dailyTasks: NS + 'dailyTasks', mockScores: NS + 'mockScores',
+    stories: NS + 'stories', quizStats: NS + 'quizStats', mockSessions: NS + 'mockSessions',
+    designs: NS + 'designs',
   };
   function read(key, fb) { try { var v = localStorage.getItem(key); return v == null ? fb : JSON.parse(v); } catch (e) { return fb; } }
   var listeners = new Set();
@@ -143,6 +146,136 @@ window.SDE2 = (function () {
       if (since === 1) return 'content';
       if (since <= 3) return 'sad';
       return 'sleeping';
+    },
+
+    /* ---- profile / onboarding ---- */
+    profile: function () { return read(K.profile, null); },
+    isOnboarded: function () { return !!read(K.profile, null); },
+    saveProfile: function (p) {
+      var existing = read(K.profile, {}) || {};
+      var merged = Object.assign({}, existing, p);
+      if (!merged.startedAt) merged.startedAt = today();
+      write(K.profile, merged);
+    },
+
+    /* ---- daily task flags (for the "Today" queue) ---- */
+    dailyTaskDone: function (key) { var d = read(K.dailyTasks, {}); return d.date === today() && !!(d.tasks || {})[key]; },
+    markDailyTask: function (key) {
+      var d = read(K.dailyTasks, {});
+      if (d.date !== today()) d = { date: today(), tasks: {} };
+      d.tasks[key] = true; write(K.dailyTasks, d);
+    },
+
+    /* ---- mock self-rated sessions ---- */
+    mockScores: function () { return read(K.mockScores, []); },
+    logMock: function (score, track) {
+      var l = read(K.mockScores, []);
+      l.unshift({ score: score, track: track || 'all', date: today(), ts: Date.now() });
+      write(K.mockScores, l.slice(0, 100)); store.addXp(12); store.touchStreak();
+    },
+    mockSessions: function () { return read(K.mockSessions, []); },
+    logMockSession: function (rec) {
+      var l = read(K.mockSessions, []);
+      l.unshift(Object.assign({ id: 'ms_' + Date.now(), date: today() }, rec));
+      write(K.mockSessions, l.slice(0, 50));
+    },
+
+    /* ---- STAR behavioral story bank ---- */
+    stories: function () { return read(K.stories, []); },
+    addStory: function (s) {
+      var l = read(K.stories, []);
+      var id = 'st_' + Date.now();
+      l.unshift(Object.assign({ id: id, created: today(), rehearsals: 0, lastRehearsed: null, confidence: 0 }, s));
+      write(K.stories, l); store.addXp(15); store.touchStreak(); store.checkBadges();
+      return id;
+    },
+    updateStory: function (id, patch) {
+      var l = read(K.stories, []); var i = l.findIndex(function (x) { return x.id === id; });
+      if (i >= 0) { l[i] = Object.assign({}, l[i], patch); write(K.stories, l); }
+    },
+    delStory: function (id) { write(K.stories, read(K.stories, []).filter(function (x) { return x.id !== id; })); },
+    rehearseStory: function (id, rating) {
+      var l = read(K.stories, []); var i = l.findIndex(function (x) { return x.id === id; });
+      if (i >= 0) {
+        l[i].rehearsals = (l[i].rehearsals || 0) + 1; l[i].lastRehearsed = today();
+        if (rating) l[i].confidence = rating;
+        write(K.stories, l);
+      }
+      store.addXp(8); store.touchStreak();
+    },
+
+    /* ---- system design canvas ---- */
+    designs: function () { return read(K.designs, []); },
+    addDesign: function (d) {
+      var l = read(K.designs, []);
+      var id = 'dz_' + Date.now();
+      l.unshift(Object.assign({ id: id, created: today(), updated: today(), steps: {} }, d));
+      write(K.designs, l); store.addXp(10); store.touchStreak();
+      return id;
+    },
+    updateDesign: function (id, patch) {
+      var l = read(K.designs, []); var i = l.findIndex(function (x) { return x.id === id; });
+      if (i >= 0) { l[i] = Object.assign({}, l[i], patch, { updated: today() }); write(K.designs, l); }
+    },
+    delDesign: function (id) { write(K.designs, read(K.designs, []).filter(function (x) { return x.id !== id; })); },
+
+    /* ---- predict-the-output quiz stats ---- */
+    quizStats: function () { return read(K.quizStats, {}); },
+    quizStat: function (id) { return read(K.quizStats, {})[id] || null; },
+    recordQuiz: function (id, correct) {
+      var m = read(K.quizStats, {});
+      var s = m[id] || { seen: 0, correct: 0, last: null };
+      s.seen += 1; if (correct) s.correct += 1; s.last = correct ? 'ok' : 'miss'; s.date = today();
+      m[id] = s; write(K.quizStats, m);
+      store.addXp(correct ? 6 : 2); store.touchStreak();
+    },
+
+    /* ---- Readiness Score ----
+       Content-agnostic: caller passes totals it derives from the lesson/pattern
+       collections. Returns a 0-100 composite + the six sub-dimensions (each 0-100).
+       totals = {
+         lessonWeightDone, lessonWeightTotal,   // priority-weighted lesson coverage
+         dsaSolved, dsaTarget,                   // dsaTarget e.g. 90 (diminishing returns)
+         behavioralDone, behavioralTotal,        // behavioral lessons
+       }                                                                          */
+    readiness: function (t) {
+      t = t || {};
+      var clamp = function (n) { return Math.max(0, Math.min(100, Math.round(n))); };
+
+      // Coverage — priority-weighted lesson completion
+      var coverage = t.lessonWeightTotal > 0 ? (t.lessonWeightDone / t.lessonWeightTotal) * 100 : 0;
+
+      // DSA fluency — diminishing returns toward a target count
+      var dsaTarget = t.dsaTarget || 90;
+      var dsa = Math.min(100, ((t.dsaSolved || 0) / dsaTarget) * 100);
+
+      // Recall — fraction of tracked SRS cards that are "mature" (>=3 reps or interval>=7d)
+      var cards = read(K.srs, {});
+      var ids = Object.keys(cards);
+      var mature = ids.filter(function (id) { var c = cards[id]; return c && (c.reps >= 3 || c.interval >= 7); }).length;
+      var recall = ids.length ? (mature / ids.length) * 100 : 0;
+
+      // Behavioral — half lesson coverage, half STAR story bank coverage (8 stories = strong)
+      var stories = read(K.stories, []);
+      var storyCov = Math.min(1, stories.length / 8) * 100;
+      var lessonCov = t.behavioralTotal > 0 ? (t.behavioralDone / t.behavioralTotal) * 100 : 0;
+      var behavioral = t.behavioralTotal > 0 ? lessonCov * 0.5 + storyCov * 0.5 : storyCov;
+
+      // Mock performance — average self-rated score (1-5 → 0-100)
+      var ms = read(K.mockScores, []);
+      var mock = ms.length ? (ms.reduce(function (s, m) { return s + m.score; }, 0) / ms.length / 5) * 100 : 0;
+
+      // Consistency — current streak toward a 14-day habit
+      var streak = (read(K.streak, { count: 0 }).count) || 0;
+      var consistency = Math.min(100, (streak / 14) * 100);
+
+      var dims = {
+        coverage: clamp(coverage), dsa: clamp(dsa), recall: clamp(recall),
+        behavioral: clamp(behavioral), mock: clamp(mock), consistency: clamp(consistency),
+      };
+      var W = { coverage: 25, dsa: 25, recall: 15, behavioral: 10, mock: 15, consistency: 10 };
+      var score = 0; Object.keys(W).forEach(function (k) { score += dims[k] * W[k] / 100; });
+      return { score: clamp(score), dims: dims, weights: W };
     },
 
     exportAll: function () { var out = {}; Object.values(K).forEach(function (k) { out[k] = read(k, null); }); return { __sde2: true, version: 1, exported: new Date().toISOString(), data: out }; },
